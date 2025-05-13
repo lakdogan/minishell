@@ -14,7 +14,7 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include "../../libft/inc/libft.h"
+# include "../../../libft/inc/libft.h"
 # include "command_tree.h"
 # include "environment.h"
 # include "execution.h"

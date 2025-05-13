@@ -4,7 +4,8 @@
  * @file command_tree.h
  * @brief Contains the definition of the command
  * tree node used to build the abstract syntax tree (AST)
- * for parsed shell commands, including pipes, logical AND (&&), and logical OR (||).
+ * for parsed shell commands, including pipes,
+ * logical AND (&&), and logical OR (||).
  *
  * TODO:
  * - Implement tree-building logic from token list

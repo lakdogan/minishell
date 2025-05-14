@@ -30,26 +30,26 @@ typedef enum e_out_type
 
 typedef struct s_infile
 {
-	t_in_type			type;
-	char				*name;
-	char				*delimeter;
+	t_in_type			type;		// < or <<
+	char				*name;		// File name
+	char				*delimeter;	// For heredoc (<<)
 	struct s_infile		*next;
 }						t_infile;
 
 typedef struct s_outfile
 {
-	t_out_type			type;
-	char				*name;
+	t_out_type			type;		// > or >>
+	char				*name;		// File name
 	struct s_outfile	*next;
 
 }						t_outfile;
 
 typedef struct s_exec
 {
-	char				*command;
-	char				**argv;
-	t_infile			*infiles;
-	t_outfile			*outfiles;
+	char				*command;	// Command name
+	char				**argv;		// Arguments
+	t_infile			*infiles;	// Input redirections
+	t_outfile			*outfiles;	// Output redirections
 }						t_exec;
 
 #endif

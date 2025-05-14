@@ -19,10 +19,10 @@
 
 typedef struct s_env
 {
-	char	*value;
-	char	*content;
-	bool	is_export;
-	bool	printed;
+	char	*value;		// Name of the variable (e.g., "PATH")
+	char	*content;	// Value (e.g., "/usr/bin:/bin")
+	bool	is_export;	// Used for export command formatting
+	bool	printed;	// Used to avoid duplicate prints in export
 }			t_env;
 
 #endif

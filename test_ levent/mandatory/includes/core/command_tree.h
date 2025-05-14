@@ -27,16 +27,16 @@
 
 typedef enum e_node_type
 {
-	N_EXEC,
-	N_PIPE,
-	N_ANDIF,
-	N_OR,
+	N_EXEC,		// Single command
+	N_PIPE,		// Pipe (|)
+	N_ANDIF,	// &&
+	N_OR,		// ||
 }							t_node_type;
 
 typedef struct s_command_tree
 {
 	t_node_type				type;
-	void					*data;
+	void					*data;		// Usually a t_exec*
 	struct s_command_tree	*left;
 	struct s_command_tree	*right;
 }							t_command_tree;

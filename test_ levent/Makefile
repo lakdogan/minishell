@@ -55,6 +55,11 @@ MINISHELL_MANDATORY_FILES := \
 				$(COMMAND_DIR)external_executor.c \
 				$(COMMAND_DIR)path_resolver.c \
 				$(COMMAND_DIR)path_utils.c \
+				$(IO_UTILS_DIR)fd_operations.c \
+				$(IO_UTILS_DIR)pipe_operations.c \
+				$(REDIRECTION_DIR)heredoc.c \
+				$(REDIRECTION_DIR)redirection_files.c \
+
 				$(SRCS_DIR)minishell.c \
 
 MINISHELL_BONUS_FILES := \

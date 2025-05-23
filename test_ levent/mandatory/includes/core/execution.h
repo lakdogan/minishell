@@ -145,9 +145,17 @@ void					check_fd_error(int fd, const char *filename);
 int						redirect_stdin_with_backup(int new_fd,
 							const char *error_msg);
 void					restore_std_fds(int stdin_backup, int stdout_backup);
+// pipe_operations.c
+char					*read_from_pipe(int pipe_fd);
+void					close_pipe(int *pipefd);
+int						create_pipe(int *pipefd);
 /* io_utils dir end */
 /* ------------------------------------------------------------------------- */
 /* redirection dir start */
+// heredoc.c
+int						process_heredoc(const char *delimiter);
+void					prepare_heredocs(t_command_tree *node);
+void					write_heredoc_to_fd(t_exec *exec, char *content);
 // redirection_files.c
 int						create_temp_file(void);
 int						open_infile(char *filename);

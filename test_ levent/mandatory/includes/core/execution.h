@@ -152,6 +152,9 @@ int						create_pipe(int *pipefd);
 /* io_utils dir end */
 /* ------------------------------------------------------------------------- */
 /* redirection dir start */
+// handle_redirections.c
+void					setup_input_redirections(t_exec *exec);
+void					setup_output_redirections(t_exec *exec);
 // heredoc_content.c
 void					save_heredoc_contents(t_exec *exec);
 char					*collect_heredoc_content(t_exec *exec,

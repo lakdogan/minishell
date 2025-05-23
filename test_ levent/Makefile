@@ -50,7 +50,9 @@ MINISHELL_MANDATORY_FILES := \
 				$(BUILTINS_DIR)export.c \
 				$(BUILTINS_DIR)pwd.c \
 				$(BUILTINS_DIR)unset.c \
-				$(BUILTINS_DIR)command_utils.c \
+				$(COMMAND_DIR)command_utils.c \
+				$(COMMAND_DIR)path_resolver.c \
+				$(COMMAND_DIR)path_utils.c \
 				$(SRCS_DIR)minishell.c \
 
 MINISHELL_BONUS_FILES := \

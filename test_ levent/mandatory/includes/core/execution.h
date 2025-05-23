@@ -119,7 +119,10 @@ void					process_child_status(int status,
 							t_minishell *minishell);
 int						is_builtin(const char *cmd);
 void					wait_for_process(pid_t pid, t_minishell *minishell);
-
+// path_resolver.c
+char					*get_absolute_path(char *cmd, char **envp);
+// path_utils.c
+int						get_path_from_env(char **envp, char ***paths);
 /* command dir end */
 /* ------------------------------------------------------------------------- */
 /* core dir start */

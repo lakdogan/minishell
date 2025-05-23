@@ -152,6 +152,10 @@ int						create_pipe(int *pipefd);
 /* io_utils dir end */
 /* ------------------------------------------------------------------------- */
 /* redirection dir start */
+// heredoc_content.c
+void					save_heredoc_contents(t_exec *exec);
+char					*collect_heredoc_content(t_exec *exec,
+							t_infile *infile);
 // heredoc.c
 int						process_heredoc(const char *delimiter);
 void					prepare_heredocs(t_command_tree *node);

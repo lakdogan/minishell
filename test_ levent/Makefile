@@ -18,11 +18,17 @@ LIBFT				:=	$(LIBFT_DIR)/libft_ftpf_gnl.a
 OBJECTS_DIR			:=	./objs/
 BONUS_OBJECTS_DIR   :=  ./bonus_objs/
 MANDATORY_DIR		:=	./mandatory/
-SRCS_DIR			:=	$(MANDATORY_DIR)srcs/
 BONUS_DIR			:=	./bonus/
-UTILS_DIR			:=	$(SRCS_DIR)utils/
-ERROR_DIR			:=	$(SRCS_DIR)error/
+SRCS_DIR			:=	$(MANDATORY_DIR)srcs/
+BUILTINS_DIR		:=	$(SRCS_DIR)builtins/
 EXECUTION_DIR		:=	$(SRCS_DIR)exec/
+ERROR_DIR			:=	$(SRCS_DIR)error/
+COMMAND_DIR			:=	$(EXECUTION_DIR)command/
+CORE_DIR			:=	$(EXECUTION_DIR)core/
+EX_ERROR_DIR		:=	$(EXECUTION_DIR)error/
+IO_UTILS_DIR		:=	$(EXECUTION_DIR)io_utils/
+REDIRECTION_DIR		:=	$(EXECUTION_DIR)redirection/
+SIGNALS_DIR			:=	$(EXECUTION_DIR)signals/
 INIT_DIR			:=	$(SRCS_DIR)init/
 MEM_DIR				:=	$(SRCS_DIR)mem/
 ALLOC_DIR			:=	$(MEM_DIR)alloc/
@@ -34,6 +40,13 @@ BONUS_SRCS_DIR		:=	$(BONUS_DIR)srcs_bonus/
 BONUS_UTILS_DIR		:=	$(BONUS_SRCS_DIR)utils_bonus/
 
 MINISHELL_MANDATORY_FILES := \
+				$(BUILTINS_DIR)cd.c \
+				$(BUILTINS_DIR)echo.c \
+				$(BUILTINS_DIR)env.c \
+				$(BUILTINS_DIR)exit.c \
+				$(BUILTINS_DIR)export_print.c \
+				$(BUILTINS_DIR)export_utils.c \
+				$(BUILTINS_DIR)pwd.c \
 				$(SRCS_DIR)minishell.c \
 
 MINISHELL_BONUS_FILES := \

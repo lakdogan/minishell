@@ -86,16 +86,22 @@ typedef struct s_exec
 /* srcs dir start */
 /* ------------------------------------------------------------------------- */
 /* builtins */
+// cd.c
+int						ft_cd(char **argv, t_minishell *minishell);
 // echo.c
 int						ft_echo(char **argv);
 // env.c
 int						ft_env(t_minishell *minishell);
-// pwd.c
-int						ft_pwd(void);
-// cd.c
-int						ft_cd(char **argv, t_minishell *minishell);
 // exit.c
 int						ft_exit(char **argv, t_minishell *minishell);
+// export_print.c
+void					print_export(t_list *envp);
+// export_utils.c
+void					add_new_env(char *key, char *value,
+							t_minishell *minishell);
+void					update_existing_env(t_env *env, char *key, char *value);
+// pwd.c
+int						ft_pwd(void);
 /* ------------------------------------------------------------------------- */
 /* exec dir start */
 /* ------------------------------------------------------------------------- */

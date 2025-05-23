@@ -1,15 +1,13 @@
 
 
 /**
- * @file execution.h
- * @brief Contains definitions for execution-related structures,
- * such as input/output redirection and command execution.
+ * @file execution_bonus.h
+ * @brief Contains definitions and function declarations for the shell execution system.
  *
- * TODO:
- * - Create functions to handle infile/outfile logic
- * - Process HEREDOCs (<<) and file redirections (>, >>, <)
- * - Execute commands via execve
- * - Handle builtins and distinguish from binaries
+ * This header defines structures and functions for command execution, input/output
+ * redirections (including heredocs), path resolution, signal handling, and error management.
+ * It also includes constants and enumerations necessary for the shell's execution flow,
+ * as well as utilities for file descriptor and pipe operations.
  */
 #ifndef EXECUTION_H
 # define EXECUTION_H
@@ -83,35 +81,11 @@ typedef struct s_exec
 	bool				heredoc_prepared;
 }						t_exec;
 
-/* srcs dir start */
-/* ------------------------------------------------------------------------- */
-/* builtins */
-// builtins.c
-int						exec_builtin(t_exec *cmd, t_minishell *minishell);
-// cd.c
-int						ft_cd(char **argv, t_minishell *minishell);
-// echo.c
-int						ft_echo(char **argv);
-// env.c
-int						ft_env(t_minishell *minishell);
-// exit.c
-int						ft_exit(char **argv, t_minishell *minishell);
-// export_print.c
-void					print_export(t_list *envp);
-// export_utils.c
-void					add_new_env(char *key, char *value,
-							t_minishell *minishell);
-void					update_existing_env(t_env *env, char *key, char *value);
-// export.c
-int						ft_export(char **argv, t_minishell *minishell);
-// pwd.c
-int						ft_pwd(void);
-// unset.c
-int						ft_unset(char **argv, t_minishell *minishell);
 /* ------------------------------------------------------------------------- */
 /* exec dir start */
 /* ------------------------------------------------------------------------- */
 /* command dir start */
+/* ------------------------------------------------------------------------- */
 // command_dispatcher.c
 void					handle_external(t_exec *exec, t_minishell *minishell);
 void					handle_builtin(t_exec *exec, t_minishell *minishell);
@@ -134,6 +108,7 @@ int						get_path_from_env(char **envp, char ***paths);
 /* command dir end */
 /* ------------------------------------------------------------------------- */
 /* core dir start */
+/* ------------------------------------------------------------------------- */
 // execute_tree_bonus.c
 void					execute_tree(t_command_tree *root,
 							t_minishell *minishell);
@@ -144,10 +119,13 @@ void					handle_or(t_command_tree *node, t_minishell *minishell);
 /* core dir end */
 /* ------------------------------------------------------------------------- */
 /* error dir start */
-
+/* ------------------------------------------------------------------------- */
+void					exit_with_error(const char *prefix, const char *message,
+							int exit_code);
 /* error dir end */
 /* ------------------------------------------------------------------------- */
 /* io_utils dir start */
+/* ------------------------------------------------------------------------- */
 // fd_operations.c
 void					safe_dup2(int oldfd, int newfd, const char *error_msg);
 void					safe_close(int fd, const char *error_msg);
@@ -162,6 +140,7 @@ int						create_pipe(int *pipefd);
 /* io_utils dir end */
 /* ------------------------------------------------------------------------- */
 /* redirection dir start */
+/* ------------------------------------------------------------------------- */
 // handle_redirections.c
 void					setup_input_redirections(t_exec *exec);
 void					setup_output_redirections(t_exec *exec);
@@ -179,6 +158,7 @@ int						open_infile(char *filename);
 /* redirection dir end */
 /* ------------------------------------------------------------------------- */
 /* signals dir start */
+/* ------------------------------------------------------------------------- */
 // signal_handlers.c
 void					setup_child_signals(void);
 void					signal_handler(int sig);

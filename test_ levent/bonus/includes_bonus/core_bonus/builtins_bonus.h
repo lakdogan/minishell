@@ -1,7 +1,7 @@
 
 
 /**
- * @file builtins.h
+ * @file builtins_bonus.h
  * @brief Header file for builtin shell commands and their helper functions
  *
  * This file contains declarations for all built-in shell commands:
@@ -16,41 +16,40 @@
  * Each builtin implements behavior similar to bash, with appropriate
  * argument handling and environment variable management.
  */
-#ifndef BUILTINS_H
-# define BUILTINS_H
+#ifndef BUILTINS_BONUS_H
+# define BUILTINS_BONUS_H
 
-# include "minishell.h"
-# include "environment.h"
-# include "execution.h"
-# include "command_tree.h"
-# include "token.h"
+# include "minishell_bonus.h"
+# include "builtins_bonus.h"
+# include "environment_bonus.h"
+# include "execution_bonus.h"
+# include "token_bonus.h"
 
 /* ------------------------------------------------------------------------- */
-/*                              builtins                                     */
+/*                              builtins dir                                 */
 /* ------------------------------------------------------------------------- */
 // builtins.c
-int						exec_builtin(t_exec *cmd, t_minishell *minishell);
+int		exec_builtin(t_exec *cmd, t_minishell *minishell);
 // cd.c
-int						ft_cd(char **argv, t_minishell *minishell);
+int		ft_cd(char **argv, t_minishell *minishell);
 // echo.c
-int						ft_echo(char **argv);
+int		ft_echo(char **argv);
 // env.c
-int						ft_env(t_minishell *minishell);
+int		ft_env(t_minishell *minishell);
 // exit.c
-int						ft_exit(char **argv, t_minishell *minishell);
+int		ft_exit(char **argv, t_minishell *minishell);
 // export_print.c
-void					print_export(t_list *envp);
+void	print_export(t_list *envp);
 // export_utils.c
-void					add_new_env(char *key, char *value,
-							t_minishell *minishell);
-void					update_existing_env(t_env *env, char *key, char *value);
-void					update_or_add_env(const char *arg,
-							t_minishell *minishell);
+void	add_new_env(char *key, char *value, t_minishell *minishell);
+void	update_existing_env(t_env *env, char *key, char *value);
+void	update_or_add_env(const char *arg, t_minishell *minishell);
 // export.c
-int						ft_export(char **argv, t_minishell *minishell);
+int		ft_export(char **argv, t_minishell *minishell);
 // pwd.c
-int						ft_pwd(void);
+int		ft_pwd(void);
 // unset.c
-int						ft_unset(char **argv, t_minishell *minishell);
+int		ft_unset(char **argv, t_minishell *minishell);
 /* ------------------------------------------------------------------------- */
+
 #endif

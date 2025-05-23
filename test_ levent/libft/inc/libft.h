@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 21:59:19 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/02/20 18:15:04 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/05/15 21:43:47 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,16 @@ int					ft_isdigit(int c);
 int					ft_isprint(int c);
 int					ft_toupper(int c);
 int					ft_tolower(int c);
+int					ft_isspace(int c);
 char				*ft_itoa(int number);
 float				ft_magnitude(float *a);
 float				ft_getrad(float degree);
+long				ft_atol(const char *str);
 int					ft_atoi(const char *str);
 size_t				ft_strlen(const char *s);
 float				ft_getdeg(float radians);
 char				*ft_strdup(const char *s1);
+void				ft_free_split(char **split);
 void				ft_putnbr_fd(int n, int fd);
 void				*ft_bzero(void *s, size_t n);
 void				ft_putstr_fd(char *s, int fd);
@@ -47,14 +50,18 @@ void				ft_putendl_fd(char *s, int fd);
 float				ft_getdif(float no1, float no2);
 float				ft_isometric_x(float x, float y);
 char				*ft_strchr(const char *s, int c);
+double				ft_sqrt(double x, double epsilon);
 char				*ft_strrchr(const char *s, int c);
 float				ft_dot_product(float *a, float *b);
 char				**ft_split(char const *s, char del);
+char				*ft_safe_strjoin(char *s1, char *s2);
+char				*ft_strndup(const char *s, size_t n);
 void				*ft_calloc(size_t count, size_t size);
 void				*ft_memset(void *b, int c, size_t len);
 float				ft_vector_angle_rad(float *a, float *b);
 float				ft_vector_angle_deg(float *a, float *b);
 float				ft_tiltang(float height, float distance);
+int				ft_strcmp(const char *s1, const char *s2);
 float				ft_isometric_y(float x, float y, float z);
 void				ft_putchar_fd(char c, int file_descriptor);
 void				*ft_memchr(const void *s, int c, size_t n);
@@ -73,6 +80,10 @@ float				ft_newyx(float orig_y, float orig_z, float angle_rad);
 float				ft_newyz(float orig_x, float orig_y, float angle_rad);
 float				ft_newzx(float orig_y, float orig_z, float angle_rad);
 float				ft_newzy(float orig_x, float orig_z, float angle_rad);
+const char			*auto_detect_base_if_zero(const char *str, int *base);
+void				*ft_realloc(void *ptr, size_t new_size, size_t *allocated_size);
+char				*ft_strjoin_3(const char *s1, const char *s2,
+						const char *s3);
 
 void				ft_normalized_cross_product(float *a, float *b,
 						float *cross_product);

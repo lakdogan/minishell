@@ -2,14 +2,16 @@
 
 /**
  * @file execution.h
- * @brief Contains definitions for execution-related structures,
- * such as input/output redirection and command execution.
+
+	* @brief Contains definitions and function declarations for the shell execution system.
  *
- * TODO:
- * - Create functions to handle infile/outfile logic
- * - Process HEREDOCs (<<) and file redirections (>, >>, <)
- * - Execute commands via execve
- * - Handle builtins and distinguish from binaries
+ * This header defines structures and functions for command execution,
+	input/output
+ * redirections (including heredocs), path resolution, signal handling,
+	and error management.
+
+	* It also includes constants and enumerations necessary for the shell's execution flow,
+ * as well as utilities for file descriptor and pipe operations.
  */
 #ifndef EXECUTION_H
 # define EXECUTION_H
@@ -83,102 +85,94 @@ typedef struct s_exec
 	bool				heredoc_prepared;
 }						t_exec;
 
-/* srcs dir start */
 /* ------------------------------------------------------------------------- */
-/* builtins */
-// builtins.c
-int						exec_builtin(t_exec *cmd, t_minishell *minishell);
-// cd.c
-int						ft_cd(char **argv, t_minishell *minishell);
-// echo.c
-int						ft_echo(char **argv);
-// env.c
-int						ft_env(t_minishell *minishell);
-// exit.c
-int						ft_exit(char **argv, t_minishell *minishell);
-// export_print.c
-void					print_export(t_list *envp);
-// export_utils.c
-void					add_new_env(char *key, char *value,
-							t_minishell *minishell);
-void					update_existing_env(t_env *env, char *key, char *value);
-// export.c
-int						ft_export(char **argv, t_minishell *minishell);
-// pwd.c
-int						ft_pwd(void);
-// unset.c
-int						ft_unset(char **argv, t_minishell *minishell);
+/* 								exec dir start 								*/
 /* ------------------------------------------------------------------------- */
-/* exec dir start */
+/* 								command dir start 							*/
 /* ------------------------------------------------------------------------- */
-/* command dir start */
-// command_dispatcher.c
+/* 	~	command_dispatcher.c ~		*/
 void					handle_external(t_exec *exec, t_minishell *minishell);
 void					handle_builtin(t_exec *exec, t_minishell *minishell);
-// command_utils.c
+/* 	~	command_utils.c ~ */
 pid_t					create_child_process(void);
 void					process_child_status(int status,
 							t_minishell *minishell);
 int						is_builtin(const char *cmd);
 void					wait_for_process(pid_t pid, t_minishell *minishell);
-// external_executor.c
+/* 	~	external_executor.c ~ */
 void					execute_command(t_exec *exec, t_minishell *minishell);
-// node_executor.c
-void	handle_exec(t_command_tree *node, t_minishell *minishell);
-void	handle_pipe(t_command_tree *node, t_minishell *shell);
-// path_resolver.c
+/* 	~	node_executor.c ~		*/
+void					handle_exec(t_command_tree *node,
+							t_minishell *minishell);
+void					handle_pipe(t_command_tree *node, t_minishell *shell);
+/* 	~	path_resolver.c ~		*/
 char					*get_absolute_path(char *cmd, char **envp);
-// path_utils.c
+/* 	~	path_utils.c ~			*/
 int						get_path_from_env(char **envp, char ***paths);
-/* command dir end */
 /* ------------------------------------------------------------------------- */
-/* core dir start */
-// execute_tree.c
-static void	execute_node_by_type(t_command_tree *node, t_minishell *minishell);
-static int	validate_command_tree(t_command_tree *root);
-/* core dir end */
+/* 								command dir end 							*/
 /* ------------------------------------------------------------------------- */
-/* error dir start */
-
-/* error dir end */
+/* 								core dir start 								*/
 /* ------------------------------------------------------------------------- */
-/* io_utils dir start */
-// fd_operations.c
+/* 	~	execute_tree.c ~		*/
+void					execute_tree(t_command_tree *root,
+							t_minishell *minishell);
+/* ------------------------------------------------------------------------- */
+/* 							core dir end 									*/
+/* ------------------------------------------------------------------------- */
+/* 							error dir start 								*/
+/* ------------------------------------------------------------------------- */
+/* 	~	error_utils_bonus.c ~		*/
+void					exit_with_error(const char *prefix, const char *message,
+							int exit_code);
+/* ------------------------------------------------------------------------- */
+/* 							error dir end 									*/
+/* ------------------------------------------------------------------------- */
+/* 							io_utils dir start 								*/
+/* ------------------------------------------------------------------------- */
+/* 	~	fd_operations.c ~		*/
 void					safe_dup2(int oldfd, int newfd, const char *error_msg);
 void					safe_close(int fd, const char *error_msg);
 void					check_fd_error(int fd, const char *filename);
 int						redirect_stdin_with_backup(int new_fd,
 							const char *error_msg);
 void					restore_std_fds(int stdin_backup, int stdout_backup);
-// pipe_operations.c
+/* 	~	pipe_operations.c ~		*/
 char					*read_from_pipe(int pipe_fd);
 void					close_pipe(int *pipefd);
 int						create_pipe(int *pipefd);
-/* io_utils dir end */
 /* ------------------------------------------------------------------------- */
-/* redirection dir start */
-// handle_redirections.c
+/* 							io_utils dir end 								*/
+/* ------------------------------------------------------------------------- */
+/* 							redirection dir start 							*/
+/* ------------------------------------------------------------------------- */
+/* 	~	handle_redirections.c ~	 */
 void					setup_input_redirections(t_exec *exec);
 void					setup_output_redirections(t_exec *exec);
-// heredoc_content.c
+/* 	~	heredoc_content.c ~		*/
 void					save_heredoc_contents(t_exec *exec);
 char					*collect_heredoc_content(t_exec *exec,
 							t_infile *infile);
-// heredoc.c
+/* 	~	heredoc.c ~		 */
 int						process_heredoc(const char *delimiter);
 void					prepare_heredocs(t_command_tree *node);
 void					write_heredoc_to_fd(t_exec *exec, char *content);
-// redirection_files.c
+/* 	~	redirection_files.c ~ */
 int						create_temp_file(void);
 int						open_infile(char *filename);
-/* redirection dir end */
 /* ------------------------------------------------------------------------- */
-/* signals dir start */
-// signal_handlers.c
+/* 								redirection dir end 						*/
+/* ------------------------------------------------------------------------- */
+/* 								signals dir start 							*/
+/* ------------------------------------------------------------------------- */
+/* 	~	signal_handlers.c ~		*/
 void					setup_child_signals(void);
 void					signal_handler(int sig);
 void					setup_parent_signals(void);
-/* signals dir end */
+/* ------------------------------------------------------------------------- */
+/* 							signals dir end 								*/
+/* ------------------------------------------------------------------------- */
+/*							exec dir end									*/
 /* ------------------------------------------------------------------------- */
 
 #endif

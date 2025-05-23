@@ -9,9 +9,6 @@
  * for SIGINT (Ctrl+C) and SIGQUIT (Ctrl+\) signals
  * to provide a smooth user
  * experience during interactive shell usage.
- *
- * @author lakdogan <lakdogan@student.42.fr>
- * @date 2025-05-19
  */
 
  #include "../../../includes/core/minishell.h"

@@ -6,9 +6,6 @@
  * temporary files needed for implementing I/O redirections in the shell.
  * It handles file descriptor error checking and
  * proper cleanup of temporary files.
- *
- * @author lakdogan <lakdogan@student.42.fr>
- * @date 2025-05-20
  */
 
  #include "../../../includes/core/minishell.h"

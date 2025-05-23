@@ -59,28 +59,54 @@ typedef enum e_out_type
 
 typedef struct s_infile
 {
-	t_in_type			type;		// < or <<
-	char				*name;		// File name
-	char				*delimeter;	// For heredoc (<<)
+	t_in_type type;  // < or <<
+	char *name;      // File name
+	char *delimeter; // For heredoc (<<)
 	struct s_infile		*next;
 }						t_infile;
 
 typedef struct s_outfile
 {
-	t_out_type			type;		// > or >>
-	char				*name;		// File name
+	t_out_type type; // > or >>
+	char *name;      // File name
 	struct s_outfile	*next;
 
 }						t_outfile;
 
 typedef struct s_exec
 {
-	char				*command;	// Command name
-	char				**argv;		// Arguments
-	t_infile			*infiles;	// Input redirections
-	t_outfile			*outfiles;	// Output redirections
+	char *command;       // Command name
+	char **argv;         // Arguments
+	t_infile *infiles;   // Input redirections
+	t_outfile *outfiles; // Output redirections
 	int					heredoc_fd;
 	bool				heredoc_prepared;
 }						t_exec;
+
+// signal_handlers.c
+void					setup_child_signals(void);
+void					signal_handler(int sig);
+void					setup_parent_signals(void);
+
+// fd_operations.c
+void					safe_dup2(int oldfd, int newfd, const char *error_msg);
+void					safe_close(int fd, const char *error_msg);
+void					check_fd_error(int fd, const char *filename);
+int						redirect_stdin_with_backup(int new_fd,
+							const char *error_msg);
+void					restore_std_fds(int stdin_backup, int stdout_backup);
+
+// redirection_files.c
+int						create_temp_file(void);
+int						open_infile(char *filename);
+
+// echo.c
+int						ft_echo(char **argv);
+
+// env.c
+int						ft_env(t_minishell *minishell);
+
+// pwd.c
+int						ft_pwd(void);
 
 #endif

@@ -58,6 +58,7 @@ MINISHELL_MANDATORY_FILES := \
 				$(COMMAND_DIR)node_executors.c \
 				$(COMMAND_DIR)path_resolver.c \
 				$(COMMAND_DIR)path_utils.c \
+				$(CORE_DIR)execute_tree.c \
 				$(IO_UTILS_DIR)fd_operations.c \
 				$(IO_UTILS_DIR)pipe_operations.c \
 				$(REDIRECTION_DIR)handle_redirections.c \
@@ -68,6 +69,7 @@ MINISHELL_MANDATORY_FILES := \
 
 MINISHELL_BONUS_FILES := \
 				$(BONUS_SRCS_DIR)minishell_bonus.c \
+				$(BONUS_CORE_DIR)execute_tree_bonus.c \
 				$(BONUS_CORE_DIR)logical_operators_bonus.c \
 
 BONUS_UTILS_FILES := \

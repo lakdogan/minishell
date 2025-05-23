@@ -133,7 +133,9 @@ int						get_path_from_env(char **envp, char ***paths);
 /* command dir end */
 /* ------------------------------------------------------------------------- */
 /* core dir start */
-
+// execute_tree.c
+static void	execute_node_by_type(t_command_tree *node, t_minishell *minishell);
+static int	validate_command_tree(t_command_tree *root);
 /* core dir end */
 /* ------------------------------------------------------------------------- */
 /* error dir start */

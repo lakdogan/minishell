@@ -1,5 +1,5 @@
 /**
- * @file logical_operators.c
+ * @file logical_operators_bonus.c
  * @brief Implementation of logical operator handling for command execution
  *
  * This file contains functions for implementing the short-circuit logical

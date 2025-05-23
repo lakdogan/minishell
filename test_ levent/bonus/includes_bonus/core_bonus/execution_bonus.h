@@ -134,6 +134,9 @@ int						get_path_from_env(char **envp, char ***paths);
 /* command dir end */
 /* ------------------------------------------------------------------------- */
 /* core dir start */
+// execute_tree_bonus.c
+void					execute_tree(t_command_tree *root,
+							t_minishell *minishell);
 // logical_operators_bonus.c
 void					handle_and(t_command_tree *node,
 							t_minishell *minishell);

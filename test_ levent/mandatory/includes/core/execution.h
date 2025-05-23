@@ -83,11 +83,35 @@ typedef struct s_exec
 	bool				heredoc_prepared;
 }						t_exec;
 
-// signal_handlers.c
-void					setup_child_signals(void);
-void					signal_handler(int sig);
-void					setup_parent_signals(void);
+/* srcs dir start */
+/* ------------------------------------------------------------------------- */
+/* builtins */
+// echo.c
+int						ft_echo(char **argv);
+// env.c
+int						ft_env(t_minishell *minishell);
+// pwd.c
+int						ft_pwd(void);
+// cd.c
+int						ft_cd(char **argv, t_minishell *minishell);
+// exit.c
+int						ft_exit(char **argv, t_minishell *minishell);
+/* ------------------------------------------------------------------------- */
+/* exec dir start */
+/* ------------------------------------------------------------------------- */
+/* command dir start */
 
+/* command dir end */
+/* ------------------------------------------------------------------------- */
+/* core dir start */
+
+/* core dir end */
+/* ------------------------------------------------------------------------- */
+/* error dir start */
+
+/* error dir end */
+/* ------------------------------------------------------------------------- */
+/* io_utils dir start */
 // fd_operations.c
 void					safe_dup2(int oldfd, int newfd, const char *error_msg);
 void					safe_close(int fd, const char *error_msg);
@@ -95,18 +119,20 @@ void					check_fd_error(int fd, const char *filename);
 int						redirect_stdin_with_backup(int new_fd,
 							const char *error_msg);
 void					restore_std_fds(int stdin_backup, int stdout_backup);
-
+/* io_utils dir end */
+/* ------------------------------------------------------------------------- */
+/* redirection dir start */
 // redirection_files.c
 int						create_temp_file(void);
 int						open_infile(char *filename);
-
-// echo.c
-int						ft_echo(char **argv);
-
-// env.c
-int						ft_env(t_minishell *minishell);
-
-// pwd.c
-int						ft_pwd(void);
+/* redirection dir end */
+/* ------------------------------------------------------------------------- */
+/* signals dir start */
+// signal_handlers.c
+void					setup_child_signals(void);
+void					signal_handler(int sig);
+void					setup_parent_signals(void);
+/* signals dir end */
+/* ------------------------------------------------------------------------- */
 
 #endif

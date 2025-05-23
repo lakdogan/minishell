@@ -112,13 +112,17 @@ int						ft_unset(char **argv, t_minishell *minishell);
 /* exec dir start */
 /* ------------------------------------------------------------------------- */
 /* command dir start */
-
+// command_dispatcher.c
+void					handle_external(t_exec *exec, t_minishell *minishell);
+void					handle_builtin(t_exec *exec, t_minishell *minishell);
 // command_utils.c
 pid_t					create_child_process(void);
 void					process_child_status(int status,
 							t_minishell *minishell);
 int						is_builtin(const char *cmd);
 void					wait_for_process(pid_t pid, t_minishell *minishell);
+// external_executor.c
+void					execute_command(t_exec *exec, t_minishell *minishell);
 // path_resolver.c
 char					*get_absolute_path(char *cmd, char **envp);
 // path_utils.c

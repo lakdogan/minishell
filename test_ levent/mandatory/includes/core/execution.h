@@ -86,6 +86,8 @@ typedef struct s_exec
 /* srcs dir start */
 /* ------------------------------------------------------------------------- */
 /* builtins */
+// builtins.c
+int						exec_builtin(t_exec *cmd, t_minishell *minishell);
 // cd.c
 int						ft_cd(char **argv, t_minishell *minishell);
 // echo.c
@@ -110,6 +112,13 @@ int						ft_unset(char **argv, t_minishell *minishell);
 /* exec dir start */
 /* ------------------------------------------------------------------------- */
 /* command dir start */
+
+// command_utils.c
+pid_t					create_child_process(void);
+void					process_child_status(int status,
+							t_minishell *minishell);
+int						is_builtin(const char *cmd);
+void					wait_for_process(pid_t pid, t_minishell *minishell);
 
 /* command dir end */
 /* ------------------------------------------------------------------------- */

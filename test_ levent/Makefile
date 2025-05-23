@@ -40,6 +40,7 @@ BONUS_SRCS_DIR		:=	$(BONUS_DIR)srcs_bonus/
 BONUS_UTILS_DIR		:=	$(BONUS_SRCS_DIR)utils_bonus/
 
 MINISHELL_MANDATORY_FILES := \
+				$(BUILTINS_DIR)builtins.c \
 				$(BUILTINS_DIR)cd.c \
 				$(BUILTINS_DIR)echo.c \
 				$(BUILTINS_DIR)env.c \
@@ -49,6 +50,7 @@ MINISHELL_MANDATORY_FILES := \
 				$(BUILTINS_DIR)export.c \
 				$(BUILTINS_DIR)pwd.c \
 				$(BUILTINS_DIR)unset.c \
+				$(BUILTINS_DIR)command_utils.c \
 				$(SRCS_DIR)minishell.c \
 
 MINISHELL_BONUS_FILES := \

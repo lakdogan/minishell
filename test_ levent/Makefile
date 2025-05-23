@@ -46,7 +46,9 @@ MINISHELL_MANDATORY_FILES := \
 				$(BUILTINS_DIR)exit.c \
 				$(BUILTINS_DIR)export_print.c \
 				$(BUILTINS_DIR)export_utils.c \
+				$(BUILTINS_DIR)export.c \
 				$(BUILTINS_DIR)pwd.c \
+				$(BUILTINS_DIR)unset.c \
 				$(SRCS_DIR)minishell.c \
 
 MINISHELL_BONUS_FILES := \

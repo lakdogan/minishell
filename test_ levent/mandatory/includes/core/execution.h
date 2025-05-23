@@ -100,8 +100,12 @@ void					print_export(t_list *envp);
 void					add_new_env(char *key, char *value,
 							t_minishell *minishell);
 void					update_existing_env(t_env *env, char *key, char *value);
+// export.c
+int						ft_export(char **argv, t_minishell *minishell);
 // pwd.c
 int						ft_pwd(void);
+// unset.c
+int						ft_unset(char **argv, t_minishell *minishell);
 /* ------------------------------------------------------------------------- */
 /* exec dir start */
 /* ------------------------------------------------------------------------- */

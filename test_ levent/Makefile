@@ -8,7 +8,7 @@ LIBFT_URL			:=	https://github.com/lakdogan/libft.git
 LIBFT_DIR			:=	libft
 	
 INCLUDES			:=	-I./mandatory/inc -I./$(LIBFT_DIR)
-BONUS_INCLUDES		:=	-I./bonus/inc_bonus -I./$(LIBFT_DIR)
+BONUS_INCLUDES		:=	-I./bonus/includes_bonus/core_bonus -I./$(LIBFT_DIR)
 	
 NAME				:=	minishell
 BONUS_NAME			:=	minishell_bonus
@@ -37,6 +37,8 @@ PARSING_DIR			:=	$(SRCS_DIR)parse/
 UTILS_DIR			:=	$(SRCS_DIR)utils/
 VALID_DIR			:=	$(SRCS_DIR)valid/
 BONUS_SRCS_DIR		:=	$(BONUS_DIR)srcs_bonus/
+BONUS_EXEC_DIR		:=	$(BONUS_EXEC_DIR)exec_bonus/
+BONUS_CORE_DIR		:=	$(BONUS_CORE_DIR)core_bonus/
 BONUS_UTILS_DIR		:=	$(BONUS_SRCS_DIR)utils_bonus/
 
 MINISHELL_MANDATORY_FILES := \
@@ -53,6 +55,7 @@ MINISHELL_MANDATORY_FILES := \
 				$(COMMAND_DIR)command_dispatcher.c \
 				$(COMMAND_DIR)command_utils.c \
 				$(COMMAND_DIR)external_executor.c \
+				$(COMMAND_DIR)node_executors.c \
 				$(COMMAND_DIR)path_resolver.c \
 				$(COMMAND_DIR)path_utils.c \
 				$(IO_UTILS_DIR)fd_operations.c \
@@ -61,13 +64,35 @@ MINISHELL_MANDATORY_FILES := \
 				$(REDIRECTION_DIR)heredoc_content.c \
 				$(REDIRECTION_DIR)heredoc.c \
 				$(REDIRECTION_DIR)redirection_files.c \
-
 				$(SRCS_DIR)minishell.c \
 
 MINISHELL_BONUS_FILES := \
 				$(BONUS_SRCS_DIR)minishell_bonus.c \
+				$(BONUS_CORE_DIR)logical_operators_bonus.c \
 
 BONUS_UTILS_FILES := \
+				$(BUILTINS_DIR)builtins.c \
+				$(BUILTINS_DIR)cd.c \
+				$(BUILTINS_DIR)echo.c \
+				$(BUILTINS_DIR)env.c \
+				$(BUILTINS_DIR)exit.c \
+				$(BUILTINS_DIR)export_print.c \
+				$(BUILTINS_DIR)export_utils.c \
+				$(BUILTINS_DIR)export.c \
+				$(BUILTINS_DIR)pwd.c \
+				$(BUILTINS_DIR)unset.c \
+				$(COMMAND_DIR)command_dispatcher.c \
+				$(COMMAND_DIR)command_utils.c \
+				$(COMMAND_DIR)external_executor.c \
+				$(COMMAND_DIR)node_executors.c \
+				$(COMMAND_DIR)path_resolver.c \
+				$(COMMAND_DIR)path_utils.c \
+				$(IO_UTILS_DIR)fd_operations.c \
+				$(IO_UTILS_DIR)pipe_operations.c \
+				$(REDIRECTION_DIR)handle_redirections.c \
+				$(REDIRECTION_DIR)heredoc_content.c \
+				$(REDIRECTION_DIR)heredoc.c \
+				$(REDIRECTION_DIR)redirection_files.c \
 
 
 MINISHELL_OBJS	:= $(patsubst $(SRCS_DIR)%.c,$(OBJECTS_DIR)srcs/%.o,$(MINISHELL_MANDATORY_FILES))

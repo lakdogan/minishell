@@ -14,7 +14,7 @@
 #ifndef EXECUTION_H
 # define EXECUTION_H
 
-# include "minishell.h"
+# include "minishell_bonus.h"
 # define BUFFER_SIZE_TEE 4096
 # define FORK_ERROR -1
 # define CHILD_PROCESS 0
@@ -124,8 +124,9 @@ void					wait_for_process(pid_t pid, t_minishell *minishell);
 // external_executor.c
 void					execute_command(t_exec *exec, t_minishell *minishell);
 // node_executor.c
-void	handle_exec(t_command_tree *node, t_minishell *minishell);
-void	handle_pipe(t_command_tree *node, t_minishell *shell);
+void					handle_exec(t_command_tree *node,
+							t_minishell *minishell);
+void					handle_pipe(t_command_tree *node, t_minishell *shell);
 // path_resolver.c
 char					*get_absolute_path(char *cmd, char **envp);
 // path_utils.c
@@ -133,7 +134,10 @@ int						get_path_from_env(char **envp, char ***paths);
 /* command dir end */
 /* ------------------------------------------------------------------------- */
 /* core dir start */
-
+// logical_operators_bonus.c
+void					handle_and(t_command_tree *node,
+							t_minishell *minishell);
+void					handle_or(t_command_tree *node, t_minishell *minishell);
 /* core dir end */
 /* ------------------------------------------------------------------------- */
 /* error dir start */

@@ -15,6 +15,7 @@
 # define MINISHELL_H
 
 # include "../../../libft/inc/libft.h"
+# include "../../../libft/garbage_collector/inc/garbage_collector.h"
 # include "command_tree.h"
 # include <errno.h>
 # include <readline/history.h>
@@ -23,6 +24,16 @@
 # include <sys/signal.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+
+typedef enum e_gc_type
+{
+    GC_MAIN,     // Persistent shell data (environment, history, etc.)
+    GC_COMMAND,  // Per-command execution data
+	GC_TEMP,	 // Temporary allocations
+	GC_ENV,      // value and content allocations
+	GC_CWD,
+    GC_COUNT     // Number of GC categories (used for array size)
+} t_gc_type;
 
 typedef struct s_minishell
 {
@@ -34,6 +45,7 @@ typedef struct s_minishell
 	char *cwd;            // Current working directory
 	int exit_code;        // Exit code of last executed command
 	int last_signal;      // Last received signal (used for signal handling)
+	t_gc *gc[GC_COUNT];   // Array of garbage collectors
 }	t_minishell;
 
 # include "builtins.h"

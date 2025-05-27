@@ -159,4 +159,16 @@ re: fclean all
 
 bonusre: fclean bonus
 
-.PHONY: all bonus clean fclean re bonusre
+run: all
+	@echo "Running $(NAME)...\n"
+	@./$(NAME)
+
+runbonus: bonus
+	@echo "Running $(NAME)...\n"
+	@./$(NAME)
+
+valgrind: all
+	@echo "Running $(NAME) with valgrind...\n"
+	@valgrind --leak-check=full ./$(NAME)
+
+.PHONY: all bonus clean fclean re bonusre run runbonus valgrind

@@ -37,6 +37,7 @@ int		ft_echo(char **argv);
 // env.c
 int		ft_env(t_minishell *minishell);
 // exit.c
+void	cleanup_memory(t_minishell *minishell);
 int		ft_exit(char **argv, t_minishell *minishell);
 // export_print.c
 void	print_export(t_list *envp);

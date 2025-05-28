@@ -56,6 +56,7 @@ MINISHELL_MANDATORY_FILES := \
 				$(BUILTINS_DIR)export_utils.c \
 				$(BUILTINS_DIR)export.c \
 				$(BUILTINS_DIR)pwd.c \
+				$(BUILTINS_DIR)unset_utils.c \
 				$(BUILTINS_DIR)unset.c \
 				$(COMMAND_DIR)command_dispatcher.c \
 				$(COMMAND_DIR)command_utils.c \

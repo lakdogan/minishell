@@ -7,32 +7,32 @@
  * standard output.
  */
 
- #include "../../includes/core/minishell.h"
+#include "../../includes/core/minishell.h"
 
- /**
-  * @brief Prints the current working directory
-  *
-  * Implements the pwd built-in command by retrieving the current working
-  * directory using getcwd() and printing it to standard output. If the
-  * current directory cannot be determined, an error message is printed.
-  *
-  * @return int 0 on success, 1 if the current directory could not be determined
-  */
- int	ft_pwd(void)
- {
-     char	cwd[PATH_MAX];
-     int		len;
- 
-     if (getcwd(cwd, sizeof(cwd)) != NULL)
-     {
-         len = ft_strlen(cwd);
-         write(STDOUT_FILENO, cwd, len);
-         write(STDOUT_FILENO, "\n", 1);
-         return (0);
-     }
-     else
-     {
-         perror("pwd");
-         return (1);
-     }
- }
+/**
+ * @brief Prints the current working directory
+ *
+ * Implements the pwd built-in command by retrieving the current working
+ * directory using getcwd() and printing it to standard output. If the
+ * current directory cannot be determined, an error message is printed.
+ *
+ * @return int 0 on success, 1 if the current directory could not be determined
+ */
+int	ft_pwd(void)
+{
+	char	cwd[PATH_MAX];
+	int		len;
+
+	if (getcwd(cwd, sizeof(cwd)) != NULL)
+	{
+		len = ft_strlen(cwd);
+		write(STDOUT_FILENO, cwd, len);
+		write(STDOUT_FILENO, "\n", 1);
+		return (0);
+	}
+	else
+	{
+		perror("pwd");
+		return (1);
+	}
+}

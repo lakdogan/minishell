@@ -46,6 +46,12 @@
 # define SYSCALL_ERROR -1
 # define NULL_TERMINATOR '\0'
 # define SIG_NO_FLAGS 0
+# define BACKUP_FAILED 0
+# define BACKUP_SUCCESS 1
+# define FORK_FAILED 0
+# define FORK_SUCCESS 1
+# define IS_RIGHT_PID 1
+# define IS_LEFT_PID 0
 
 typedef enum e_in_type
 {
@@ -84,6 +90,15 @@ typedef struct s_exec
 	int					heredoc_fd;
 	bool				heredoc_prepared;
 }						t_exec;
+
+typedef struct s_pipe_state
+{
+	int					pipefd[2];
+	pid_t				left_pid;
+	pid_t				right_pid;
+	int					stdout_backup;
+	int					pipe_identity;
+}						t_pipe_state;
 
 /* ------------------------------------------------------------------------- */
 /* 								exec dir start 								*/
@@ -146,14 +161,14 @@ int						create_pipe(int *pipefd);
 /* ------------------------------------------------------------------------- */
 /* 							redirection dir start 							*/
 /* ------------------------------------------------------------------------- */
-/* 	~	handle_redirections.c ~	 */
+/* 	~	handle_redirections.c ~		*/
 void					setup_input_redirections(t_exec *exec);
 void					setup_output_redirections(t_exec *exec);
 /* 	~	heredoc_content.c ~		*/
 void					save_heredoc_contents(t_exec *exec);
 char					*collect_heredoc_content(t_exec *exec,
 							t_infile *infile);
-/* 	~	heredoc.c ~		 */
+/* 	~	heredoc.c ~			*/
 int						process_heredoc(const char *delimiter);
 void					prepare_heredocs(t_command_tree *node);
 void					write_heredoc_to_fd(t_exec *exec, char *content);

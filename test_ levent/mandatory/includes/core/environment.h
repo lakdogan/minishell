@@ -19,25 +19,26 @@
 
 typedef struct s_env
 {
-	char *value;    // Name of the variable (e.g., "PATH")
-	char *content;  // Value (e.g., "/usr/bin:/bin")
+	char			*value;
+	char			*content;
 
-	union environment
+	union			environment
 	{
 		struct
 		{
-			bool is_export; // Used for export command formatting
-			bool printed;   // Used to avoid duplicate prints in export
+			bool	is_export;
+			bool	printed;
 			char	padding[6];
 		};
-		void	*allignment_placeholder;
+		void		*allignment_placeholder;
 	};
-}		t_env;
+}					t_env;
 
 // unset.c
-char	**rebuild_env_array(t_minishell *minishell);
-int		set_env_var(const char *name, const char *value,
-			t_minishell *minishell);
-int		get_env_value(const char *name, t_minishell *minishell, char **result);
+char				**rebuild_env_array(t_minishell *minishell);
+int					set_env_var(const char *name, const char *value,
+						t_minishell *minishell);
+int					get_env_value(const char *name, t_minishell *minishell,
+						char **result);
 
 #endif

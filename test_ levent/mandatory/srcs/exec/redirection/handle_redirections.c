@@ -19,13 +19,13 @@
  * @param in Pointer to the input file structure containing the file name
  * @return int EXIT_SUCCESS on successful redirection
  */
-static int	handle_input_file(t_infile *in)
+static int	handle_input_file(t_minishell *shell, t_infile *in)
 {
 	int	fd;
 
-	fd = open_infile(in->name);
-	safe_dup2(fd, STDIN_FILENO, "input redirection");
-	safe_close(fd, "close input file");
+	fd = open_infile(shell, in->name);
+	safe_dup2(shell, fd, STDIN_FILENO, "input redirection");
+	safe_close(shell, fd, "close input file");
 	return (EXIT_SUCCESS);
 }
 
@@ -38,12 +38,12 @@ static int	handle_input_file(t_infile *in)
  *
  * @param heredoc_fd File descriptor for the heredoc content
  */
-static void	handle_heredoc_input(int heredoc_fd)
+static void	handle_heredoc_input(t_minishell *shell, int heredoc_fd)
 {
 	if (heredoc_fd != INVALID_FD)
 	{
-		safe_dup2(heredoc_fd, STDIN_FILENO, "heredoc redirection");
-		safe_close(heredoc_fd, "close heredoc fd");
+		safe_dup2(shell, heredoc_fd, STDIN_FILENO, "heredoc redirection");
+		safe_close(shell, heredoc_fd, "close heredoc fd");
 	}
 }
 
@@ -56,7 +56,7 @@ static void	handle_heredoc_input(int heredoc_fd)
  *
  * @param exec Pointer to the command execution structure
  */
-void	setup_input_redirections(t_exec *exec)
+void	setup_input_redirections(t_minishell *shell, t_exec *exec)
 {
 	t_infile	*in;
 
@@ -64,10 +64,10 @@ void	setup_input_redirections(t_exec *exec)
 	while (in)
 	{
 		if (in->type == INFILE)
-			handle_input_file(in);
+			handle_input_file(shell, in);
 		in = in->next;
 	}
-	handle_heredoc_input(exec->heredoc_fd);
+	handle_heredoc_input(shell, exec->heredoc_fd);
 }
 
 /**
@@ -79,7 +79,7 @@ void	setup_input_redirections(t_exec *exec)
  * @param out Pointer to the output file structure
  * @return int File descriptor for the opened file
  */
-static int	open_output_file(t_outfile *out)
+static int	open_output_file(t_minishell *shell, t_outfile *out)
 {
 	int	fd;
 
@@ -90,7 +90,7 @@ static int	open_output_file(t_outfile *out)
 	else if (out->type == OUT_APPEND)
 		fd = open(out->name, O_WRONLY | O_CREAT | O_APPEND,
 				DEFAULT_FILE_PERMISSION);
-	check_fd_error(fd, out->name);
+	check_fd_error(shell, fd, out->name);
 	return (fd);
 }
 
@@ -103,7 +103,7 @@ static int	open_output_file(t_outfile *out)
  *
  * @param exec Pointer to the command execution structure
  */
-void	setup_output_redirections(t_exec *exec)
+void	setup_output_redirections(t_minishell *shell, t_exec *exec)
 {
 	t_outfile	*out;
 	int			fd;
@@ -111,9 +111,9 @@ void	setup_output_redirections(t_exec *exec)
 	out = exec->outfiles;
 	while (out)
 	{
-		fd = open_output_file(out);
-		safe_dup2(fd, STDOUT_FILENO, "output redirection");
-		safe_close(fd, "close output file");
+		fd = open_output_file(shell, out);
+		safe_dup2(shell, fd, STDOUT_FILENO, "output redirection");
+		safe_close(shell, fd, "close output file");
 		out = out->next;
 	}
 }

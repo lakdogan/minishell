@@ -158,16 +158,18 @@ void					restore_std_fds(t_minishell *shell, int stdin_backup,
 							int stdout_backup);
 /* 	~	pipe_operations.c ~		*/
 char					*read_from_pipe(int pipe_fd);
-void	close_pipe(t_minishell *shell, int *pipefd);
-int	create_pipe(t_minishell *shell, int *pipefd);
+void					close_pipe(t_minishell *shell, int *pipefd);
+int						create_pipe(t_minishell *shell, int *pipefd);
 /* ------------------------------------------------------------------------- */
 /* 							io_utils dir end 								*/
 /* ------------------------------------------------------------------------- */
 /* 							redirection dir start 							*/
 /* ------------------------------------------------------------------------- */
 /* 	~	handle_redirections.c ~		*/
-void					setup_input_redirections(t_exec *exec);
-void					setup_output_redirections(t_exec *exec);
+void					setup_input_redirections(t_minishell *shell,
+							t_exec *exec);
+void					setup_output_redirections(t_minishell *shell,
+							t_exec *exec);
 /* 	~	heredoc_content.c ~		*/
 void					save_heredoc_contents(t_exec *exec);
 char					*collect_heredoc_content(t_exec *exec,
@@ -177,8 +179,8 @@ int						process_heredoc(const char *delimiter);
 void					prepare_heredocs(t_command_tree *node);
 void					write_heredoc_to_fd(t_exec *exec, char *content);
 /* 	~	redirection_files.c ~ */
-int						create_temp_file(void);
-int						open_infile(char *filename);
+int						create_temp_file(t_minishell *shell);
+int						open_infile(t_minishell *shell, char *filename);
 /* ------------------------------------------------------------------------- */
 /* 								redirection dir end 						*/
 /* ------------------------------------------------------------------------- */
@@ -194,18 +196,16 @@ void					setup_parent_signals(void);
 /*							exec dir end									*/
 /* ------------------------------------------------------------------------- */
 
-
-
-
-void    check_exec_outfile_and_prepare_pipes(t_minishell *shell, t_exec *exec, int *pipefd);
-void    check_if_right_cmd_has_infile(t_command_tree *node, t_exec **right_exec, bool *right_has_input);
-void    prepare_for_execute(t_minishell *shell, t_command_tree *node, t_exec *exec, int *pipefd);
-void    handle_standard_left_cmds(t_minishell *shell, t_command_tree *node, int *pipefd);
-void    setup_default_pipe_output(t_minishell *shell, int *pipefd);
-void    execute_left_subtree(t_minishell *shell, t_command_tree *node, int *pipefd);
-void    execute_left_cmd(t_command_tree *node, t_minishell *shell, int *pipefd);
-
-
+void					execute_right_cmd(t_command_tree *node,
+							t_minishell *shell, int *pipefd);
+void					execute_left_cmd(t_command_tree *node,
+							t_minishell *shell, int *pipefd);
+void					check_exec_has_valid_data(t_minishell *shell,
+							t_exec *exec);
+void					setup_in_and_output_redirections(t_minishell *shell,
+							t_exec *exec);
+void					execute_builtin_or_external_cmd(t_minishell *shell,
+							t_exec *exec);
 
 
 #endif

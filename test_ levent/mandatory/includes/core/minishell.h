@@ -14,26 +14,30 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include "../../../libft/inc/libft.h"
 # include "../../../libft/garbage_collector/inc/garbage_collector.h"
+# include "../../../libft/inc/libft.h"
 # include "command_tree.h"
 # include <errno.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <signal.h>
+# include <stdbool.h>
 # include <sys/signal.h>
 # include <sys/types.h>
 # include <sys/wait.h>
 
+# define	GC_STRUCT_ALLOCATION_FAILED 1
+# define	GC_STRUCT_ALLOCATION_SUCCESS 0
+
 typedef enum e_gc_type
 {
-    GC_MAIN,     // Persistent shell data (environment, history, etc.)
-    GC_COMMAND,  // Per-command execution data
-	GC_TEMP,	 // Temporary allocations
-	GC_ENV,      // value and content allocations
+	GC_MAIN,    // Persistent shell data (environment, history, etc.)
+	GC_COMMAND, // Per-command execution data
+	GC_TEMP,    // Temporary allocations
+	GC_ENV,     // value and content allocations
 	GC_CWD,
-    GC_COUNT     // Number of GC categories (used for array size)
-} t_gc_type;
+	GC_COUNT // Number of GC categories (used for array size)
+}			t_gc_type;
 
 typedef struct s_minishell
 {
@@ -46,7 +50,8 @@ typedef struct s_minishell
 	int exit_code;        // Exit code of last executed command
 	int last_signal;      // Last received signal (used for signal handling)
 	t_gc *gc[GC_COUNT];   // Array of garbage collectors
-}	t_minishell;
+	bool	in_nested_pipe;
+}			t_minishell;
 
 # include "builtins.h"
 # include "environment.h"

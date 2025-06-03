@@ -138,20 +138,24 @@ void					execute_tree(t_command_tree *root,
 /* 							error dir start 								*/
 /* ------------------------------------------------------------------------- */
 /* 	~	error_utils_bonus.c ~		*/
-void					exit_with_error(const char *prefix, const char *message,
-							int exit_code);
+void					exit_with_error(t_minishell *shell, const char *prefix,
+							const char *message, int exit_code);
 /* ------------------------------------------------------------------------- */
 /* 							error dir end 									*/
 /* ------------------------------------------------------------------------- */
 /* 							io_utils dir start 								*/
 /* ------------------------------------------------------------------------- */
 /* 	~	fd_operations.c ~		*/
-void					safe_dup2(int oldfd, int newfd, const char *error_msg);
-void					safe_close(int fd, const char *error_msg);
-void					check_fd_error(int fd, const char *filename);
-int						redirect_stdin_with_backup(int new_fd,
+void					safe_dup2(t_minishell *shell, int oldfd, int newfd,
 							const char *error_msg);
-void					restore_std_fds(int stdin_backup, int stdout_backup);
+void					safe_close(t_minishell *shell, int fd,
+							const char *error_msg);
+void					check_fd_error(t_minishell *shell, int fd,
+							const char *filename);
+int						redirect_stdin_with_backup(t_minishell *shell,
+							int new_fd, const char *error_msg);
+void					restore_std_fds(t_minishell *shell, int stdin_backup,
+							int stdout_backup);
 /* 	~	pipe_operations.c ~		*/
 char					*read_from_pipe(int pipe_fd);
 void					close_pipe(int *pipefd);

@@ -10,24 +10,15 @@
  * @date 2025-05-19
  */
 
- #include "../../../includes/core/minishell.h"
+#include "../../../includes/core/minishell.h"
 
- /**
-  * @brief Prints an error message and exits the program
-  *
-  * Outputs an error message to stderr with the given prefix and message,
-  * then terminates the program with the specified exit code. This is used
-  * for fatal errors that prevent the shell from continuing execution.
-  *
-  * @param prefix The context or command that encountered the error
-  * @param message The specific error message to display
-  * @param exit_code The exit code to terminate the program with
-  * @note This function does not return as it calls exit()
-  */
- void	exit_with_error(const char *prefix, const char *message, int exit_code)
- {
-     ft_putstr_fd((char *)prefix, 2);
-     ft_putstr_fd((char *)message, 2);
-     ft_putstr_fd("\n", 2);
-     exit(exit_code);
- }
+
+void	exit_with_error(t_minishell *shell, const char *prefix,
+		const char *message, int exit_code)
+{
+	ft_putstr_fd((char *)prefix, 2);
+	ft_putstr_fd((char *)message, 2);
+	ft_putstr_fd("\n", 2);
+	cleanup_memory(shell);
+	exit(exit_code);
+}

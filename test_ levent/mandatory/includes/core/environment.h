@@ -21,8 +21,17 @@ typedef struct s_env
 {
 	char *value;    // Name of the variable (e.g., "PATH")
 	char *content;  // Value (e.g., "/usr/bin:/bin")
-	bool is_export; // Used for export command formatting
-	bool printed;   // Used to avoid duplicate prints in export
+
+	union environment
+	{
+		struct
+		{
+			bool is_export; // Used for export command formatting
+			bool printed;   // Used to avoid duplicate prints in export
+			char	padding[6];
+		};
+		void	*allignment_placeholder;
+	};
 }		t_env;
 
 // unset.c

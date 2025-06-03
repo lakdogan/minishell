@@ -1,5 +1,10 @@
 {
     "files.associations": {
-        "command_tree.h": "c"
+        "command_tree.h": "c",
+        "signal.h": "c",
+        "types.h": "c",
+        "minishell_bonus.h": "c",
+        "readline.h": "c",
+        "libft.h": "c"
     }
 }

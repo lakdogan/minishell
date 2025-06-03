@@ -2,24 +2,55 @@
 
 /**
  * @file builtins.h
- * @brief Declares all builtin shell commands and helper functions
- *        such as echo, cd, env, export, unset, pwd, and exit.
+ * @brief Header file for builtin shell commands and their helper functions
  *
- * TODO:
- * - Implement each builtin command to match bash behavior
- *   - echo: handle -n, multiple args, newline suppression
- *   - cd: handle HOME, OLDPWD, error handling
- *   - pwd: print current working directory
- *   - export: add/update env variables with correct formatting
- *   - unset: remove variables safely
- *   - env: print current environment
- *   - exit: exit shell with proper code, handle numeric args
+ * This file contains declarations for all built-in shell commands:
+ * - echo: display a line of text with optional newline suppression (-n)
+ * - cd: change the current directory
+ * - pwd: print the current working directory
+ * - export: set or modify environment variables
+ * - unset: remove environment variables
+ * - env: display the environment variables
+ * - exit: exit the shell with an optional status code
  *
- * - Implement:
- *   - is_builtin(): check if command is a builtin
- *   - exec_builtin(): dispatch and execute builtin from AST/exec node
+ * Each builtin implements behavior similar to bash, with appropriate
+ * argument handling and environment variable management.
  */
 #ifndef BUILTINS_H
 # define BUILTINS_H
 
+# include "command_tree.h"
+# include "environment.h"
+# include "execution.h"
+# include "minishell.h"
+# include "token.h"
+
+/* ------------------------------------------------------------------------- */
+/*                              builtins                                     */
+/* ------------------------------------------------------------------------- */
+// builtins.c
+int		exec_builtin(t_exec *cmd, t_minishell *minishell);
+// cd.c
+int		ft_cd(char **argv, t_minishell *minishell);
+// echo.c
+int		ft_echo(char **argv);
+// env.c
+int		ft_env(t_minishell *minishell);
+// exit.c
+void	cleanup_memory(t_minishell *minishell);
+int		ft_exit(char **argv, t_minishell *minishell);
+// export_print.c
+void	print_export(t_list *envp);
+// export_utils.c
+void	add_new_env(char *key, char *value, t_minishell *minishell);
+void	update_existing_env(t_minishell *minishell, t_env *env, char *key,
+			char *value);
+void	update_or_add_env(const char *arg, t_minishell *minishell);
+// export.c
+int		ft_export(char **argv, t_minishell *minishell);
+// pwd.c
+int		ft_pwd(void);
+// unset.c
+int		ft_unset(char **argv, t_minishell *minishell);
+/* ------------------------------------------------------------------------- */
 #endif

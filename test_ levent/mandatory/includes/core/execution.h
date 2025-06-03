@@ -158,8 +158,8 @@ void					restore_std_fds(t_minishell *shell, int stdin_backup,
 							int stdout_backup);
 /* 	~	pipe_operations.c ~		*/
 char					*read_from_pipe(int pipe_fd);
-void					close_pipe(int *pipefd);
-int						create_pipe(int *pipefd);
+void	close_pipe(t_minishell *shell, int *pipefd);
+int	create_pipe(t_minishell *shell, int *pipefd);
 /* ------------------------------------------------------------------------- */
 /* 							io_utils dir end 								*/
 /* ------------------------------------------------------------------------- */
@@ -193,5 +193,19 @@ void					setup_parent_signals(void);
 /* ------------------------------------------------------------------------- */
 /*							exec dir end									*/
 /* ------------------------------------------------------------------------- */
+
+
+
+
+void    check_exec_outfile_and_prepare_pipes(t_minishell *shell, t_exec *exec, int *pipefd);
+void    check_if_right_cmd_has_infile(t_command_tree *node, t_exec **right_exec, bool *right_has_input);
+void    prepare_for_execute(t_minishell *shell, t_command_tree *node, t_exec *exec, int *pipefd);
+void    handle_standard_left_cmds(t_minishell *shell, t_command_tree *node, int *pipefd);
+void    setup_default_pipe_output(t_minishell *shell, int *pipefd);
+void    execute_left_subtree(t_minishell *shell, t_command_tree *node, int *pipefd);
+void    execute_left_cmd(t_command_tree *node, t_minishell *shell, int *pipefd);
+
+
+
 
 #endif

@@ -26,11 +26,11 @@
  * @return int OPERATION_SUCCESS if pipe creation
  * succeeds, never returns on failure
  */
-int	create_pipe(int *pipefd)
+int	create_pipe(t_minishell *shell, int *pipefd)
 {
 	if (pipe(pipefd) == SYSCALL_ERROR)
 	{
-		exit_with_error("pipe", strerror(errno), EXIT_FAILURE);
+		exit_with_error(shell, "pipe", strerror(errno), EXIT_FAILURE);
 		return (OPERATION_FAILURE);
 	}
 	return (OPERATION_SUCCESS);
@@ -44,10 +44,10 @@ int	create_pipe(int *pipefd)
  *
  * @param pipefd Array containing the two pipe file descriptors to close
  */
-void	close_pipe(int *pipefd)
+void	close_pipe(t_minishell *shell, int *pipefd)
 {
-	safe_close(pipefd[0], "close pipe read end");
-	safe_close(pipefd[1], "close pipe write end");
+	safe_close(shell, pipefd[0], "close pipe read end");
+	safe_close(shell, pipefd[1], "close pipe write end");
 }
 
 /**

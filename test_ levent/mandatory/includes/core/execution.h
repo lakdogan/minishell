@@ -216,9 +216,10 @@ int						redirect_stdin_with_backup(t_minishell *shell,
 void					restore_std_fds(t_minishell *shell, int stdin_backup,
 							int stdout_backup);
 /* 	~	pipe_operations.c ~		*/
-char					*read_from_pipe(int pipe_fd);
 void					close_pipe(t_minishell *shell, int *pipefd);
 int						create_pipe(t_minishell *shell, int *pipefd);
+/* ~ read_from_pipe.c ~ */
+char					*read_from_pipe(t_minishell *shell, int pipe_fd);
 /* ------------------------------------------------------------------------- */
 /* 							io_utils dir end 								*/
 /* ------------------------------------------------------------------------- */
@@ -230,13 +231,12 @@ void					setup_input_redirections(t_minishell *shell,
 void					setup_output_redirections(t_minishell *shell,
 							t_exec *exec);
 /* 	~	heredoc_content.c ~		*/
-void					save_heredoc_contents(t_exec *exec);
-char					*collect_heredoc_content(t_exec *exec,
-							t_infile *infile);
+void	save_heredoc_contents(t_minishell *shell, t_exec *exec);
+char	*collect_heredoc_content(t_minishell *shell, t_exec *exec, t_infile *infile);
 /* 	~	heredoc.c ~			*/
-int						process_heredoc(const char *delimiter);
-void					prepare_heredocs(t_command_tree *node);
-void					write_heredoc_to_fd(t_exec *exec, char *content);
+int	process_heredoc(t_minishell *shell, const char *delimiter);
+void	prepare_heredocs(t_minishell *shell, t_command_tree *node);
+void	write_heredoc_to_fd(t_minishell *shell, t_exec *exec, char *content);
 /* 	~	redirection_files.c ~ */
 int						create_temp_file(t_minishell *shell);
 int						open_infile(t_minishell *shell, char *filename);

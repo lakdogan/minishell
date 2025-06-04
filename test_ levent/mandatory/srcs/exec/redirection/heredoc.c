@@ -40,12 +40,12 @@ static int	write_heredoc_line(int fd, char *line)
  * @return int File descriptor for reading heredoc contents,
  *	or INVALID_FD on error
  */
-int	process_heredoc(const char *delimiter)
+int	process_heredoc(t_minishell *shell, const char *delimiter)
 {
 	int		fd[2];
 	char	*line;
 
-	if (!create_pipe(fd))
+	if (!create_pipe(shell, fd))
 		return (INVALID_FD);
 	while (1)
 	{
@@ -60,12 +60,12 @@ int	process_heredoc(const char *delimiter)
 		if (!write_heredoc_line(fd[PIPE_WRITE_END], line))
 		{
 			free(line);
-			close_pipe(fd);
+			close_pipe(shell, fd);
 			return (INVALID_FD);
 		}
 		free(line);
 	}
-	safe_close(fd[PIPE_WRITE_END], "heredoc pipe write end");
+	safe_close(shell, fd[PIPE_WRITE_END], "heredoc pipe write end");
 	return (fd[PIPE_READ_END]);
 }
 
@@ -77,7 +77,7 @@ int	process_heredoc(const char *delimiter)
  *
  * @param node Pointer to the root node of the command tree (or subtree)
  */
-void	prepare_heredocs(t_command_tree *node)
+void	prepare_heredocs(t_minishell *shell, t_command_tree *node)
 {
 	t_exec	*exec;
 
@@ -87,14 +87,14 @@ void	prepare_heredocs(t_command_tree *node)
 	{
 		exec = node->data;
 		if (exec)
-			save_heredoc_contents(exec);
+			save_heredoc_contents(shell, exec);
 	}
 	if (node->type == N_PIPE)
 	{
 		if (node->left)
-			prepare_heredocs(node->left);
+			prepare_heredocs(shell, node->left);
 		if (node->right)
-			prepare_heredocs(node->right);
+			prepare_heredocs(shell, node->right);
 	}
 }
 
@@ -110,19 +110,18 @@ void	prepare_heredocs(t_command_tree *node)
  * heredoc content (will be freed by this function)
  * @note This function assumes ownership of the content string and frees it
  */
-void	write_heredoc_to_fd(t_exec *exec, char *content)
+void	write_heredoc_to_fd(t_minishell *shell, t_exec *exec, char *content)
 {
 	int		pipefd[2];
 	ssize_t	write_ret;
 
 	if (!content)
 		return ;
-	if (!create_pipe(pipefd))
-		exit_with_error("heredoc", "Failed to create pipe", 1);
+	if (!create_pipe(shell, pipefd))
+		exit_with_error(shell, "heredoc", "Failed to create pipe", 1);
 	write_ret = write(pipefd[PIPE_WRITE_END], content, ft_strlen(content));
 	if (write_ret == -1)
-		exit_with_error("heredoc", "Failed to write to pipe", 1);
+		exit_with_error(shell, "heredoc", "Failed to write to pipe", 1);
 	close(pipefd[PIPE_WRITE_END]);
 	exec->heredoc_fd = pipefd[PIPE_READ_END];
-	free(content);
 }

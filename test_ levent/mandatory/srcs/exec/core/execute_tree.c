@@ -57,7 +57,8 @@ static int	validate_command_tree(t_command_tree *root)
  *
  * @param root Pointer to the root of the command tree
  */
-static void	prepare_heredocs_if_needed(t_minishell *minishell, t_command_tree *root)
+static void	prepare_heredocs_if_needed(t_minishell *minishell,
+		t_command_tree *root)
 {
 	static int	heredocs_prepared;
 	static void	*last_root;
@@ -103,5 +104,5 @@ void	execute_tree(t_command_tree *root, t_minishell *minishell)
 		while (waitpid(-1, &status, 0) > 0)
 			continue ;
 	}
-    minishell->in_nested_pipe = false;
+	minishell->in_nested_pipe = false;
 }

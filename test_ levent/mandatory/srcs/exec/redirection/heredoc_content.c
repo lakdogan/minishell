@@ -22,7 +22,7 @@
  *
  * @param exec Pointer to the command execution structure
  */
-void	save_heredoc_contents(t_exec *exec)
+void	save_heredoc_contents(t_minishell *shell, t_exec *exec)
 {
 	char		*content;
 	t_infile	*last_heredoc;
@@ -42,10 +42,10 @@ void	save_heredoc_contents(t_exec *exec)
 	}
 	if (last_heredoc)
 	{
-		content = collect_heredoc_content(exec, last_heredoc);
+		content = collect_heredoc_content(shell, exec, last_heredoc);
 		if (!content)
-			content = ft_strdup("");
-		write_heredoc_to_fd(exec, content);
+			content = gc_strdup(shell->gc[GC_MAIN], "");
+		write_heredoc_to_fd(shell, exec, content);
 	}
 	exec->heredoc_prepared = true;
 }
@@ -84,16 +84,16 @@ static void	print_heredoc_prompt(char *command, char *delimiter)
  * @return char* Dynamically allocated string containing the heredoc content,
  *               or NULL if collection failed (caller must free if non-NULL)
  */
-char	*collect_heredoc_content(t_exec *exec, t_infile *infile)
+char	*collect_heredoc_content(t_minishell *shell, t_exec *exec, t_infile *infile)
 {
 	int		pipe_fd;
 	char	*content;
 
 	print_heredoc_prompt(exec->command, infile->delimeter);
-	pipe_fd = process_heredoc(infile->delimeter);
+	pipe_fd = process_heredoc(shell, infile->delimeter);
 	if (pipe_fd < 0)
 		return (NULL);
-	content = read_from_pipe(pipe_fd);
-	safe_close(pipe_fd, "heredoc pipe read end");
+	content = read_from_pipe(shell, pipe_fd);
+	safe_close(shell, pipe_fd, "heredoc pipe read end");
 	return (content);
 }

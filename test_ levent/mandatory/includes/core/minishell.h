@@ -58,4 +58,6 @@ typedef struct s_minishell
 # include "execution.h"
 # include "token.h"
 
+int	init_minishell(t_minishell *sh, char **envp);
+
 #endif

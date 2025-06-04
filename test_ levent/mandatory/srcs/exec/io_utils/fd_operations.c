@@ -26,7 +26,8 @@
  * @param newfd Target file descriptor that will become a copy of oldfd
  * @param error_msg Message to display if the duplication fails
  */
-void	safe_dup2(t_minishell *shell, int oldfd, int newfd, const char *error_msg)
+void	safe_dup2(t_minishell *shell, int oldfd, int newfd,
+		const char *error_msg)
 {
 	if (dup2(oldfd, newfd) == INVALID_FD)
 		exit_with_error(shell, error_msg, strerror(errno), EXIT_FAILURE);
@@ -77,7 +78,8 @@ void	check_fd_error(t_minishell *shell, int fd, const char *filename)
  * @return int Backup file descriptor for the original standard input,
  *             or INVALID_FD if no redirection was performed
  */
-int	redirect_stdin_with_backup(t_minishell *shell, int new_fd, const char *error_msg)
+int	redirect_stdin_with_backup(t_minishell *shell, int new_fd,
+		const char *error_msg)
 {
 	int	stdin_backup;
 

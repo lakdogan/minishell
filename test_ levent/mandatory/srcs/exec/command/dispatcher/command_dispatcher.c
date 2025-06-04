@@ -7,7 +7,7 @@
  * I/O redirection setup, and signal handling during command execution.
  */
 
-#include "../../../includes/core/minishell.h"
+#include "../../../../includes/core/minishell.h"
 
 /**
  * @brief Prepares the environment for command execution

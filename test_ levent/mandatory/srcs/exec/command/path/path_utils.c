@@ -7,7 +7,7 @@
  * during command resolution in the shell.
  */
 
-#include "../../../includes/core/minishell.h"
+#include "../../../../includes/core/minishell.h"
 
 /**
  * @brief Extracts and parses the PATH environment variable

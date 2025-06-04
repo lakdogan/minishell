@@ -1,4 +1,4 @@
-#include "../../../includes/core/minishell.h"
+#include "../../../../includes/core/minishell.h"
 
 void	setup_nested_pipe_output(t_minishell *shell, int *pipefd)
 {

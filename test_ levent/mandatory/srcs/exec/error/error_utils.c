@@ -12,7 +12,6 @@
 
 #include "../../../includes/core/minishell.h"
 
-
 void	exit_with_error(t_minishell *shell, const char *prefix,
 		const char *message, int exit_code)
 {

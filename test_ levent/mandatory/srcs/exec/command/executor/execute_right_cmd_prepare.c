@@ -1,4 +1,4 @@
-#include "../../../includes/core/minishell.h"
+#include "../../../../includes/core/minishell.h"
 
 void	prepare_pipe_ends(t_minishell *shell, int *pipefd)
 {

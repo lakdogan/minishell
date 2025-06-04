@@ -1,4 +1,4 @@
-#include "../../../includes/core/minishell.h"
+#include "../../../../includes/core/minishell.h"
 
 void	handle_standard_left_cmds(t_minishell *shell, t_command_tree *node,
 		int *pipefd)

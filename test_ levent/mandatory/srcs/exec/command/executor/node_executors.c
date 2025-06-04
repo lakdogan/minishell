@@ -1,4 +1,4 @@
-#include "../../../includes/core/minishell.h"
+#include "../../../../includes/core/minishell.h"
 
 /**
  * @brief Executes a simple command node

@@ -1,4 +1,4 @@
-#include "../../../includes/core/minishell.h"
+#include "../../../../includes/core/minishell.h"
 
 void	check_exec_outfile_and_prepare_pipes(t_minishell *shell, t_exec *exec,
 		int *pipefd)

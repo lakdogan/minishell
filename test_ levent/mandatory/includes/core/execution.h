@@ -231,12 +231,16 @@ void					setup_input_redirections(t_minishell *shell,
 void					setup_output_redirections(t_minishell *shell,
 							t_exec *exec);
 /* 	~	heredoc_content.c ~		*/
-void	save_heredoc_contents(t_minishell *shell, t_exec *exec);
-char	*collect_heredoc_content(t_minishell *shell, t_exec *exec, t_infile *infile);
+void					save_heredoc_contents(t_minishell *shell, t_exec *exec);
+char					*collect_heredoc_content(t_minishell *shell,
+							t_exec *exec, t_infile *infile);
 /* 	~	heredoc.c ~			*/
-int	process_heredoc(t_minishell *shell, const char *delimiter);
-void	prepare_heredocs(t_minishell *shell, t_command_tree *node);
-void	write_heredoc_to_fd(t_minishell *shell, t_exec *exec, char *content);
+int						process_heredoc(t_minishell *shell,
+							const char *delimiter);
+void					prepare_heredocs(t_minishell *shell,
+							t_command_tree *node);
+void					write_heredoc_to_fd(t_minishell *shell, t_exec *exec,
+							char *content);
 /* 	~	redirection_files.c ~ */
 int						create_temp_file(t_minishell *shell);
 int						open_infile(t_minishell *shell, char *filename);
@@ -254,16 +258,5 @@ void					setup_parent_signals(void);
 /* ------------------------------------------------------------------------- */
 /*							exec dir end									*/
 /* ------------------------------------------------------------------------- */
-
-void					execute_right_cmd(t_command_tree *node,
-							t_minishell *shell, int *pipefd);
-void					execute_left_cmd(t_command_tree *node,
-							t_minishell *shell, int *pipefd);
-void					check_exec_has_valid_data(t_minishell *shell,
-							t_exec *exec);
-void					setup_in_and_output_redirections(t_minishell *shell,
-							t_exec *exec);
-void					execute_builtin_or_external_cmd(t_minishell *shell,
-							t_exec *exec);
 
 #endif

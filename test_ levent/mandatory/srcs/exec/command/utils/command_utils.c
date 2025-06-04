@@ -7,7 +7,7 @@
  * and process waiting functionality.
  */
 
-#include "../../../includes/core/minishell.h"
+#include "../../../../includes/core/minishell.h"
 
 /**
  * @brief Creates a new child process using fork()
@@ -88,8 +88,8 @@ void	wait_for_process(pid_t pid, t_minishell *shell)
 
 void	execute_builtin_or_external_cmd(t_minishell *shell, t_exec *exec)
 {
-    if (is_builtin(exec->command))
-        shell->exit_code = exec_builtin(exec, shell);
-    else
-        execute_command(exec, shell);
+	if (is_builtin(exec->command))
+		shell->exit_code = exec_builtin(exec, shell);
+	else
+		execute_command(exec, shell);
 }

@@ -10,7 +10,7 @@
  *
  */
 
-#include "../../../includes/core/minishell.h"
+#include "../../../../includes/core/minishell.h"
 
 /**
  * @brief Executes an external command in a child process
@@ -36,7 +36,8 @@ void	execute_command(t_exec *exec, t_minishell *minishell)
 
 	abs_path = get_absolute_path(minishell, exec->command, minishell->envp_arr);
 	if (!abs_path)
-		exit_with_error(minishell, "command not found: ", exec->command, CMD_NOT_FOUND);
+		exit_with_error(minishell, "command not found: ", exec->command,
+			CMD_NOT_FOUND);
 	else if (errno == EACCES)
 		exit_with_error(minishell, "permission denied: ", exec->command,
 			PERMISSION_DENIED);

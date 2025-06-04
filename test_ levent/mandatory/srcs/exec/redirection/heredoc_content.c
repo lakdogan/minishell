@@ -84,7 +84,8 @@ static void	print_heredoc_prompt(char *command, char *delimiter)
  * @return char* Dynamically allocated string containing the heredoc content,
  *               or NULL if collection failed (caller must free if non-NULL)
  */
-char	*collect_heredoc_content(t_minishell *shell, t_exec *exec, t_infile *infile)
+char	*collect_heredoc_content(t_minishell *shell, t_exec *exec,
+		t_infile *infile)
 {
 	int		pipe_fd;
 	char	*content;

@@ -1,4 +1,4 @@
-#include "../../../includes/core/minishell.h"
+#include "../../../../includes/core/minishell.h"
 
 static bool	pipe_state_initialized(t_minishell *shell, t_pipe_state *state,
 		t_command_tree *node)
@@ -31,7 +31,7 @@ static bool	fork_succeed_pid_recived(t_minishell *shell, t_pipe_state *state)
 		}
 		return (true);
 	}
-	else if (state->pipe_identity = IS_RIGHT_PID)
+	else if (state->pipe_identity == IS_RIGHT_PID)
 	{
 		state->right_pid = create_child_process(shell);
 		if (state->right_pid == FORK_ERROR)

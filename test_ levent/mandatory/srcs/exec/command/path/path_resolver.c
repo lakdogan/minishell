@@ -7,7 +7,7 @@
  * commands in the directories specified by the PATH environment variable.
  */
 
-#include "../../../includes/core/minishell.h"
+#include "../../../../includes/core/minishell.h"
 
 /**
  * @brief Checks if the command is already an absolute path

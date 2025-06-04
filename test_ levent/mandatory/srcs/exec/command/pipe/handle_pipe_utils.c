@@ -1,4 +1,4 @@
-#include "../../../includes/core/minishell.h"
+#include "../../../../includes/core/minishell.h"
 
 void	close_file_descriptors(t_minishell *shell, t_pipe_state *state)
 {

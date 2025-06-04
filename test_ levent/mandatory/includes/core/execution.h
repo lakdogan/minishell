@@ -121,7 +121,8 @@ void					handle_exec(t_command_tree *node,
 							t_minishell *minishell);
 void					handle_pipe(t_command_tree *node, t_minishell *shell);
 /* 	~	path_resolver.c ~		*/
-char					*get_absolute_path(char *cmd, char **envp);
+char					*get_absolute_path(t_minishell *shell, char *cmd,
+							char **envp);
 /* 	~	path_utils.c ~			*/
 int						get_path_from_env(t_minishell *shell, char **envp,
 							char ***paths);

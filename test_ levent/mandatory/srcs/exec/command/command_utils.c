@@ -18,13 +18,13 @@
   *
   * @return pid_t Process ID of the new child process, or parent's process ID
   */
- pid_t	create_child_process(void)
+ pid_t	create_child_process(t_minishell *shell)
  {
      pid_t	pid;
  
      pid = fork();
      if (pid == FORK_ERROR)
-         exit_with_error("fork", strerror(errno), EXIT_FAILURE);
+         exit_with_error(shell, "fork", strerror(errno), EXIT_FAILURE);
      return (pid);
  }
  

@@ -17,11 +17,11 @@
  *
  * @param exec Pointer to the command execution structure
  */
-static void	prepare_command_execution(t_exec *exec)
+static void	prepare_command_execution(t_minishell *shell, t_exec *exec)
 {
 	setup_child_signals();
-	setup_input_redirections(exec);
-	setup_output_redirections(exec);
+	setup_input_redirections(shell, exec);
+	setup_output_redirections(shell, exec);
 }
 
 /**
@@ -34,23 +34,23 @@ static void	prepare_command_execution(t_exec *exec)
  * @param exec Pointer to the command execution structure
  * @param minishell Pointer to the shell state structure
  */
-void	handle_external(t_exec *exec, t_minishell *minishell)
+void	handle_external(t_exec *exec, t_minishell *shell)
 {
 	pid_t	pid;
 
 	pid = fork();
 	if (pid == CHILD_PROCESS)
 	{
-		prepare_command_execution(exec);
-		execute_command(exec, minishell);
+		prepare_command_execution(shell, exec);
+		execute_command(exec, shell);
 	}
 	else if (pid == FORK_ERROR)
 	{
 		perror("fork");
-		minishell->exit_code = EXIT_FAILURE;
+		shell->exit_code = EXIT_FAILURE;
 	}
 	else
-		wait_for_process(pid, minishell);
+		wait_for_process(pid, shell);
 }
 
 /**
@@ -62,14 +62,14 @@ void	handle_external(t_exec *exec, t_minishell *minishell)
  * @param exec Pointer to the command execution structure
  * @return int File descriptor of the backed up stdin, or INVALID_FD on error
  */
-static int	setup_heredoc_redirection(t_exec *exec)
+static int	setup_heredoc_redirection(t_minishell *shell, t_exec *exec)
 {
 	int	stdin_backup;
 
-	stdin_backup = redirect_stdin_with_backup(exec->heredoc_fd,
+	stdin_backup = redirect_stdin_with_backup(shell, exec->heredoc_fd,
 			"heredoc stdin redirection");
 	if (exec->heredoc_fd != INVALID_FD)
-		safe_close(exec->heredoc_fd, "close heredoc fd after backup");
+		safe_close(shell, exec->heredoc_fd, "close heredoc fd after backup");
 	return (stdin_backup);
 }
 
@@ -81,11 +81,11 @@ static int	setup_heredoc_redirection(t_exec *exec)
  *
  * @param stdin_backup File descriptor of the backed up stdin
  */
-static void	restore_stdin(int stdin_backup)
+static void	restore_stdin(t_minishell *shell, int stdin_backup)
 {
 	if (stdin_backup != INVALID_FD)
 	{
-		safe_dup2(stdin_backup, STDIN_FILENO, "stdin restoration");
+		safe_dup2(shell, stdin_backup, STDIN_FILENO, "stdin restoration");
 		close(stdin_backup);
 	}
 }
@@ -100,11 +100,11 @@ static void	restore_stdin(int stdin_backup)
  * @param exec Pointer to the command execution structure
  * @param minishell Pointer to the shell state structure
  */
-void	handle_builtin(t_exec *exec, t_minishell *minishell)
+void	handle_builtin(t_exec *exec, t_minishell *shell)
 {
 	int	stdin_backup;
 
-	stdin_backup = setup_heredoc_redirection(exec);
-	minishell->exit_code = exec_builtin(exec, minishell);
-	restore_stdin(stdin_backup);
+	stdin_backup = setup_heredoc_redirection(shell, exec);
+	shell->exit_code = exec_builtin(exec, shell);
+	restore_stdin(shell, stdin_backup);
 }

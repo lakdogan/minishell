@@ -22,7 +22,7 @@
   *             OPERATION_FAILURE if the PATH variable was not found
   * @note The caller is responsible for freeing the memory allocated for *paths
   */
- int	get_path_from_env(char **envp, char ***paths)
+ int	get_path_from_env(t_minishell *shell, char **envp, char ***paths)
  {
      int	i;
  
@@ -31,7 +31,7 @@
      {
          if (ft_strncmp(envp[i], "PATH=", 5) == STRINGS_EQUAL)
          {
-             *paths = ft_split(envp[i] + 5, ':');
+             *paths = gc_split(shell->gc[GC_MAIN], envp[i] + 5, ':');
              return (OPERATION_SUCCESS);
          }
          i++;

@@ -34,12 +34,12 @@ void	execute_command(t_exec *exec, t_minishell *minishell)
 {
 	char	*abs_path;
 
-	abs_path = get_absolute_path(exec->command, minishell->envp_arr);
+	abs_path = get_absolute_path(minishell, exec->command, minishell->envp_arr);
 	if (!abs_path)
-		exit_with_error("command not found: ", exec->command, CMD_NOT_FOUND);
+		exit_with_error(minishell, "command not found: ", exec->command, CMD_NOT_FOUND);
 	else if (errno == EACCES)
-		exit_with_error("permission denied: ", exec->command,
+		exit_with_error(minishell, "permission denied: ", exec->command,
 			PERMISSION_DENIED);
 	execve(abs_path, exec->argv, minishell->envp_arr);
-	exit_with_error("execve", strerror(errno), CMD_NOT_FOUND);
+	exit_with_error(minishell, "execve", strerror(errno), CMD_NOT_FOUND);
 }

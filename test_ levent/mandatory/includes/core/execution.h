@@ -123,7 +123,8 @@ void					handle_pipe(t_command_tree *node, t_minishell *shell);
 /* 	~	path_resolver.c ~		*/
 char					*get_absolute_path(char *cmd, char **envp);
 /* 	~	path_utils.c ~			*/
-int						get_path_from_env(char **envp, char ***paths);
+int						get_path_from_env(t_minishell *shell, char **envp,
+							char ***paths);
 /* ------------------------------------------------------------------------- */
 /* 								command dir end 							*/
 /* ------------------------------------------------------------------------- */
@@ -206,6 +207,5 @@ void					setup_in_and_output_redirections(t_minishell *shell,
 							t_exec *exec);
 void					execute_builtin_or_external_cmd(t_minishell *shell,
 							t_exec *exec);
-
 
 #endif

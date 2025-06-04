@@ -64,7 +64,7 @@ int	ft_export(char **argv, t_minishell *minishell)
 	i = 1;
 	if (!argv[1])
 	{
-		print_export(minishell->envp);
+		print_export(minishell, minishell->envp);
 		return (0);
 	}
 	while (argv[i])

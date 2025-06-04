@@ -55,6 +55,7 @@ MINISHELL_MANDATORY_FILES := \
 				$(BUILTINS_DIR)builtins.c \
 				$(BUILTINS_DIR)cd.c \
 				$(BUILTINS_DIR)echo.c \
+				$(BUILTINS_DIR)env_utils.c \
 				$(BUILTINS_DIR)env.c \
 				$(BUILTINS_DIR)exit.c \
 				$(BUILTINS_DIR)export_print.c \

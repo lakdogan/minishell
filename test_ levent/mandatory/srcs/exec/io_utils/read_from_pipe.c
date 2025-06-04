@@ -52,8 +52,9 @@ char	*read_from_pipe(t_minishell *shell, int pipe_fd)
 {
 	char	*content;
 
+	content = init_pipe_buffer(shell->gc[GC_TEMP]);
 	if (!content)
-		retun(NULL);
+		return(NULL);
 	content = accumulate_pipe_content(shell, pipe_fd, content);
 	if (!content)
 		return (NULL);

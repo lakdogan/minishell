@@ -1,4 +1,4 @@
-#include "../../../includes/core/minishell.h"
+#include "../../includes/core/minishell.h"
 
 static int	allocate_gc_structs(t_minishell *sh)
 {

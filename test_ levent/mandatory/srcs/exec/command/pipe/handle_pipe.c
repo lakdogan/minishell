@@ -46,6 +46,33 @@ static bool	fork_succeed_pid_recived(t_minishell *shell, t_pipe_state *state)
 		return (false);
 }
 
+static bool	child_recognized_and_cmd_executed(t_minishell *shell,
+		t_pipe_state *state, t_command_tree *node)
+{
+	if (state->pipe_identity == IS_LEFT_PID)
+	{
+		if (state->left_pid == CHILD_PROCESS)
+		{
+			close(state->stdout_backup);
+			execute_left_cmd(node, shell, state->pipefd);
+		}
+		return (true);
+	}
+	else if (state->pipe_identity == IS_RIGHT_PID)
+	{
+		if (state->right_pid == CHILD_PROCESS)
+		{
+			close(state->stdout_backup);
+			execute_right_cmd(node, shell, state->pipefd);
+		}
+		return (true);
+	}
+	else
+	{
+		return (false);
+	}
+}
+
 static bool	pipe_created_and_cmd_executed(t_minishell *shell,
 		t_command_tree *node, t_pipe_state *state)
 {

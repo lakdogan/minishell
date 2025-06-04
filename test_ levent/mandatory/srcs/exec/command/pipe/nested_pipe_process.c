@@ -10,7 +10,7 @@ static int	fork_left_and_execute(t_minishell *shell, t_command_tree *node,
 	{
 		exec = node->left->data;
 		setup_nested_pipe_output(shell, pipe_state->pipefd);
-		execute_nested_cmd(shell, exec);
+		execute_nested_cmds(shell, exec);
 		exit(shell->exit_code);
 	}
 	return (FORK_SUCCESS);

@@ -22,7 +22,7 @@ typedef struct s_env
 	char			*value;
 	char			*content;
 
-	union			environment
+	union
 	{
 		struct
 		{

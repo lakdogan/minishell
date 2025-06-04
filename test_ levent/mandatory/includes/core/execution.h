@@ -150,8 +150,6 @@ void					handle_standard_cmds(t_minishell *shell,
 							t_command_tree *node, int *pipefd);
 void					execute_right_subtree(t_minishell *shell,
 							t_command_tree *node, int *pipefd);
-static void				execute_right_by_type(t_minishell *shell,
-							t_command_tree *node, int *pipefd);
 void					execute_right_cmd(t_command_tree *node,
 							t_minishell *shell, int *pipefd);
 /* 	~	external_executor.c ~ */
@@ -159,7 +157,7 @@ void					execute_command(t_exec *exec, t_minishell *minishell);
 /* ~ handle_pipe_utils.c ~ */
 void					close_file_descriptors(t_minishell *shell,
 							t_pipe_state *state);
-void					wait_for_childrenn(t_minishell *shell, pid_t left_pid,
+void					wait_for_children(t_minishell *shell, pid_t left_pid,
 							pid_t right_pid);
 void					restore_stdout(t_pipe_state *state);
 void					cleanup_pipe(t_minishell *shell, t_pipe_state *state);

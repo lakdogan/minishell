@@ -40,7 +40,7 @@ int		ft_env(t_minishell *minishell);
 void	cleanup_memory(t_minishell *minishell);
 int		ft_exit(char **argv, t_minishell *minishell);
 // export_print.c
-void	print_export(t_list *envp);
+void    print_export(t_minishell *minishell, t_list *envp);
 // export_utils.c
 void	add_new_env(char *key, char *value, t_minishell *minishell);
 void	update_existing_env(t_minishell *minishell, t_env *env, char *key,

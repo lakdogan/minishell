@@ -106,20 +106,77 @@ typedef struct s_pipe_state
 /* 								command dir start 							*/
 /* ------------------------------------------------------------------------- */
 /* 	~	command_dispatcher.c ~		*/
-void					handle_external(t_exec *exec, t_minishell *minishell);
-void					handle_builtin(t_exec *exec, t_minishell *minishell);
+void					prepare_command_execution(t_minishell *shell,
+							t_exec *exec);
+void					handle_external(t_exec *exec, t_minishell *shell);
+void					handle_builtin(t_exec *exec, t_minishell *shell);
 /* 	~	command_utils.c ~ */
-pid_t					create_child_process(void);
-void					process_child_status(int status,
-							t_minishell *minishell);
+pid_t					create_child_process(t_minishell *shell);
+void					process_child_status(int status, t_minishell *shell);
 int						is_builtin(const char *cmd);
-void					wait_for_process(pid_t pid, t_minishell *minishell);
+void					wait_for_process(pid_t pid, t_minishell *shell);
+void					execute_builtin_or_external_cmd(t_minishell *shell,
+							t_exec *exec);
+/* ~ execute_left_cmd_prepare.c */
+void					check_exec_outfile_and_prepare_pipes(t_minishell *shell,
+							t_exec *exec, int *pipefd);
+void					check_if_right_cmd_has_infile(t_command_tree *node,
+							t_exec **right_exec, bool *right_has_input);
+void					prepare_for_execute(t_minishell *shell,
+							t_command_tree *node, t_exec *exec, int *pipefd);
+/* ~ execute_left_cmd.c ~ */
+void					handle_standard_left_cmds(t_minishell *shell,
+							t_command_tree *node, int *pipefd);
+void					setup_default_pipe_output(t_minishell *shell,
+							int *pipefd);
+void					execute_left_subtree(t_minishell *shell,
+							t_command_tree *node, int *pipefd);
+void					execute_left_cmd(t_command_tree *node,
+							t_minishell *shell, int *pipefd);
+/* ~ execute_right_cmd_prepare.c ~ */
+void					prepare_pipe_ends(t_minishell *shell, int *pipefd);
+void					setup_default_pipe_input(t_minishell *shell,
+							int *pipefd);
+void					check_if_infile_exists(t_minishell *shell, t_exec *exec,
+							int *pipefd);
+void					setup_in_and_output_redirections(t_minishell *shell,
+							t_exec *exec);
+void					check_exec_has_valid_data(t_minishell *shell,
+							t_exec *exec);
+/* ~ execute_right_cmd.c ~ */
+void					handle_nested_cmds_recursively(t_minishell *shell,
+							t_command_tree *node, int *pipefd);
+void					handle_standard_cmds(t_minishell *shell,
+							t_command_tree *node, int *pipefd);
+void					execute_right_subtree(t_minishell *shell,
+							t_command_tree *node, int *pipefd);
+static void				execute_right_by_type(t_minishell *shell,
+							t_command_tree *node, int *pipefd);
+void					execute_right_cmd(t_command_tree *node,
+							t_minishell *shell, int *pipefd);
 /* 	~	external_executor.c ~ */
 void					execute_command(t_exec *exec, t_minishell *minishell);
+/* ~ handle_pipe_utils.c ~ */
+void					close_file_descriptors(t_minishell *shell,
+							t_pipe_state *state);
+void					wait_for_childrenn(t_minishell *shell, pid_t left_pid,
+							pid_t right_pid);
+void					restore_stdout(t_pipe_state *state);
+void					cleanup_pipe(t_minishell *shell, t_pipe_state *state);
+/* ~ handle_pipe.c ~ */
+void					handle_pipe(t_minishell *shell, t_command_tree *node);
+/* ~ nested_pipe_process.c ~ */
+void					handle_nested_pipe(t_command_tree *node,
+							t_minishell *shell);
+/* ~ nested_pipe_setup.c ~ */
+void					setup_nested_pipe_output(t_minishell *shell,
+							int *pipefd);
+void					setup_nested_pipe_input(t_minishell *shell,
+							int *pipefd);
+void					execute_nested_cmds(t_minishell *shell, t_exec *exec);
 /* 	~	node_executor.c ~		*/
 void					handle_exec(t_command_tree *node,
 							t_minishell *minishell);
-void					handle_pipe(t_command_tree *node, t_minishell *shell);
 /* 	~	path_resolver.c ~		*/
 char					*get_absolute_path(t_minishell *shell, char *cmd,
 							char **envp);

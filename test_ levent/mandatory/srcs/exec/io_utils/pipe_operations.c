@@ -1,15 +1,3 @@
-/**
- * @file pipe_operations.c
- * @brief Pipe operation utilities for shell command execution
- *
- * This file contains utility functions for
- * creating, managing, and reading from
- * pipes used in command execution. It provides
- * safe pipe creation and closure,
- * along with buffered reading functionality for
- * interprocess communication.
- */
-
 #include "../../../includes/core/minishell.h"
 
 /**
@@ -48,42 +36,4 @@ void	close_pipe(t_minishell *shell, int *pipefd)
 {
 	safe_close(shell, pipefd[0], "close pipe read end");
 	safe_close(shell, pipefd[1], "close pipe write end");
-}
-
-/**
- * @brief Reads all available data from a pipe into a string
- *
- * Reads data from the specified pipe file descriptor in chunks until EOF
- * or an error is encountered. Dynamically allocates memory to store the
- * complete content read from the pipe.
- *
- * @param pipe_fd File descriptor to read from
- * (typically the read end of a pipe)
- * @return char* Dynamically allocated string containing
- * 				all data read from the pipe,
- *               or NULL if no data was read (caller must free)
- * @note Terminates the program with an
- * error message if a read error occurs
- */
-char	*read_from_pipe(int pipe_fd)
-{
-	char	buffer[BUFFER_SIZE_TEE];
-	char	*content;
-	char	*new_content;
-	ssize_t	bytes;
-
-	content = NULL;
-	bytes = read(pipe_fd, buffer, BUFFER_SIZE_TEE - 1);
-	while (bytes > 0)
-	{
-		buffer[bytes] = NULL_TERMINATOR;
-		new_content = ft_safe_strjoin(content, buffer);
-		if (content)
-			free(content);
-		content = new_content;
-		bytes = read(pipe_fd, buffer, BUFFER_SIZE_TEE - 1);
-	}
-	if (bytes < 0)
-		exit_with_error("read_from_pipe", strerror(errno), EXIT_FAILURE);
-	return (content);
 }

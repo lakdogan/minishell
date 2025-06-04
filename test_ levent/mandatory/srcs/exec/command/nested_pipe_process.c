@@ -1,6 +1,6 @@
 #include "../../../includes/core/minishell.h"
 
-int	fork_left_and_execute(t_minishell *shell, t_command_tree *node,
+static int	fork_left_and_execute(t_minishell *shell, t_command_tree *node,
 		t_exec *exec, t_pipe_state *pipe_state)
 {
 	pipe_state->left_pid = create_child_process(shell);
@@ -16,7 +16,7 @@ int	fork_left_and_execute(t_minishell *shell, t_command_tree *node,
 	return (FORK_SUCCESS);
 }
 
-int	fork_right_and_execute(t_minishell *shell, t_command_tree *node,
+static int	fork_right_and_execute(t_minishell *shell, t_command_tree *node,
 		t_exec *exec, t_pipe_state *pipe_state)
 {
 	pipe_state->right_pid = create_child_process(shell);

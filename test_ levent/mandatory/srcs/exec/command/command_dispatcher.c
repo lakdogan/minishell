@@ -17,7 +17,7 @@
  *
  * @param exec Pointer to the command execution structure
  */
-static void	prepare_command_execution(t_minishell *shell, t_exec *exec)
+void	prepare_command_execution(t_minishell *shell, t_exec *exec)
 {
 	setup_child_signals();
 	setup_input_redirections(shell, exec);

@@ -127,14 +127,15 @@ MINISHELL_BONUS_OBJS := $(patsubst $(BONUS_SRCS_DIR)%.c,$(BONUS_OBJECTS_DIR)srcs
 all: $(LIBFT) $(NAME)
 
 $(LIBFT_DIR):
-	@if [ ! -d "$(LIBFT_DIR)" ]; \
-	then git clone $(LIBFT_URL)	$(LIBFT_DIR); \
-	fi
-	# @cd $(LIBFT_DIR) && make
+	git clone $(LIBFT_URL) $(LIBFT_DIR)
 
 $(LIBFT): $(LIBFT_DIR)
-	@$(MAKE) -C $(LIBFT_DIR)
-	@cd $(LIBFT_DIR) && make
+	@if [ ! -f $(LIBFT_DIR)/.built ]; then \
+		echo "First time build of libft - forcing clean build"; \
+		cd $(LIBFT_DIR) && make clean && make && touch .built; \
+	else \
+		cd $(LIBFT_DIR) && make; \
+	fi
 	@touch $(LIBFT)
 		
 $(NAME): $(LIBFT) $(MINISHELL_OBJS)

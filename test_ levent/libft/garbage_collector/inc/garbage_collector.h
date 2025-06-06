@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 17:49:25 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/05/27 18:04:16 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/05/28 23:27:09 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -347,7 +347,7 @@
 # define GC_INITIAL_CAPACITY 1000
 # define GC_GROWTH_FACTOR 2
 # define GC_NOT_FOUND SIZE_MAX
-# define NULL_TERMINATOR 1
+# define NULL_TERMINATOR_SIZE 1
 
 /**
  * @brief Hash table entry structure
@@ -453,7 +453,8 @@ char					**gc_str_array_create(t_gc *gc, size_t size);
 char					***gc_str_matrix_create(t_gc *gc, size_t rows,
 							size_t cols);
 char					***gc_str_matrix_dup(t_gc *gc, char ***src);
-
+char					*gc_safe_strjoin(t_gc *gc, const char *s1,
+							const char *s2);
 // 4. Integer array functions
 
 int						*gc_int_array_create(t_gc *gc, size_t size);

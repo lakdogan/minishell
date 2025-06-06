@@ -26,10 +26,11 @@
  * @param newfd Target file descriptor that will become a copy of oldfd
  * @param error_msg Message to display if the duplication fails
  */
-void	safe_dup2(int oldfd, int newfd, const char *error_msg)
+void	safe_dup2(t_minishell *shell, int oldfd, int newfd,
+		const char *error_msg)
 {
 	if (dup2(oldfd, newfd) == INVALID_FD)
-		exit_with_error(error_msg, strerror(errno), EXIT_FAILURE);
+		exit_with_error(shell, error_msg, strerror(errno), EXIT_FAILURE);
 }
 
 /**
@@ -41,12 +42,12 @@ void	safe_dup2(int oldfd, int newfd, const char *error_msg)
  * @param fd File descriptor to close
  * @param error_msg Message to display if the close operation fails
  */
-void	safe_close(int fd, const char *error_msg)
+void	safe_close(t_minishell *shell, int fd, const char *error_msg)
 {
 	if (fd != INVALID_FD)
 	{
 		if (close(fd) == CLOSE_ERROR)
-			exit_with_error(error_msg, strerror(errno), EXIT_FAILURE);
+			exit_with_error(shell, error_msg, strerror(errno), EXIT_FAILURE);
 	}
 }
 
@@ -60,10 +61,10 @@ void	safe_close(int fd, const char *error_msg)
  * @param filename Name of the file associated with
  * the descriptor (for error messages)
  */
-void	check_fd_error(int fd, const char *filename)
+void	check_fd_error(t_minishell *shell, int fd, const char *filename)
 {
 	if (fd == INVALID_FD)
-		exit_with_error("Error opening", filename, EXIT_FAILURE);
+		exit_with_error(shell, "Error opening", filename, EXIT_FAILURE);
 }
 
 /**
@@ -77,7 +78,8 @@ void	check_fd_error(int fd, const char *filename)
  * @return int Backup file descriptor for the original standard input,
  *             or INVALID_FD if no redirection was performed
  */
-int	redirect_stdin_with_backup(int new_fd, const char *error_msg)
+int	redirect_stdin_with_backup(t_minishell *shell, int new_fd,
+		const char *error_msg)
 {
 	int	stdin_backup;
 
@@ -85,7 +87,7 @@ int	redirect_stdin_with_backup(int new_fd, const char *error_msg)
 	if (new_fd != INVALID_FD)
 	{
 		stdin_backup = dup(STDIN_FILENO);
-		safe_dup2(new_fd, STDIN_FILENO, error_msg);
+		safe_dup2(shell, new_fd, STDIN_FILENO, error_msg);
 	}
 	return (stdin_backup);
 }
@@ -99,10 +101,10 @@ int	redirect_stdin_with_backup(int new_fd, const char *error_msg)
  * @param stdin_backup Backup file descriptor for standard input
  * @param stdout_backup Backup file descriptor for standard output
  */
-void	restore_std_fds(int stdin_backup, int stdout_backup)
+void	restore_std_fds(t_minishell *shell, int stdin_backup, int stdout_backup)
 {
-	safe_dup2(stdin_backup, STDIN_FILENO, "restore stdin");
-	safe_dup2(stdout_backup, STDOUT_FILENO, "restore stdout");
-	safe_close(stdin_backup, "close stdin backup");
-	safe_close(stdout_backup, "close stdout backup");
+	safe_dup2(shell, stdin_backup, STDIN_FILENO, "restore stdin");
+	safe_dup2(shell, stdout_backup, STDOUT_FILENO, "restore stdout");
+	safe_close(shell, stdin_backup, "close stdin backup");
+	safe_close(shell, stdout_backup, "close stdout backup");
 }

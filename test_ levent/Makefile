@@ -24,6 +24,11 @@ BUILTINS_DIR			:=	$(SRCS_DIR)builtins/
 EXECUTION_DIR			:=	$(SRCS_DIR)exec/
 ERROR_DIR				:=	$(SRCS_DIR)error/
 COMMAND_DIR				:=	$(EXECUTION_DIR)command/
+DISPATCHER_DIR			:=	$(COMMAND_DIR)dispatcher/
+EXECUTOR_DIR			:=	$(COMMAND_DIR)executor/
+PATH_DIR				:=	$(COMMAND_DIR)path/
+PIPE_DIR				:=	$(COMMAND_DIR)pipe/
+CMD_UTILS_DIR			:=	$(COMMAND_DIR)utils/
 CORE_DIR				:=	$(EXECUTION_DIR)core/
 EX_ERROR_DIR			:=	$(EXECUTION_DIR)error/
 IO_UTILS_DIR			:=	$(EXECUTION_DIR)io_utils/
@@ -50,6 +55,7 @@ MINISHELL_MANDATORY_FILES := \
 				$(BUILTINS_DIR)builtins.c \
 				$(BUILTINS_DIR)cd.c \
 				$(BUILTINS_DIR)echo.c \
+				$(BUILTINS_DIR)env_utils.c \
 				$(BUILTINS_DIR)env.c \
 				$(BUILTINS_DIR)exit.c \
 				$(BUILTINS_DIR)export_print.c \
@@ -58,21 +64,31 @@ MINISHELL_MANDATORY_FILES := \
 				$(BUILTINS_DIR)pwd.c \
 				$(BUILTINS_DIR)unset_utils.c \
 				$(BUILTINS_DIR)unset.c \
-				$(COMMAND_DIR)command_dispatcher.c \
-				$(COMMAND_DIR)command_utils.c \
-				$(COMMAND_DIR)external_executor.c \
-				$(COMMAND_DIR)node_executors.c \
-				$(COMMAND_DIR)path_resolver.c \
-				$(COMMAND_DIR)path_utils.c \
+				$(DISPATCHER_DIR)command_dispatcher.c \
+				$(EXECUTOR_DIR)execute_left_cmd_prepare.c \
+				$(EXECUTOR_DIR)execute_left_cmd.c \
+				$(EXECUTOR_DIR)execute_right_cmd_prepare.c \
+				$(EXECUTOR_DIR)execute_right_cmd.c \
+				$(EXECUTOR_DIR)external_executor.c \
+				$(EXECUTOR_DIR)node_executors.c \
+				$(PATH_DIR)path_resolver.c \
+				$(PATH_DIR)path_utils.c \
+				$(PIPE_DIR)handle_pipe_utils.c \
+				$(PIPE_DIR)handle_pipe.c \
+				$(PIPE_DIR)nested_pipe_process.c \
+				$(PIPE_DIR)nested_pipe_setup.c \
+				$(CMD_UTILS_DIR)command_utils.c \
 				$(CORE_DIR)execute_tree.c \
 				$(EX_ERROR_DIR)error_utils.c \
 				$(IO_UTILS_DIR)fd_operations.c \
 				$(IO_UTILS_DIR)pipe_operations.c \
+				$(IO_UTILS_DIR)read_from_pipe.c \
 				$(REDIRECTION_DIR)handle_redirections.c \
 				$(REDIRECTION_DIR)heredoc_content.c \
 				$(REDIRECTION_DIR)heredoc.c \
 				$(REDIRECTION_DIR)redirection_files.c \
 				$(SIGNALS_DIR)signal_handlers.c \
+				$(INIT_DIR)init_minishell.c \
 				$(SRCS_DIR)minishell.c \
 
 MINISHELL_BONUS_FILES := \
@@ -111,14 +127,15 @@ MINISHELL_BONUS_OBJS := $(patsubst $(BONUS_SRCS_DIR)%.c,$(BONUS_OBJECTS_DIR)srcs
 all: $(LIBFT) $(NAME)
 
 $(LIBFT_DIR):
-	@if [ ! -d "$(LIBFT_DIR)" ]; \
-	then git clone $(LIBFT_URL)	$(LIBFT_DIR); \
-	fi
-	# @cd $(LIBFT_DIR) && make
+	git clone $(LIBFT_URL) $(LIBFT_DIR)
 
 $(LIBFT): $(LIBFT_DIR)
-	@$(MAKE) -C $(LIBFT_DIR)
-	@cd $(LIBFT_DIR) && make
+	@if [ ! -f $(LIBFT_DIR)/.built ]; then \
+		echo "First time build of libft - forcing clean build"; \
+		cd $(LIBFT_DIR) && make clean && make && touch .built; \
+	else \
+		cd $(LIBFT_DIR) && make; \
+	fi
 	@touch $(LIBFT)
 		
 $(NAME): $(LIBFT) $(MINISHELL_OBJS)

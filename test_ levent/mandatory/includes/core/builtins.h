@@ -36,6 +36,8 @@ int		ft_cd(char **argv, t_minishell *minishell);
 int		ft_echo(char **argv);
 // env.c
 int		ft_env(t_minishell *minishell);
+// env_utils.c
+// int find_env_value(const char *name, t_minishell *minishell, char **result);
 // exit.c
 void	cleanup_memory(t_minishell *minishell);
 int		ft_exit(char **argv, t_minishell *minishell);

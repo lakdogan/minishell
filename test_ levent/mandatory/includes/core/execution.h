@@ -52,6 +52,7 @@
 # define FORK_SUCCESS 1
 # define IS_RIGHT_PID 1
 # define IS_LEFT_PID 0
+# define SKIP_BACKSLASH 1
 
 typedef enum e_in_type
 {
@@ -70,6 +71,7 @@ typedef struct s_infile
 	t_in_type type;  // < or <<
 	char *name;      // File name
 	char *delimeter; // For heredoc (<<)
+	bool				quoted_delimiter;
 	struct s_infile		*next;
 }						t_infile;
 
@@ -234,7 +236,7 @@ char					*collect_heredoc_content(t_minishell *shell,
 							t_exec *exec, t_infile *infile);
 /* 	~	heredoc.c ~			*/
 int						process_heredoc(t_minishell *shell,
-							const char *delimiter);
+							const char *delimiter, bool quoted_delimiter);
 void					prepare_heredocs(t_minishell *shell,
 							t_command_tree *node);
 void					write_heredoc_to_fd(t_minishell *shell, t_exec *exec,
@@ -256,5 +258,23 @@ void					setup_parent_signals(void);
 /* ------------------------------------------------------------------------- */
 /*							exec dir end									*/
 /* ------------------------------------------------------------------------- */
+
+char					*expand_variables_with_quotes(const char *str,
+							t_minishell *shell);
+char					*expand_variables(const char *str, t_minishell *shell);
+int						expand_single_var(const char *start, char **expanded,
+							t_minishell *shell);
+void					handle_var_expansion_exec(t_minishell *shell,
+							t_exec *exec);
+bool					is_var_char(char c);
+char					handle_quote(char c, char quote_char);
+char					*append_char(char *result, char c, t_minishell *shell);
+bool					should_expand_var(const char *str, int i,
+							char quote_char);
+char					*extract_var_name(const char *str, t_minishell *shell);
+char					*find_env_value(t_minishell *shell, const char *name);
+int						get_var_name_len(const char *str);
+int	handle_exit_status(char **expanded, t_minishell *shell);
+t_env	*find_env_var(const char *name, t_minishell *minishell);
 
 #endif

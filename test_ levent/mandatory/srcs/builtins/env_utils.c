@@ -8,41 +8,12 @@
 
 #include "../../includes/core/minishell.h"
 
-/**
- * @brief Gets the value of an environment variable
- *
- * Searches the environment for a variable with the specified name
- * and stores its value in the result parameter.
- *
- * @param name Name of the environment variable to get
- * @param minishell Pointer to the shell state structure
- * @param result Pointer to store the result (will point to existing memory,
- *               do not free)
- * @return int 0 if the variable was found, 1 if not
- */
-int	get_env_value(const char *name, t_minishell *minishell, char **result)
+int lookup_env_value(const char *name, t_minishell *minishell, char **result)
 {
-	t_list	*node;
-	t_env	*env;
-
-	if (!name || !result)
+    *result = find_env_value(minishell, name);
+    if (*result == NULL)
 		return (1);
-	node = minishell->envp;
-	while (node)
-	{
-		env = (t_env *)node->content;
-		if (ft_strncmp(env->value, name, SIZE_MAX) == 0)
-		{
-			if (env->content && ft_strchr(env->content, '='))
-				*result = ft_strchr(env->content, '=') + 1;
-			else
-				*result = NULL;
-			return (0);
-		}
-		node = node->next;
-	}
-	*result = NULL;
-	return (1);
+	return (0);
 }
 
 static int	update_existing_env_var(t_env *env, const char *name,
@@ -93,7 +64,7 @@ static int	create_new_env_var(const char *name, const char *value,
  * @param minishell The shell state structure
  * @return t_env* The found environment variable, or NULL if not found
  */
-static t_env	*find_env_var(const char *name, t_minishell *minishell)
+t_env	*find_env_var(const char *name, t_minishell *minishell)
 {
 	t_list	*node;
 	t_env	*env;

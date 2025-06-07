@@ -22,8 +22,10 @@ void	handle_exec(t_command_tree *node, t_minishell *minishell)
 	}
 	if (is_builtin(exec->command))
 	{
+		handle_var_expansion_exec(minishell, exec);
 		handle_builtin(exec, minishell);
 		return ;
 	}
+	handle_var_expansion_exec(minishell, exec);
 	handle_external(exec, minishell);
 }

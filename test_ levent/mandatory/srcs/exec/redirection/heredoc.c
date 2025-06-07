@@ -40,33 +40,40 @@ static int	write_heredoc_line(int fd, char *line)
  * @return int File descriptor for reading heredoc contents,
  *	or INVALID_FD on error
  */
-int	process_heredoc(t_minishell *shell, const char *delimiter)
+int process_heredoc(t_minishell *shell, const char *delimiter, bool quoted_delimiter)
 {
-	int		fd[2];
-	char	*line;
-
-	if (!create_pipe(shell, fd))
-		return (INVALID_FD);
-	while (1)
-	{
-		line = readline("> ");
-		if (!line)
-			break ;
-		if (ft_strcmp(line, delimiter) == STRINGS_EQUAL)
-		{
-			free(line);
-			break ;
-		}
-		if (!write_heredoc_line(fd[PIPE_WRITE_END], line))
-		{
-			free(line);
-			close_pipe(shell, fd);
-			return (INVALID_FD);
-		}
-		free(line);
-	}
-	safe_close(shell, fd[PIPE_WRITE_END], "heredoc pipe write end");
-	return (fd[PIPE_READ_END]);
+    int     fd[2];
+    char    *line;
+    char    *expanded_line;
+    
+    if (!create_pipe(shell, fd))
+        return (INVALID_FD);
+    while (1)
+    {
+        line = readline("> ");
+        if (!line)
+            break;
+        if (ft_strcmp(line, delimiter) == STRINGS_EQUAL)
+        {
+            free(line);
+            break;
+        }
+        if (!quoted_delimiter) 
+        {
+            expanded_line = expand_variables(line, shell);
+            free(line);
+            line = expanded_line;
+        }
+        if (!write_heredoc_line(fd[PIPE_WRITE_END], line))
+        {
+            free(line);
+            close_pipe(shell, fd);
+            return (INVALID_FD);
+        }
+        free(line);
+    }
+    safe_close(shell, fd[PIPE_WRITE_END], "heredoc pipe write end");
+    return (fd[PIPE_READ_END]);
 }
 
 /**

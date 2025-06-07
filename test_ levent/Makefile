@@ -30,6 +30,7 @@ PATH_DIR				:=	$(COMMAND_DIR)path/
 PIPE_DIR				:=	$(COMMAND_DIR)pipe/
 CMD_UTILS_DIR			:=	$(COMMAND_DIR)utils/
 CORE_DIR				:=	$(EXECUTION_DIR)core/
+ENV_EXP_DIR				:=	$(EXECUTION_DIR)env_expansion/
 EX_ERROR_DIR			:=	$(EXECUTION_DIR)error/
 IO_UTILS_DIR			:=	$(EXECUTION_DIR)io_utils/
 REDIRECTION_DIR			:=	$(EXECUTION_DIR)redirection/
@@ -79,6 +80,12 @@ MINISHELL_MANDATORY_FILES := \
 				$(PIPE_DIR)nested_pipe_setup.c \
 				$(CMD_UTILS_DIR)command_utils.c \
 				$(CORE_DIR)execute_tree.c \
+				$(ENV_EXP_DIR)exp_single_var.c \
+				$(ENV_EXP_DIR)exp_utils.c \
+				$(ENV_EXP_DIR)exp_var_process.c \
+				$(ENV_EXP_DIR)exp_var_utils.c \
+				$(ENV_EXP_DIR)exp_vars.c \
+				$(ENV_EXP_DIR)exp_find_env_value.c \
 				$(EX_ERROR_DIR)error_utils.c \
 				$(IO_UTILS_DIR)fd_operations.c \
 				$(IO_UTILS_DIR)pipe_operations.c \
@@ -88,6 +95,7 @@ MINISHELL_MANDATORY_FILES := \
 				$(REDIRECTION_DIR)heredoc.c \
 				$(REDIRECTION_DIR)redirection_files.c \
 				$(SIGNALS_DIR)signal_handlers.c \
+				$(INIT_DIR)init_env.c \
 				$(INIT_DIR)init_minishell.c \
 				$(SRCS_DIR)minishell.c \
 

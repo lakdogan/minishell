@@ -104,7 +104,7 @@ int	ft_cd(char **argv, t_minishell *minishell)
 	char	*old_pwd;
 
 	old_pwd = NULL;
-	get_env_value("PWD", minishell, &old_pwd);
+	lookup_env_value("PWD", minishell, &old_pwd);
 	path = get_cd_target_path(argv);
 	if (!path)
 		return (1);

@@ -15,35 +15,6 @@ static int	allocate_gc_structs(t_minishell *sh)
 	return (GC_STRUCT_ALLOCATION_SUCCESS);
 }
 
-static void	init_environment(t_minishell *sh, char **envp)
-{
-	int		i;
-	char	*key;
-	char	*value;
-	char	*equal_sign;
-
-	sh->envp = NULL;
-	i = 0;
-	while (envp[i])
-		i++;
-	sh->envp_arr = gc_str_array_create(sh->gc[GC_MAIN], i + 1);
-	i = 0;
-	while (envp[i])
-	{
-		equal_sign = ft_strchr(envp[i], '=');
-		if (equal_sign)
-		{
-			key = gc_malloc(sh->gc[GC_ENV], equal_sign - envp[i] + 1);
-			ft_strlcpy(key, envp[i], equal_sign - envp[i] + 1);
-			value = gc_strdup(sh->gc[GC_ENV], equal_sign + 1);
-			add_new_env(key, value, sh);
-		}
-		sh->envp_arr[i] = gc_strdup(sh->gc[GC_MAIN], envp[i]);
-		i++;
-	}
-	sh->envp_arr[i] = NULL;
-}
-
 static void	init_data(t_minishell *shell, char **envp)
 {
 	shell->token_list = NULL;

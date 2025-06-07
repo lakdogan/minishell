@@ -38,7 +38,8 @@ typedef struct s_env
 char				**rebuild_env_array(t_minishell *minishell);
 int					set_env_var(const char *name, const char *value,
 						t_minishell *minishell);
-int					get_env_value(const char *name, t_minishell *minishell,
+int					lookup_env_value(const char *name, t_minishell *minishell,
 						char **result);
+void init_environment(t_minishell *shell, char **envp);
 
 #endif

@@ -29,16 +29,16 @@ static int	is_valid_export_key(const char *argv)
 {
 	int	i;
 
-	i = 0;
-	if (!argv || !argv[0] || ft_isdigit(argv[0]))
-		return (0);
-	while (argv[i] && argv[i] != '=')
+	i = FIRST_CHAR;
+	if (!argv || !argv[i] || ft_isdigit(argv[i]))
+		return (IDENTIFIER_INVALID);
+	while (argv[i] && argv[i] != EQUALS_SIGN)
 	{
-		if (!ft_isalnum(argv[i]) && argv[i] != '_')
-			return (0);
+		if (!ft_isalnum(argv[i]) && argv[i] != UNDERSCORE)
+			return (IDENTIFIER_INVALID);
 		i++;
 	}
-	return (1);
+	return (IDENTIFIER_VALID);
 }
 
 /**
@@ -61,24 +61,24 @@ int	ft_export(char **argv, t_minishell *minishell)
 {
 	int	i;
 
-	i = 1;
-	if (!argv[1])
+	i = COMMAND_ARGS_START;
+	if (!argv[i])
 	{
 		print_export(minishell, minishell->envp);
-		return (0);
+		return (BUILTIN_SUCCESS);
 	}
 	while (argv[i])
 	{
 		if (!is_valid_export_key(argv[i]))
 		{
-			write(2, "export: `", 9);
-			write(2, argv[i], ft_strlen(argv[i]));
-			write(2, "': not a valid identifier\n", 27);
+			write(STDERR_FILENO, "export: `", 9);
+			write(STDERR_FILENO, argv[i], ft_strlen(argv[i]));
+			write(STDERR_FILENO, "': not a valid identifier\n", 27);
 		}
 		else
 			update_or_add_env(argv[i], minishell);
 		i++;
 	}
 	minishell->envp_arr = rebuild_env_array(minishell);
-	return (0);
+	return (BUILTIN_SUCCESS);
 }

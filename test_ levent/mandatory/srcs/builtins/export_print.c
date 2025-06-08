@@ -42,27 +42,29 @@ static int	env_list_size(t_list *envp)
  * @param arr Array of environment variable pointers to sort
  * @param size Number of elements in the array
  */
-static void	sort_env_array(t_env **arr, int size)
+static void	sort_env_array(t_env **env_array, int array_size)
 {
-	int		i;
-	int		j;
-	t_env	*tmp;
+	int		current_index;
+	int		comparison_index;
+	t_env	*temp_env;
 
-	i = 0;
-	while (i < size - 1)
+	current_index = FIRST_CHAR;
+	while (current_index < array_size - ARRAY_LAST_ELEMENT_OFFSET)
 	{
-		j = i + 1;
-		while (j < size)
+		comparison_index = current_index + NEXT_ELEMENT_INDEX;
+		while (comparison_index < array_size)
 		{
-			if (ft_strncmp(arr[i]->value, arr[j]->value, SIZE_MAX) > 0)
+			if (ft_strcmp(env_array[current_index]->value,
+					env_array[comparison_index]->value)
+				> STRING_COMPARISON_GREATER)
 			{
-				tmp = arr[i];
-				arr[i] = arr[j];
-				arr[j] = tmp;
+				temp_env = env_array[current_index];
+				env_array[current_index] = env_array[comparison_index];
+				env_array[comparison_index] = temp_env;
 			}
-			j++;
+			comparison_index++;
 		}
-		i++;
+		current_index++;
 	}
 }
 
@@ -105,12 +107,13 @@ static void	print_single_export_line(t_env *env)
 {
 	write(STDOUT_FILENO, "declare -x ", 11);
 	write(STDOUT_FILENO, env->value, ft_strlen(env->value));
-	if (env->content && ft_strchr(env->content, '='))
+	if (env->content && ft_strchr(env->content, EQUALS_SIGN))
 	{
-		write(STDOUT_FILENO, "=\"", 2);
-		write(STDOUT_FILENO, ft_strchr(env->content, '=') + 1,
-			ft_strlen(ft_strchr(env->content, '=') + 1));
-		write(STDOUT_FILENO, "\"", 1);
+		write(STDOUT_FILENO, EXPORT_EQUALS_QUOTE, 2);
+		write(STDOUT_FILENO, ft_strchr(env->content, EQUALS_SIGN)
+			+ SKIP_EQUALS_SIGN, ft_strlen(ft_strchr(env->content, EQUALS_SIGN)
+				+ SKIP_EQUALS_SIGN));
+		write(STDOUT_FILENO, EXPORT_CLOSING_QUOTE, 1);
 	}
 	write(STDOUT_FILENO, "\n", 1);
 }

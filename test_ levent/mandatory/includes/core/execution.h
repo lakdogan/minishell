@@ -80,6 +80,9 @@
 # define PATH_VAR_PREFIX "PATH="
 # define PATH_PREFIX_LENGTH 5
 # define PATH_DELIMITER ':'
+# define IDENTIFIER_VALID 1
+# define IDENTIFIER_INVALID 0
+# define COMMAND_ARGS_START 1
 
 typedef enum e_in_type
 {

@@ -22,14 +22,15 @@ static int	is_n_option(char *arg)
 {
 	int	j;
 
-	if (!arg || arg[0] != '-' || arg[1] != 'n')
-		return (0);
-	j = 1;
-	while (arg[j] == 'n')
+	if (!arg || arg[FIRST_CHAR] != DASH_CHAR
+		|| arg[SECOND_CHAR] != OPTION_N_CHAR)
+		return (OPTION_INVALID);
+	j = SECOND_CHAR;
+	while (arg[j] == OPTION_N_CHAR)
 		j++;
-	if (arg[j] != '\0')
-		return (0);
-	return (1);
+	if (arg[j] != NULL_TERMINATOR)
+		return (OPTION_INVALID);
+	return (OPTION_VALID);
 }
 
 /**
@@ -47,11 +48,11 @@ static int	process_options(char **argv, int *newline)
 {
 	int	i;
 
-	i = 1;
-	*newline = 1;
+	i = COMMAND_ARGS_START;
+	*newline = NEWLINE_ENABLE;
 	while (argv[i] && is_n_option(argv[i]))
 	{
-		*newline = 0;
+		*newline = NEWLINE_DISABLED;
 		i++;
 	}
 	return (i);
@@ -73,8 +74,8 @@ static void	print_arguments(char **argv, int start_idx)
 	while (argv[i])
 	{
 		write(STDOUT_FILENO, argv[i], ft_strlen(argv[i]));
-		if (argv[i + 1])
-			write(STDOUT_FILENO, " ", 1);
+		if (argv[i + NEXT_ELEMENT_INDEX])
+			write(STDOUT_FILENO, SPACE_STR, 1);
 		i++;
 	}
 }
@@ -98,5 +99,5 @@ int	ft_echo(char **argv)
 	print_arguments(argv, start_idx);
 	if (newline)
 		write(STDOUT_FILENO, "\n", 1);
-	return (0);
+	return (BUILTIN_SUCCESS);
 }

@@ -29,8 +29,8 @@ int	ft_env(t_minishell *minishell)
 	{
 		env = (t_env *)node->content;
 		if (env->is_export && env->content)
-			printf("%s\n", env->content);
+			ft_printf("%s\n", env->content);
 		node = node->next;
 	}
-	return (0);
+	return (BUILTIN_SUCCESS);
 }

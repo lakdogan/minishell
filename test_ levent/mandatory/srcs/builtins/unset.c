@@ -25,29 +25,19 @@ static int	is_valid_identifier(const char *str)
 {
 	int	i;
 
-	if (!str || !str[0] || ft_isdigit(str[0]))
-		return (0);
+	if (!str || !str[FIRST_CHAR] || ft_isdigit(str[FIRST_CHAR]))
+		return (IDENTIFIER_INVALID);
 	i = 0;
 	while (str[i])
 	{
-		if (!ft_isalnum(str[i]) && str[i] != '_')
-			return (0);
+		if (!ft_isalnum(str[i]) && str[i] != UNDERSCORE)
+			return (IDENTIFIER_INVALID);
 		i++;
 	}
-	return (1);
+	return (IDENTIFIER_VALID);
 }
 
-/**
- * @brief Removes an environment variable from the shell
- *
- * Searches for an environment variable by name and removes it from the
- * shell's environment list if found, freeing all associated memory.
- *
- * @param name Name of the environment variable to remove
- * @param minishell Pointer to the shell state structure
- * @return int Always returns 0 (success)
- */
-static int	remove_env_var(const char *name, t_minishell *minishell)
+static void	remove_env_var(const char *name, t_minishell *minishell)
 {
 	t_list	*prev;
 	t_list	*node;
@@ -58,18 +48,16 @@ static int	remove_env_var(const char *name, t_minishell *minishell)
 	while (node)
 	{
 		env = (t_env *)node->content;
-		if (env && ft_strncmp(env->value, name, SIZE_MAX) == 0)
+		if (env && ft_strcmp(env->value, name) == STRINGS_EQUAL)
 		{
 			if (prev)
 				prev->next = node->next;
 			else
 				minishell->envp = node->next;
-			return (0);
 		}
 		prev = node;
 		node = node->next;
 	}
-	return (0);
 }
 
 /**
@@ -102,5 +90,5 @@ int	ft_unset(char **argv, t_minishell *minishell)
 		i++;
 	}
 	minishell->envp_arr = rebuild_env_array(minishell);
-	return (0);
+	return (BUILTIN_SUCCESS);
 }

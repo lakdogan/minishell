@@ -45,7 +45,7 @@ static char	**populate_env_array(t_minishell *minishell, char **env_array)
 		if (env_var->is_export)
 		{
 			env_array[i] = gc_strjoin_3(minishell->gc[GC_ENV], env_var->value,
-					"=", env_var->content);
+					EQUALS_SIGN, env_var->content);
 			if (!env_array[i])
 				return (NULL);
 			i++;
@@ -68,7 +68,8 @@ static char	**create_env_array(t_minishell *minishell)
 	int		env_count;
 
 	env_count = count_exportable_env_vars(minishell->envp);
-	new_env = gc_str_array_create(minishell->gc[GC_ENV], env_count + 1);
+	new_env = gc_str_array_create(minishell->gc[GC_ENV], env_count
+			+ ARRAY_NULL_TERMINATOR_SIZE);
 	if (!new_env)
 		return (NULL);
 	return (populate_env_array(minishell, new_env));

@@ -19,18 +19,16 @@
  * @param in Pointer to the input file structure containing the file name
  * @return int EXIT_SUCCESS on successful redirection
  */
-static int handle_input_file(t_minishell *shell, t_infile *in)
+static int	handle_input_file(t_minishell *shell, t_infile *in)
 {
-	char *expanded_name;
-	int fd;
-	
+	char	*expanded_name;
+	int		fd;
+
 	if (!shell || !in || !in->name)
 		return (EXIT_FAILURE);
-		
 	expanded_name = expand_variables_with_quotes(in->name, shell);
 	if (!expanded_name)
 		expanded_name = ft_strdup(in->name);
-		
 	fd = open_infile(shell, expanded_name);
 	safe_dup2(shell, fd, STDIN_FILENO, "input redirection");
 	safe_close(shell, fd, "close input file");
@@ -64,12 +62,12 @@ static void	handle_heredoc_input(t_minishell *shell, int heredoc_fd)
  *
  * @param exec Pointer to the command execution structure
  */
-void setup_input_redirections(t_minishell *shell, t_exec *exec)
+void	setup_input_redirections(t_minishell *shell, t_exec *exec)
 {
-	t_infile *in;
+	t_infile	*in;
+
 	if (!shell || !exec)
-		return;
-		
+		return ;
 	in = exec->infiles;
 	while (in)
 	{
@@ -119,7 +117,7 @@ void	setup_output_redirections(t_minishell *shell, t_exec *exec)
 	int			fd;
 
 	if (!shell || !exec)
-		return;
+		return ;
 	out = exec->outfiles;
 	while (out)
 	{

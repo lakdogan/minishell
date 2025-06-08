@@ -79,6 +79,6 @@ int	ft_export(char **argv, t_minishell *minishell)
 			update_or_add_env(argv[i], minishell);
 		i++;
 	}
-    minishell->envp_arr = rebuild_env_array(minishell);
+	minishell->envp_arr = rebuild_env_array(minishell);
 	return (0);
 }

@@ -41,5 +41,6 @@ int					set_env_var(const char *name, const char *value,
 int					lookup_env_value(const char *name, t_minishell *minishell,
 						char **result);
 void init_environment(t_minishell *shell, char **envp);
+t_env *create_env_node(t_minishell *shell, char *env_str, char *equal_sign);
 
 #endif

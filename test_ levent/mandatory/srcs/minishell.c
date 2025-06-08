@@ -112,6 +112,7 @@ t_infile *create_infile(t_minishell *minishell, const char *filename, t_in_type 
     }
     
     infile->type = type;
+    infile->quoted_delimiter = false;
     return infile;
 }
 
@@ -235,20 +236,19 @@ void test_pipes_with_redirections(t_minishell *minishell)
 // Test 3: Multiple heredocs in a pipe
 void test_multiple_heredocs(t_minishell *minishell)
 {
-    // Create first heredoc for 'cat'
+        // Create first heredoc for 'cat'
     t_infile *cat_heredoc = create_infile(minishell, NULL, INF_HEREDOC, "CAT_EOF");
-    
+
     // Create cat command with heredoc
     t_command_tree *cat_cmd = create_command_with_redirections(minishell, "cat", NULL, cat_heredoc, NULL);
-    
-    // Create grep command with heredoc
-    t_infile *grep_heredoc = create_infile(minishell, NULL, INF_HEREDOC, "GREP_EOF");
-    char *args_grep[] = {"--color=auto", "-E", NULL};
-    t_command_tree *grep_cmd = create_command_with_redirections(minishell, "grep", args_grep, grep_heredoc, NULL);
-    
-    // Create pipe: cat << CAT_EOF | grep << GREP_EOF
-    t_command_tree *pipe_cmd = create_pipe_node(minishell, cat_cmd, grep_cmd);
-    
+
+    // Create second heredoc for another command (e.g., another cat or sed)
+    t_infile *second_heredoc = create_infile(minishell, NULL, INF_HEREDOC, "GREP_EOF");
+    t_command_tree *second_cmd = create_command_with_redirections(minishell, "cat", NULL, second_heredoc, NULL);
+
+    // Pipe them together
+    t_command_tree *pipe_cmd = create_pipe_node(minishell, cat_cmd, second_cmd);
+
     printf("\n--- Multiple heredocs in a pipe ---\n");
     printf("For the first heredoc (cat), enter some text then type 'CAT_EOF' on a new line\n");
     printf("For the second heredoc (grep), enter a regex pattern then type 'GREP_EOF' on a new line\n");
@@ -1354,56 +1354,81 @@ void test_exit_status_handling(t_minishell *minishell)
     printf("\n=== EXIT STATUS HANDLING TEST COMPLETED ===\n");
 }
 
-void debug_env(t_minishell *shell)
+void test_heredoc_with_large_content(t_minishell *minishell)
 {
-    printf("--- ENV DEBUG ---\n");
-    t_list *node = shell->envp;
-    int count = 0;
+    printf("\n--- Heredoc with large content test ---\n");
+    printf("Enter multiple lines, including some very long ones (500+ chars if possible)\n");
+    printf("Type 'LARGE_EOF' when done\n");
+
+    // Create heredoc with large content
+    t_infile *heredoc = create_infile(minishell, NULL, INF_HEREDOC, "LARGE_EOF");
     
-    if (!node) {
-        printf("Warning: Environment linked list is empty (shell->envp is NULL)\n");
-        printf("----------------\n");
-        return;
-    }
+    // Pipe to two commands to stress-test the pipe mechanism
+    t_command_tree *cat_cmd = create_command_with_redirections(minishell, "cat", NULL, heredoc, NULL);
     
-    while (node)
-    {
-        if (!node->content) {
-            printf("[%d] ERROR: Node content is NULL\n", count++);
-            node = node->next;
-            continue;
-        }
-        
-        t_env *env = (t_env *)node->content;
-        
-        // Print node address and content address for debugging
-        printf("[%d] Node@%p Content@%p: ", count++, (void*)node, (void*)env);
-        
-        // Validate env->value before accessing
-        if (env->value) {
-            printf("%s -> ", env->value);
-        } else {
-            printf("(null) -> ");
-        }
-        
-        // Validate env->content before accessing
-        if (env->content) {
-            // For content, extract just the value part if it has = sign
-            char *equal_sign = ft_strchr(env->content, '=');
-            if (equal_sign) {
-                printf("%s", equal_sign + 1);
-            } else {
-                printf("%s", env->content);
-            }
-        } else {
-            printf("(null)");
-        }
-        
-        printf(" (export: %d)\n", env->is_export);
-        node = node->next;
-    }
-    printf("----------------\n");
+    char *grep_args[] = {"[a-z]", NULL};
+    t_command_tree *grep_cmd = create_simple_command(minishell, "grep", grep_args);
+    
+    char *wc_args[] = {"-l", NULL};
+    t_command_tree *wc_cmd = create_simple_command(minishell, "wc", wc_args);
+    
+    // Build pipe: cat << LARGE_EOF | grep [a-z] | wc -l
+    t_command_tree *pipe1 = create_pipe_node(minishell, cat_cmd, grep_cmd);
+    t_command_tree *pipe2 = create_pipe_node(minishell, pipe1, wc_cmd);
+    
+    run_test(minishell, pipe2, "Heredoc with large content (cat << LARGE_EOF | grep [a-z] | wc -l)");
 }
+
+// void debug_env(t_minishell *shell)
+// {
+//     printf("--- ENV DEBUG ---\n");
+//     t_list *node = shell->envp;
+//     int count = 0;
+    
+//     if (!node) {
+//         printf("Warning: Environment linked list is empty (shell->envp is NULL)\n");
+//         printf("----------------\n");
+//         return;
+//     }
+    
+//     while (node)
+//     {
+//         if (!node->content) {
+//             printf("[%d] ERROR: Node content is NULL\n", count++);
+//             node = node->next;
+//             continue;
+//         }
+        
+//         t_env *env = (t_env *)node->content;
+        
+//         // Print node address and content address for debugging
+//         printf("[%d] Node@%p Content@%p: ", count++, (void*)node, (void*)env);
+        
+//         // Validate env->value before accessing
+//         if (env->value) {
+//             printf("%s -> ", env->value);
+//         } else {
+//             printf("(null) -> ");
+//         }
+        
+//         // Validate env->content before accessing
+//         if (env->content) {
+//             // For content, extract just the value part if it has = sign
+//             char *equal_sign = ft_strchr(env->content, '=');
+//             if (equal_sign) {
+//                 printf("%s", equal_sign + 1);
+//             } else {
+//                 printf("%s", env->content);
+//             }
+//         } else {
+//             printf("(null)");
+//         }
+        
+//         printf(" (export: %d)\n", env->is_export);
+//         node = node->next;
+//     }
+//     printf("----------------\n");
+// }
 
 // void debug_env(t_minishell *shell)
 // {
@@ -1447,36 +1472,38 @@ int main(int argc, char **argv, char **envp)
     t_minishell minishell;
 
     // Initialize minishell
-    if (init_minishell(&minishell, envp) != 0) {
+    if (!init_minishell(&minishell, envp)) {
         fprintf(stderr, "Failed to initialize minishell\n");
+        cleanup_memory(&minishell);
         return 1;
     }
     init_environment(&minishell, envp);
     printf("=== ULTIMATE MINISHELL STRESS TEST ===\n");
     // debug_env(&minishell);
     //Run stress tests
-    test_deep_pipe_chain(&minishell);
-    test_pipes_with_redirections(&minishell);
-    test_multiple_heredocs(&minishell);
-    test_complex_redirections(&minishell);
-    test_large_file_processing(&minishell);
-    test_builtins_with_pipes(&minishell);
-    test_multi_level_redirections(&minishell);
-    test_max_file_descriptors(&minishell);
-    test_mixed_pipe_redirections(&minishell);
-    test_environment_variable_expansion(&minishell);
-    test_quote_handling(&minishell);
-    test_nested_pipes_redirections(&minishell);
-    test_special_characters(&minishell);
-    test_error_handling(&minishell);
-    test_background_processes(&minishell); 
-    test_stderr_redirection(&minishell);
-    test_command_substitution(&minishell); 
-    test_wildcards_and_globbing(&minishell); 
-    test_env_expansion_edge_cases(&minishell);
-    test_env_expansion_execution(&minishell);
-    test_quote_expansion_execution(&minishell);
-    test_exit_status_handling(&minishell);
+    // test_deep_pipe_chain(&minishell);
+    // test_pipes_with_redirections(&minishell);
+    // test_multiple_heredocs(&minishell);
+    // test_complex_redirections(&minishell);
+    // test_large_file_processing(&minishell);
+    // test_builtins_with_pipes(&minishell);
+    // test_multi_level_redirections(&minishell);
+    // test_max_file_descriptors(&minishell);
+    // test_mixed_pipe_redirections(&minishell);
+    // test_environment_variable_expansion(&minishell);
+    // test_quote_handling(&minishell);
+    // test_nested_pipes_redirections(&minishell);
+    // test_special_characters(&minishell);
+    // test_error_handling(&minishell);
+    // test_background_processes(&minishell); 
+    // test_stderr_redirection(&minishell);
+    // test_command_substitution(&minishell); 
+    // test_wildcards_and_globbing(&minishell); 
+    // test_env_expansion_edge_cases(&minishell);
+    // test_env_expansion_execution(&minishell);
+    // test_quote_expansion_execution(&minishell);
+    // test_exit_status_handling(&minishell);
+    test_heredoc_with_large_content(&minishell);
     printf("\n=== STRESS TEST COMPLETED ===\n");
 
     // Clean up
@@ -1565,7 +1592,9 @@ int main(int argc, char **argv, char **envp)
 //     printf("=== MINISHELL REDIRECTION TEST ===\n");
     
 //     // Run just our simple redirection test
-//     test_simple_redirections(&minishell);
+//     // test_simple_redirections(&minishell);
+//     test_pipes_with_redirections(&minishell);
+//     test_multiple_heredocs(&minishell);
     
 //     // Clean up
 //     for (int i = 0; i < GC_COUNT; i++) {

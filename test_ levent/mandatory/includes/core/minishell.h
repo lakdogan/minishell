@@ -37,6 +37,7 @@ typedef enum e_gc_type
 	GC_ENV,     // value and content allocations
 	GC_CWD,
 	GC_EXPAND,
+	GC_PROC_HERE,
 	GC_COUNT // Number of GC categories (used for array size)
 }			t_gc_type;
 

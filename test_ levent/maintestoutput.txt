@@ -1,0 +1,35 @@
+      85
+=== ULTIMATE MINISHELL STRESS TEST ===
+
+--- Deep pipe chain (cat /etc/passwd | grep r | grep o | grep o | wc -l) ---
+Exit code: 0
+Created test file: /Users/lakdogan/Documents/minishell_vog_v2/test_ levent/pipe_redir_input.txt
+
+--- Pipes with redirections (cat < input.txt | grep a | sort | wc -l > output.txt) ---
+Exit code: 0
+Output file content:       19
+
+
+--- Multiple heredocs in a pipe ---
+For the first heredoc (cat), enter some text then type 'CAT_EOF' on a new line
+For the second heredoc (grep), enter a regex pattern then type 'GREP_EOF' on a new line
+
+--- Multiple heredocs (cat << CAT_EOF | grep << GREP_EOF) ---
+[?2004h> Thitttttttadsdasddasad^C[?2004l      85
+=== ULTIMATE MINISHELL STRESS TEST ===
+
+--- Deep pipe chain (cat /etc/passwd | grep r | grep o | grep o | wc -l) ---
+Exit code: 0
+Created test file: /Users/lakdogan/Documents/minishell_vog_v2/test_ levent/pipe_redir_input.txt
+
+--- Pipes with redirections (cat < input.txt | grep a | sort | wc -l > output.txt) ---
+Exit code: 0
+Output file content:       19
+
+
+--- Multiple heredocs in a pipe ---
+For the first heredoc (cat), enter some text then type 'CAT_EOF' on a new line
+For the second heredoc (grep), enter a regex pattern then type 'GREP_EOF' on a new line
+
+--- Multiple heredocs (cat << CAT_EOF | grep << GREP_EOF) ---
+[?2004h> saS^C[?2004l

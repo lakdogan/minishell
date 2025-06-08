@@ -12,34 +12,35 @@
 
 #include "../../../../includes/core/minishell.h"
 
-void handle_var_expansion_exec(t_minishell *shell, t_exec *exec)
+void	handle_var_expansion_exec(t_minishell *shell, t_exec *exec)
 {
-    int i;
-    t_infile *infile;
-    t_outfile *outfile;
+	int			i;
+	t_infile	*infile;
+	t_outfile	*outfile;
 
-    if (exec->argv)
-    {
+	if (exec->argv)
+	{
 		i = 0;
-        while (exec->argv[i])
-        {
-            exec->argv[i] = expand_variables_with_quotes(exec->argv[i], shell);
+		while (exec->argv[i])
+		{
+			exec->argv[i] = expand_variables_with_quotes(exec->argv[i], shell);
 			i++;
-        }
-    }
-    infile = exec->infiles;
-    while (infile)
-    {
-        infile->name = expand_variables_with_quotes(infile->name, shell);
-        infile = infile->next;
-    }
-    outfile = exec->outfiles;
-    while (outfile)
-    {
-        outfile->name = expand_variables_with_quotes(outfile->name, shell);
-        outfile = outfile->next;
-    }
+		}
+	}
+	infile = exec->infiles;
+	while (infile)
+	{
+		infile->name = expand_variables_with_quotes(infile->name, shell);
+		infile = infile->next;
+	}
+	outfile = exec->outfiles;
+	while (outfile)
+	{
+		outfile->name = expand_variables_with_quotes(outfile->name, shell);
+		outfile = outfile->next;
+	}
 }
+
 /**
  * @brief Executes an external command in a child process
  *

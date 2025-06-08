@@ -38,18 +38,17 @@ static bool	is_numeric(const char *str)
 	return (true);
 }
 
-void    cleanup_memory(t_minishell *minishell)
+void	cleanup_memory(t_minishell *minishell)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while(i < GC_COUNT)
-    {
-        gc_cleanup(&minishell->gc[i]);
-        i++;
-    }
+	i = 0;
+	while (i < GC_COUNT)
+	{
+		gc_cleanup(&minishell->gc[i]);
+		i++;
+	}
 }
-
 
 /**
  * @brief Implements the exit built-in command
@@ -72,16 +71,16 @@ int	ft_exit(char **argv, t_minishell *minishell)
 
 	write(STDERR_FILENO, "exit\n", 5);
 	if (!argv[1])
-    {
-        cleanup_memory(minishell);
+	{
+		cleanup_memory(minishell);
 		exit(minishell->exit_code);
-    }
+	}
 	if (!is_numeric(argv[1]))
 	{
 		write(STDERR_FILENO, "minishell: exit: ", 18);
 		write(STDERR_FILENO, argv[1], ft_strlen(argv[1]));
 		write(STDERR_FILENO, ": numeric argument required\n", 29);
-        cleanup_memory(minishell);
+		cleanup_memory(minishell);
 		exit(255);
 	}
 	if (argv[2])
@@ -90,6 +89,6 @@ int	ft_exit(char **argv, t_minishell *minishell)
 		return (1);
 	}
 	code = ft_atol(argv[1]);
-    cleanup_memory(minishell);
+	cleanup_memory(minishell);
 	exit((unsigned char)code);
 }

@@ -90,11 +90,13 @@ MINISHELL_MANDATORY_FILES := \
 				$(IO_UTILS_DIR)fd_operations.c \
 				$(IO_UTILS_DIR)pipe_operations.c \
 				$(IO_UTILS_DIR)read_from_pipe.c \
+				$(REDIRECTION_DIR)file_utils.c \
 				$(REDIRECTION_DIR)handle_redirections.c \
 				$(REDIRECTION_DIR)heredoc_content.c \
 				$(REDIRECTION_DIR)heredoc.c \
-				$(REDIRECTION_DIR)redirection_files.c \
+				$(REDIRECTION_DIR)process_heredoc.c \
 				$(SIGNALS_DIR)signal_handlers.c \
+				$(INIT_DIR)create_env_node.c \
 				$(INIT_DIR)init_env.c \
 				$(INIT_DIR)init_minishell.c \
 				$(SRCS_DIR)minishell.c \

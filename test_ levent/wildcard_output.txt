@@ -19,6 +19,7 @@ file with spaces.txt
 file-with_special%chars.txt
 large_input.txt
 large_output.txt
+maintestoutput.txt
 mixed_test.txt
 multi_input.txt
 multi_output.txt
@@ -55,6 +56,7 @@ file with spaces.txt
 file-with_special%chars.txt
 large_input.txt
 large_output.txt
+maintestoutput.txt
 multi_input.txt
 multi_output.txt
 nested_input.txt

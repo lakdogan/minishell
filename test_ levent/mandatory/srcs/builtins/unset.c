@@ -101,6 +101,6 @@ int	ft_unset(char **argv, t_minishell *minishell)
 			remove_env_var(argv[i], minishell);
 		i++;
 	}
-    minishell->envp_arr = rebuild_env_array(minishell);
+	minishell->envp_arr = rebuild_env_array(minishell);
 	return (0);
 }

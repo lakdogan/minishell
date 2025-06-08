@@ -8,10 +8,10 @@
 
 #include "../../includes/core/minishell.h"
 
-int lookup_env_value(const char *name, t_minishell *minishell, char **result)
+int	lookup_env_value(const char *name, t_minishell *minishell, char **result)
 {
-    *result = find_env_value(minishell, name);
-    if (*result == NULL)
+	*result = find_env_value(minishell, name);
+	if (*result == NULL)
 		return (1);
 	return (0);
 }

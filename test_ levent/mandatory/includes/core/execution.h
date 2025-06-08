@@ -53,6 +53,7 @@
 # define IS_RIGHT_PID 1
 # define IS_LEFT_PID 0
 # define SKIP_BACKSLASH 1
+# define GETCWD_AUTO_ALLOCATE 0
 
 typedef enum e_in_type
 {
@@ -276,5 +277,6 @@ char					*find_env_value(t_minishell *shell, const char *name);
 int						get_var_name_len(const char *str);
 int	handle_exit_status(char **expanded, t_minishell *shell);
 t_env	*find_env_var(const char *name, t_minishell *minishell);
+int	write_heredoc_line(int fd, char *line);
 
 #endif

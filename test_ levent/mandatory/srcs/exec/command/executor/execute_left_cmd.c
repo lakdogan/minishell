@@ -21,10 +21,20 @@ void	setup_default_pipe_output(t_minishell *shell, int *pipefd)
 void	execute_left_subtree(t_minishell *shell, t_command_tree *node,
 		int *pipefd)
 {
+	if (!node || !node->left)
+		return ;
 	if (node->left->type == N_EXEC)
 		handle_standard_left_cmds(shell, node, pipefd);
+	else if (node->left->type == N_PIPE)
+	{
+		setup_default_pipe_output(shell, pipefd);
+		execute_tree(node->left, shell);
+	}
 	else
-		execute_left_subtree(shell, node, pipefd);
+	{
+		setup_default_pipe_output(shell, pipefd);
+		execute_tree(node->left, shell);
+	}
 }
 
 static void	execute_left_by_type(t_minishell *shell, t_command_tree *node,

@@ -38,14 +38,14 @@ int	init_minishell(t_minishell *shell, char **envp)
 
 	ft_bzero(shell, sizeof(t_minishell));
 	if (allocate_gc_structs(shell) == GC_STRUCT_ALLOCATION_FAILED)
-		return (-1);
+		return (SYSCALL_ERROR);
 	init_data(shell, envp);
-	temp = getcwd(NULL, 0);
+	temp = getcwd(NULL, GETCWD_AUTO_ALLOCATE);
 	if (!temp)
-		return (-1);
+		return (SYSCALL_ERROR);
 	shell->cwd = gc_strdup(shell->gc[GC_CWD], temp);
 	free(temp);
 	if (!shell->cwd)
-		return (-1);
-	return (0);
+		return (SYSCALL_ERROR);
+	return (OPERATION_SUCCESS);
 }

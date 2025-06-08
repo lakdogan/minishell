@@ -49,6 +49,8 @@ char	*expand_variables_with_quotes(const char *str, t_minishell *shell)
 	char	quote_char;
 	int		old_i;
 
+	if (!str)
+        return NULL;
 	result = gc_strdup(shell->gc[GC_EXPAND], "");
 	i = 0;
 	quote_char = 0;

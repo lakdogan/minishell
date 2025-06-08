@@ -76,6 +76,7 @@
 # define SKIP_DOLLAR_SIGN 1
 # define EQUALS_SIGN '='
 # define SKIP_EQUALS_SIGN 1
+#define NO_PROCESS 0
 
 typedef enum e_in_type
 {

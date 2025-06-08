@@ -54,6 +54,11 @@
 # define IS_LEFT_PID 0
 # define SKIP_BACKSLASH 1
 # define GETCWD_AUTO_ALLOCATE 0
+# define PIPE_FD_COUNT 2
+# define INFINITE_LOOP 1
+#define SUCCESSFUL_READ 0
+#define READ_ERROR -1
+#define FIRST_CHAR 0
 
 typedef enum e_in_type
 {
@@ -275,8 +280,8 @@ bool					should_expand_var(const char *str, int i,
 char					*extract_var_name(const char *str, t_minishell *shell);
 char					*find_env_value(t_minishell *shell, const char *name);
 int						get_var_name_len(const char *str);
-int	handle_exit_status(char **expanded, t_minishell *shell);
-t_env	*find_env_var(const char *name, t_minishell *minishell);
-int	write_heredoc_line(int fd, char *line);
+int						handle_exit_status(char **expanded, t_minishell *shell);
+t_env					*find_env_var(const char *name, t_minishell *minishell);
+int						write_heredoc_line(int fd, char *line);
 
 #endif

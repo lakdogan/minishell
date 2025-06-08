@@ -14,7 +14,7 @@ void	wait_for_children(t_minishell *shell, pid_t left_pid, pid_t right_pid)
 
 void	restore_stdout(t_pipe_state *state)
 {
-	if (state->stdout_backup != -1)
+	if (state->stdout_backup != INVALID_FD)
 	{
 		dup2(state->stdout_backup, STDOUT_FILENO);
 		close(state->stdout_backup);

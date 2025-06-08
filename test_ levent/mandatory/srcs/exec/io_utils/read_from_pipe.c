@@ -2,7 +2,7 @@
 
 static char	*init_pipe_buffer(t_gc *gc)
 {
-	return (gc_strdup(gc, ""));
+	return (gc_strdup(gc, EMPTY_STRING));
 }
 
 static size_t	read_pipe_chunk(int pipe_fd, char *buffer, size_t buffer_size)

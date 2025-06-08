@@ -26,7 +26,7 @@ void	save_heredoc_contents(t_minishell *shell, t_exec *exec)
 	{
 		content = collect_heredoc_content(shell, exec, last_heredoc);
 		if (!content)
-			content = gc_strdup(shell->gc[GC_MAIN], "");
+			content = gc_strdup(shell->gc[GC_MAIN], EMPTY_STRING);
 		write_heredoc_to_fd(shell, exec, content);
 	}
 	exec->heredoc_prepared = true;

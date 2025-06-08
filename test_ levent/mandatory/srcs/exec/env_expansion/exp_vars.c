@@ -14,17 +14,19 @@ static int	process_variable(const char *str, int pos, char **result,
 
 static void	process_regular_char(char c, char **result, t_minishell *shell)
 {
-	char	tmp[2];
+	char	tmp[CHAR_BUFFER_SIZE];
 
-	tmp[0] = c;
-	tmp[1] = '\0';
+	tmp[FIRST_CHAR] = c;
+	tmp[NULL_TERMINATOR_INDEX] = NULL_TERMINATOR;
 	*result = gc_strjoin(shell->gc[GC_EXPAND], *result, tmp);
 }
 
 static bool	is_variable_reference(const char *str, int i)
 {
-	return (str[i] == '$' && str[i + 1] && (is_var_char(str[i + 1])
-			|| str[i + 1] == '?' || str[i + 1] == '$'));
+	return (str[i] == DOLLAR_SIGN && str[i + NEXT_CHAR_INDEX]
+		&& (is_var_char(str[i + NEXT_CHAR_INDEX])
+			|| str[i + NEXT_CHAR_INDEX] == QUESTION_MARK
+			|| str[i + NEXT_CHAR_INDEX] == DOLLAR_SIGN));
 }
 
 char	*expand_variables(const char *str, t_minishell *shell)
@@ -33,7 +35,7 @@ char	*expand_variables(const char *str, t_minishell *shell)
 	int		i;
 	int		consumed;
 
-	result = gc_strdup(shell->gc[GC_EXPAND], "");
+	result = gc_strdup(shell->gc[GC_EXPAND], EMPTY_STRING);
 	i = 0;
 	while (str[i])
 	{

@@ -56,9 +56,26 @@
 # define GETCWD_AUTO_ALLOCATE 0
 # define PIPE_FD_COUNT 2
 # define INFINITE_LOOP 1
-#define SUCCESSFUL_READ 0
-#define READ_ERROR -1
-#define FIRST_CHAR 0
+# define SUCCESSFUL_READ 0
+# define READ_ERROR -1
+# define FIRST_CHAR 0
+# define NULL_TERMINATOR_INDEX 1
+# define NEXT_CHAR_INDEX 1
+# define DOLLAR_SIGN '$'
+# define QUESTION_MARK '?'
+# define CHAR_BUFFER_SIZE 2
+# define SINGLE_QUOTE '\''
+# define DOUBLE_QUOTE '"'
+# define NO_QUOTE 0
+# define BACKSLASH '\\'
+# define EMPTY_STRING ""
+# define UNDERSCORE '_'
+# define SPECIAL_VAR_LENGTH 2
+# define NO_EXPANSION 0
+# define INITIAL_CONSUMED_COUNT 0
+# define SKIP_DOLLAR_SIGN 1
+# define EQUALS_SIGN '='
+# define SKIP_EQUALS_SIGN 1
 
 typedef enum e_in_type
 {

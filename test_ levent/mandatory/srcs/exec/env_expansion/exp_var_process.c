@@ -11,23 +11,32 @@ static char	*expand_var_at_position(const char *str, int *i, t_minishell *shell)
 	return (expanded);
 }
 
+static bool	is_active_escape_sequence(const char *str, int i, char quote_char)
+{
+	return (str[i] == BACKSLASH && str[i + NEXT_CHAR_INDEX] != NULL_TERMINATOR
+		&& quote_char != SINGLE_QUOTE);
+}
+
+static bool	is_escapable_char(char c)
+{
+	return (c == DOUBLE_QUOTE || c == SINGLE_QUOTE || c == BACKSLASH
+		|| c == DOLLAR_SIGN);
+}
+
 static char	*process_character(const char *str, int *i, char *quote_char,
 		t_minishell *shell)
 {
 	char	new_quote_state;
 
-	if (str[*i] == '\\' && str[*i + 1] != '\0' && *quote_char != '\'')
+	if (is_active_escape_sequence(str, *i, *quote_char))
 	{
-		if (str[*i + 1] == '"' || str[*i + 1] == '\'' || str[*i + 1] == '\\'
-			|| str[*i + 1] == '$')
+		if (is_escapable_char(str[*i + NEXT_CHAR_INDEX]))
 		{
 			(*i) += SKIP_BACKSLASH;
 			return (append_char(NULL, str[*i], shell));
 		}
 		else
-		{
 			return (append_char(NULL, str[*i], shell));
-		}
 	}
 	new_quote_state = handle_quote(str[*i], *quote_char);
 	if (new_quote_state != *quote_char)
@@ -50,10 +59,10 @@ char	*expand_variables_with_quotes(const char *str, t_minishell *shell)
 	int		old_i;
 
 	if (!str)
-        return NULL;
-	result = gc_strdup(shell->gc[GC_EXPAND], "");
+		return (NULL);
+	result = gc_strdup(shell->gc[GC_EXPAND], EMPTY_STRING);
 	i = 0;
-	quote_char = 0;
+	quote_char = NO_QUOTE;
 	while (str[i])
 	{
 		old_i = i;

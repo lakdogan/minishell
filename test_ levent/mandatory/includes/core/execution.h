@@ -76,7 +76,10 @@
 # define SKIP_DOLLAR_SIGN 1
 # define EQUALS_SIGN '='
 # define SKIP_EQUALS_SIGN 1
-#define NO_PROCESS 0
+# define NO_PROCESS 0
+# define PATH_VAR_PREFIX "PATH="
+# define PATH_PREFIX_LENGTH 5
+# define PATH_DELIMITER ':'
 
 typedef enum e_in_type
 {

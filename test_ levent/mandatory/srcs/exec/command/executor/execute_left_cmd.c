@@ -13,9 +13,10 @@ void	handle_standard_left_cmds(t_minishell *shell, t_command_tree *node,
 
 void	setup_default_pipe_output(t_minishell *shell, int *pipefd)
 {
-	safe_close(shell, pipefd[0], "pipe close read end");
-	safe_dup2(shell, pipefd[1], STDOUT_FILENO, "pipe left command stdout");
-	safe_close(shell, pipefd[1], "pipe close write end after dup");
+	safe_close(shell, pipefd[PIPE_READ_END], "pipe close read end");
+	safe_dup2(shell, pipefd[PIPE_WRITE_END], STDOUT_FILENO,
+		"pipe left command stdout");
+	safe_close(shell, pipefd[PIPE_WRITE_END], "pipe close write end after dup");
 }
 
 void	execute_left_subtree(t_minishell *shell, t_command_tree *node,

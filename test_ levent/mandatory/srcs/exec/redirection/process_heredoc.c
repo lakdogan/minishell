@@ -5,6 +5,15 @@ static bool	is_delimiter_match(const char *line, const char *delimiter)
 	return (ft_strcmp(line, delimiter) == STRINGS_EQUAL);
 }
 
+static int	write_heredoc_line(int fd, char *line)
+{
+	if (write(fd, line, ft_strlen(line)) == WRITE_ERROR)
+		return (OPERATION_FAILURE);
+	if (write(fd, "\n", 1) == WRITE_ERROR)
+		return (OPERATION_FAILURE);
+	return (OPERATION_SUCCESS);
+}
+
 static char	*prepare_heredoc_line(t_minishell *shell, char *line,
 		bool quoted_delimiter)
 {

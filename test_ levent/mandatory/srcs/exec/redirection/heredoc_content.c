@@ -1,6 +1,6 @@
 #include "../../../includes/core/minishell.h"
 
-int	should_skip_heredoc_processing(t_minishell *shell, t_exec *exec)
+static int	should_skip_heredoc_processing(t_minishell *shell, t_exec *exec)
 {
 	return (!shell || !exec || exec->heredoc_prepared
 		|| exec->heredoc_fd != INVALID_FD);

@@ -1,6 +1,6 @@
 #include "../../../includes/core/minishell.h"
 
-int	handle_exit_status(char **expanded, t_minishell *shell)
+static int	handle_exit_status(char **expanded, t_minishell *shell)
 {
 	*expanded = gc_itoa(shell->gc[GC_EXPAND], shell->exit_code);
 	if (*expanded)

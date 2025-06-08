@@ -1,14 +1,5 @@
 #include "../../../includes/core/minishell.h"
 
-int	write_heredoc_line(int fd, char *line)
-{
-	if (write(fd, line, ft_strlen(line)) == WRITE_ERROR)
-		return (OPERATION_FAILURE);
-	if (write(fd, "\n", 1) == WRITE_ERROR)
-		return (OPERATION_FAILURE);
-	return (OPERATION_SUCCESS);
-}
-
 void	prepare_heredocs(t_minishell *shell, t_command_tree *node)
 {
 	t_exec	*exec;

@@ -1,18 +1,3 @@
-
-
-/**
- * @file execution.h
-
-	* @brief Contains definitions and function declarations for the shell execution system.
- *
- * This header defines structures and functions for command execution,
-	input/output
- * redirections (including heredocs), path resolution, signal handling,
-	and error management.
-
-	* It also includes constants and enumerations necessary for the shell's execution flow,
- * as well as utilities for file descriptor and pipe operations.
- */
 #ifndef EXECUTION_H
 # define EXECUTION_H
 
@@ -98,27 +83,27 @@ typedef enum e_out_type
 
 typedef struct s_infile
 {
-	t_in_type type;  // < or <<
-	char *name;      // File name
-	char *delimeter; // For heredoc (<<)
+	t_in_type			type;
+	char				*name;
+	char				*delimeter;
 	bool				quoted_delimiter;
 	struct s_infile		*next;
 }						t_infile;
 
 typedef struct s_outfile
 {
-	t_out_type type; // > or >>
-	char *name;      // File name
+	t_out_type			type;
+	char				*name;
 	struct s_outfile	*next;
 
 }						t_outfile;
 
 typedef struct s_exec
 {
-	char *command;       // Command name
-	char **argv;         // Arguments
-	t_infile *infiles;   // Input redirections
-	t_outfile *outfiles; // Output redirections
+	char				*command;
+	char				**argv;
+	t_infile			*infiles;
+	t_outfile			*outfiles;
 	int					heredoc_fd;
 	bool				heredoc_prepared;
 }						t_exec;
@@ -134,6 +119,7 @@ typedef struct s_pipe_state
 
 /* ------------------------------------------------------------------------- */
 /* 								exec dir start 								*/
+/* ------------------------------------------------------------------------- */
 /* ------------------------------------------------------------------------- */
 /* 								command dir start 							*/
 /* ------------------------------------------------------------------------- */
@@ -186,6 +172,8 @@ void					execute_right_cmd(t_command_tree *node,
 							t_minishell *shell, int *pipefd);
 /* 	~	external_executor.c ~ */
 void					execute_command(t_exec *exec, t_minishell *minishell);
+void					handle_var_expansion_exec(t_minishell *shell,
+							t_exec *exec);
 /* ~ handle_pipe_utils.c ~ */
 void					close_file_descriptors(t_minishell *shell,
 							t_pipe_state *state);
@@ -216,6 +204,7 @@ int						get_path_from_env(t_minishell *shell, char **envp,
 /* ------------------------------------------------------------------------- */
 /* 								command dir end 							*/
 /* ------------------------------------------------------------------------- */
+/* ------------------------------------------------------------------------- */
 /* 								core dir start 								*/
 /* ------------------------------------------------------------------------- */
 /* 	~	execute_tree.c ~		*/
@@ -224,6 +213,33 @@ void					execute_tree(t_command_tree *root,
 /* ------------------------------------------------------------------------- */
 /* 							core dir end 									*/
 /* ------------------------------------------------------------------------- */
+/* ------------------------------------------------------------------------- */
+/* 							env_expansion dir start 						*/
+/* ------------------------------------------------------------------------- */
+/* ~  exp_find_env_value  ~ */
+char					*find_env_value(t_minishell *minishell,
+							const char *name);
+/* ~  exp_single_var  ~ */
+int						expand_single_var(const char *start, char **expanded,
+							t_minishell *shell);
+/* ~  exp_utils.c  ~ */
+bool					is_var_char(char c);
+int						get_var_name_len(const char *str);
+char					*extract_var_name(const char *str, t_minishell *shell);
+/* ~  exp_var_process.c  ~ */
+char					*expand_variables_with_quotes(const char *str,
+							t_minishell *shell);
+/* ~  exp_var_utils.c  ~ */
+bool					should_expand_var(const char *str, int i,
+							char quote_char);
+char					*append_char(char *result, char c, t_minishell *shell);
+char					handle_quote(char c, char quote_char);
+/* ~  exp_vars.c  ~ */
+char					*expand_variables(const char *str, t_minishell *shell);
+/* ------------------------------------------------------------------------- */
+/* 							env_expansion dir end							*/
+/* ------------------------------------------------------------------------- */
+/* ------------------------------------------------------------------------- */
 /* 							error dir start 								*/
 /* ------------------------------------------------------------------------- */
 /* 	~	error_utils_bonus.c ~		*/
@@ -231,6 +247,7 @@ void					exit_with_error(t_minishell *shell, const char *prefix,
 							const char *message, int exit_code);
 /* ------------------------------------------------------------------------- */
 /* 							error dir end 									*/
+/* ------------------------------------------------------------------------- */
 /* ------------------------------------------------------------------------- */
 /* 							io_utils dir start 								*/
 /* ------------------------------------------------------------------------- */
@@ -253,8 +270,11 @@ char					*read_from_pipe(t_minishell *shell, int pipe_fd);
 /* ------------------------------------------------------------------------- */
 /* 							io_utils dir end 								*/
 /* ------------------------------------------------------------------------- */
+/* ------------------------------------------------------------------------- */
 /* 							redirection dir start 							*/
 /* ------------------------------------------------------------------------- */
+/* 	~	file_utils.c  ~ */
+int						open_infile(t_minishell *shell, char *filename);
 /* 	~	handle_redirections.c ~		*/
 void					setup_input_redirections(t_minishell *shell,
 							t_exec *exec);
@@ -264,18 +284,17 @@ void					setup_output_redirections(t_minishell *shell,
 void					save_heredoc_contents(t_minishell *shell, t_exec *exec);
 char					*collect_heredoc_content(t_minishell *shell,
 							t_exec *exec, t_infile *infile);
-/* 	~	heredoc.c ~			*/
+/* ~  process_heredoc.c  ~ */
 int						process_heredoc(t_minishell *shell,
 							const char *delimiter, bool quoted_delimiter);
+/* 	~	heredoc.c ~			*/
 void					prepare_heredocs(t_minishell *shell,
 							t_command_tree *node);
 void					write_heredoc_to_fd(t_minishell *shell, t_exec *exec,
 							char *content);
-/* 	~	redirection_files.c ~ */
-int						create_temp_file(t_minishell *shell);
-int						open_infile(t_minishell *shell, char *filename);
 /* ------------------------------------------------------------------------- */
 /* 								redirection dir end 						*/
+/* ------------------------------------------------------------------------- */
 /* ------------------------------------------------------------------------- */
 /* 								signals dir start 							*/
 /* ------------------------------------------------------------------------- */
@@ -286,26 +305,8 @@ void					setup_parent_signals(void);
 /* ------------------------------------------------------------------------- */
 /* 							signals dir end 								*/
 /* ------------------------------------------------------------------------- */
+/* ------------------------------------------------------------------------- */
 /*							exec dir end									*/
 /* ------------------------------------------------------------------------- */
-
-char					*expand_variables_with_quotes(const char *str,
-							t_minishell *shell);
-char					*expand_variables(const char *str, t_minishell *shell);
-int						expand_single_var(const char *start, char **expanded,
-							t_minishell *shell);
-void					handle_var_expansion_exec(t_minishell *shell,
-							t_exec *exec);
-bool					is_var_char(char c);
-char					handle_quote(char c, char quote_char);
-char					*append_char(char *result, char c, t_minishell *shell);
-bool					should_expand_var(const char *str, int i,
-							char quote_char);
-char					*extract_var_name(const char *str, t_minishell *shell);
-char					*find_env_value(t_minishell *shell, const char *name);
-int						get_var_name_len(const char *str);
-int						handle_exit_status(char **expanded, t_minishell *shell);
-t_env					*find_env_var(const char *name, t_minishell *minishell);
-int						write_heredoc_line(int fd, char *line);
 
 #endif

@@ -55,7 +55,7 @@ char	*collect_heredoc_content(t_minishell *shell, t_exec *exec,
 	print_heredoc_prompt(exec->command, infile->delimeter);
 	pipe_fd = process_heredoc(shell, infile->delimeter,
 			infile->quoted_delimiter);
-	if (pipe_fd < 0)
+	if (pipe_fd == INVALID_FD)
 		return (NULL);
 	content = read_from_pipe(shell, pipe_fd);
 	safe_close(shell, pipe_fd, "heredoc pipe read end");

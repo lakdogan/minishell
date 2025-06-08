@@ -17,9 +17,7 @@ static char	*prepare_heredoc_line(t_minishell *shell, char *line,
 	{
 		processed_line = expand_variables(line, shell);
 		if (processed_line)
-		{
 			return (processed_line);
-		}
 	}
 	return (line);
 }
@@ -40,17 +38,18 @@ static bool	process_and_write_line(t_minishell *shell, int *fd, char *line,
 int	process_heredoc(t_minishell *shell, const char *delimiter,
 		bool quoted_delimiter)
 {
-	int		fd[2];
+	int		fd[PIPE_FD_COUNT];
 	char	*line;
 
 	if (!create_pipe(shell, fd))
 		return (INVALID_FD);
-	while (1)
+	while (INFINITE_LOOP)
 	{
 		line = readline("> ");
 		if (!line)
 			break ;
-		gc_register(shell->gc[GC_PROC_HERE], line, ft_strlen(line) + 1);
+		gc_register(shell->gc[GC_PROC_HERE], line, ft_strlen(line)
+			+ NULL_TERMINATOR_SIZE);
 		if (is_delimiter_match(line, delimiter))
 			break ;
 		if (!process_and_write_line(shell, fd, line, quoted_delimiter))

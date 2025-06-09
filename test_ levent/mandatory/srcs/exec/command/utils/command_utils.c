@@ -61,12 +61,12 @@ int	is_builtin(const char *cmd)
 	if (!cmd)
 		return (FALSE);
 	return (ft_strncmp(cmd, "echo", SIZE_MAX) == STRINGS_EQUAL
-		|| ft_strncmp(cmd, "cd", SIZE_MAX) == STRINGS_EQUAL || ft_strncmp(cmd,
-			"pwd", SIZE_MAX) == STRINGS_EQUAL || ft_strncmp(cmd, "export",
-			SIZE_MAX) == STRINGS_EQUAL || ft_strncmp(cmd, "unset",
-			SIZE_MAX) == STRINGS_EQUAL || ft_strncmp(cmd, "env",
-			SIZE_MAX) == STRINGS_EQUAL || ft_strncmp(cmd, "exit",
-			SIZE_MAX) == STRINGS_EQUAL);
+		|| ft_strncmp(cmd, "cd", SIZE_MAX) == STRINGS_EQUAL
+		|| ft_strncmp(cmd, "pwd", SIZE_MAX) == STRINGS_EQUAL
+		|| ft_strncmp(cmd, "export", SIZE_MAX) == STRINGS_EQUAL
+		|| ft_strncmp(cmd, "unset", SIZE_MAX) == STRINGS_EQUAL
+		|| ft_strncmp(cmd, "env", SIZE_MAX) == STRINGS_EQUAL
+		|| ft_strncmp(cmd, "exit", SIZE_MAX) == STRINGS_EQUAL);
 }
 
 /**

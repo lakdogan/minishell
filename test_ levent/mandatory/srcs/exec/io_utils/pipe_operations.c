@@ -34,6 +34,6 @@ int	create_pipe(t_minishell *shell, int *pipefd)
  */
 void	close_pipe(t_minishell *shell, int *pipefd)
 {
-	safe_close(shell, pipefd[0], "close pipe read end");
-	safe_close(shell, pipefd[1], "close pipe write end");
+	safe_close(shell, pipefd[PIPE_READ_END], "close pipe read end");
+	safe_close(shell, pipefd[PIPE_WRITE_END], "close pipe write end");
 }

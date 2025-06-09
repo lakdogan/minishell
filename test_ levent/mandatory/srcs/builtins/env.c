@@ -7,30 +7,30 @@
  * It prints each variable in the format "NAME=VALUE".
  */
 
- #include "../../includes/core/minishell.h"
+#include "../../includes/core/minishell.h"
 
- /**
-  * @brief Displays all environment variables
-  *
-  * Implements the built-in env command which prints all environment variables
-  * that are marked for export and have a defined value. Each variable is printed
-  * on a separate line in the format "NAME=VALUE".
-  *
-  * @param minishell Pointer to the shell state containing environment variables
-  * @return int Always returns 0 (success)
-  */
- int	ft_env(t_minishell *minishell)
- {
-     t_list	*node;
-     t_env	*env;
- 
-     node = minishell->envp;
-     while (node)
-     {
-         env = (t_env *)node->content;
-         if (env->is_export && env->content)
-             printf("%s\n", env->content);
-         node = node->next;
-     }
-     return (0);
- }
+/**
+ * @brief Displays all environment variables
+ *
+ * Implements the built-in env command which prints all environment variables
+ * that are marked for export and have a defined value. Each variable is printed
+ * on a separate line in the format "NAME=VALUE".
+ *
+ * @param minishell Pointer to the shell state containing environment variables
+ * @return int Always returns 0 (success)
+ */
+int	ft_env(t_minishell *minishell)
+{
+	t_list	*node;
+	t_env	*env;
+
+	node = minishell->envp;
+	while (node)
+	{
+		env = (t_env *)node->content;
+		if (env->is_export && env->content)
+			ft_printf("%s\n", env->content);
+		node = node->next;
+	}
+	return (BUILTIN_SUCCESS);
+}

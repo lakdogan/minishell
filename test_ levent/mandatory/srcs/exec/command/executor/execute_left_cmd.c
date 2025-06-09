@@ -13,18 +13,29 @@ void	handle_standard_left_cmds(t_minishell *shell, t_command_tree *node,
 
 void	setup_default_pipe_output(t_minishell *shell, int *pipefd)
 {
-	safe_close(shell, pipefd[0], "pipe close read end");
-	safe_dup2(shell, pipefd[1], STDOUT_FILENO, "pipe left command stdout");
-	safe_close(shell, pipefd[1], "pipe close write end after dup");
+	safe_close(shell, pipefd[PIPE_READ_END], "pipe close read end");
+	safe_dup2(shell, pipefd[PIPE_WRITE_END], STDOUT_FILENO,
+		"pipe left command stdout");
+	safe_close(shell, pipefd[PIPE_WRITE_END], "pipe close write end after dup");
 }
 
 void	execute_left_subtree(t_minishell *shell, t_command_tree *node,
 		int *pipefd)
 {
+	if (!node || !node->left)
+		return ;
 	if (node->left->type == N_EXEC)
 		handle_standard_left_cmds(shell, node, pipefd);
+	else if (node->left->type == N_PIPE)
+	{
+		setup_default_pipe_output(shell, pipefd);
+		execute_tree(node->left, shell);
+	}
 	else
-		execute_left_subtree(shell, node, pipefd);
+	{
+		setup_default_pipe_output(shell, pipefd);
+		execute_tree(node->left, shell);
+	}
 }
 
 static void	execute_left_by_type(t_minishell *shell, t_command_tree *node,

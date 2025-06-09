@@ -12,6 +12,35 @@
 
 #include "../../../../includes/core/minishell.h"
 
+void	handle_var_expansion_exec(t_minishell *shell, t_exec *exec)
+{
+	int			i;
+	t_infile	*infile;
+	t_outfile	*outfile;
+
+	if (exec->argv)
+	{
+		i = 0;
+		while (exec->argv[i])
+		{
+			exec->argv[i] = expand_variables_with_quotes(exec->argv[i], shell);
+			i++;
+		}
+	}
+	infile = exec->infiles;
+	while (infile)
+	{
+		infile->name = expand_variables_with_quotes(infile->name, shell);
+		infile = infile->next;
+	}
+	outfile = exec->outfiles;
+	while (outfile)
+	{
+		outfile->name = expand_variables_with_quotes(outfile->name, shell);
+		outfile = outfile->next;
+	}
+}
+
 /**
  * @brief Executes an external command in a child process
  *
@@ -41,6 +70,7 @@ void	execute_command(t_exec *exec, t_minishell *minishell)
 	else if (errno == EACCES)
 		exit_with_error(minishell, "permission denied: ", exec->command,
 			PERMISSION_DENIED);
+	handle_var_expansion_exec(minishell, exec);
 	execve(abs_path, exec->argv, minishell->envp_arr);
 	exit_with_error(minishell, "execve", strerror(errno), CMD_NOT_FOUND);
 }

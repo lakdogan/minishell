@@ -28,11 +28,11 @@ int	ft_pwd(void)
 		len = ft_strlen(cwd);
 		write(STDOUT_FILENO, cwd, len);
 		write(STDOUT_FILENO, "\n", 1);
-		return (0);
+		return (BUILTIN_SUCCESS);
 	}
 	else
 	{
 		perror("pwd");
-		return (1);
+		return (BUILTIN_FAILURE);
 	}
 }

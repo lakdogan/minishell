@@ -131,7 +131,7 @@ char	*get_absolute_path(t_minishell *shell, char *cmd, char **envp)
 	path_env = find_path_env(envp);
 	if (!path_env)
 		return (NULL);
-	paths = gc_split(shell->gc[GC_TEMP], path_env, ':');
+	paths = gc_split(shell->gc[GC_TEMP], path_env, PATH_DELIMITER);
 	result = find_in_path(shell, paths, cmd);
 	return (result);
 }

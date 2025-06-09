@@ -23,9 +23,9 @@ static char	*extract_key(t_minishell *minishell, const char *arg)
 	int	len;
 
 	len = 0;
-	while (arg[len] && arg[len] != '=')
+	while (arg[len] && arg[len] != EQUALS_SIGN)
 		len++;
-	return (gc_substr(minishell->gc[GC_TEMP], arg, 0, len));
+	return (gc_substr(minishell->gc[GC_TEMP], arg, FIRST_CHAR, len));
 }
 
 /**
@@ -41,10 +41,10 @@ static char	*extract_value(t_minishell *minishell, const char *arg)
 {
 	char	*equal;
 
-	equal = ft_strchr(arg, '=');
+	equal = ft_strchr(arg, EQUALS_SIGN);
 	if (!equal)
 		return (NULL);
-	return (gc_strdup(minishell->gc[GC_TEMP], equal + 1));
+	return (gc_strdup(minishell->gc[GC_TEMP], equal + NULL_TERMINATOR_SIZE));
 }
 
 /**
@@ -66,8 +66,8 @@ void	add_new_env(char *key, char *value, t_minishell *minishell)
 	new_env = gc_malloc(minishell->gc[GC_MAIN], sizeof(t_env));
 	new_env->value = gc_strdup(minishell->gc[GC_MAIN], key);
 	if (value)
-		new_env->content = gc_strjoin_3(minishell->gc[GC_MAIN], key, "=",
-				value);
+		new_env->content = gc_strjoin_3(minishell->gc[GC_MAIN], key,
+				EQUALS_SIGN, value);
 	else
 		new_env->content = NULL;
 	new_env->is_export = true;
@@ -95,7 +95,8 @@ void	update_existing_env(t_minishell *minishell, t_env *env, char *key,
 	{
 		gc_collect(minishell->gc[GC_ENV]);
 		env->value = gc_strdup(minishell->gc[GC_ENV], key);
-		env->content = gc_strjoin_3(minishell->gc[GC_ENV], key, "=", value);
+		env->content = gc_strjoin_3(minishell->gc[GC_ENV], key, EQUALS_SIGN,
+				value);
 	}
 	env->is_export = true;
 	gc_collect(minishell->gc[GC_TEMP]);
@@ -123,7 +124,7 @@ void	update_or_add_env(const char *arg, t_minishell *minishell)
 	while (node)
 	{
 		env = (t_env *)node->content;
-		if (ft_strncmp(env->value, key, SIZE_MAX) == 0)
+		if (ft_strcmp(env->value, key) == STRINGS_EQUAL)
 		{
 			update_existing_env(minishell, env, key, value);
 			return ;

@@ -6,7 +6,7 @@ static bool	pipe_state_initialized(t_minishell *shell, t_pipe_state *state,
 	if (!node || !node->left || !node->right)
 		return (false);
 	state->stdout_backup = dup(STDOUT_FILENO);
-	if (state->stdout_backup == -1)
+	if (state->stdout_backup == INVALID_FD)
 	{
 		perror("stdout backup");
 		return (false);

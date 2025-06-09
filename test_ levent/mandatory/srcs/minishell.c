@@ -112,6 +112,7 @@ t_infile *create_infile(t_minishell *minishell, const char *filename, t_in_type 
     }
     
     infile->type = type;
+    infile->quoted_delimiter = false;
     return infile;
 }
 
@@ -235,20 +236,19 @@ void test_pipes_with_redirections(t_minishell *minishell)
 // Test 3: Multiple heredocs in a pipe
 void test_multiple_heredocs(t_minishell *minishell)
 {
-    // Create first heredoc for 'cat'
+        // Create first heredoc for 'cat'
     t_infile *cat_heredoc = create_infile(minishell, NULL, INF_HEREDOC, "CAT_EOF");
-    
+
     // Create cat command with heredoc
     t_command_tree *cat_cmd = create_command_with_redirections(minishell, "cat", NULL, cat_heredoc, NULL);
-    
-    // Create grep command with heredoc
-    t_infile *grep_heredoc = create_infile(minishell, NULL, INF_HEREDOC, "GREP_EOF");
-    char *args_grep[] = {"--color=auto", "-E", NULL};
-    t_command_tree *grep_cmd = create_command_with_redirections(minishell, "grep", args_grep, grep_heredoc, NULL);
-    
-    // Create pipe: cat << CAT_EOF | grep << GREP_EOF
-    t_command_tree *pipe_cmd = create_pipe_node(minishell, cat_cmd, grep_cmd);
-    
+
+    // Create second heredoc for another command (e.g., another cat or sed)
+    t_infile *second_heredoc = create_infile(minishell, NULL, INF_HEREDOC, "GREP_EOF");
+    t_command_tree *second_cmd = create_command_with_redirections(minishell, "cat", NULL, second_heredoc, NULL);
+
+    // Pipe them together
+    t_command_tree *pipe_cmd = create_pipe_node(minishell, cat_cmd, second_cmd);
+
     printf("\n--- Multiple heredocs in a pipe ---\n");
     printf("For the first heredoc (cat), enter some text then type 'CAT_EOF' on a new line\n");
     printf("For the second heredoc (grep), enter a regex pattern then type 'GREP_EOF' on a new line\n");
@@ -726,7 +726,6 @@ void test_nested_pipes_redirections(t_minishell *minishell)
 }
 
 // Test 13: Special characters in filenames
-// Test 13: Special characters in filenames
 void test_special_characters(t_minishell *minishell)
 {
     char basepath[1024];
@@ -1053,64 +1052,419 @@ void test_wildcards_and_globbing(t_minishell *minishell)
     }
 }
 
-void moooooo_test(t_minishell *minishell)
+// Test: Environment variable expansion edge cases
+void test_env_expansion_edge_cases(t_minishell *minishell)
 {
-    char filepath_in[1024];
+    printf("\n=== ENVIRONMENT VARIABLE EXPANSION TEST ===\n");
+    
     char filepath_out[1024];
     
-    // Get absolute paths
-    if (getcwd(filepath_in, sizeof(filepath_in)) == NULL) {
+    // Get absolute path
+    if (getcwd(filepath_out, sizeof(filepath_out)) == NULL) {
         printf("Error getting current directory\n");
         return;
     }
-    strcpy(filepath_out, filepath_in);
-    strcat(filepath_in, "/fd_test_0.txt");
-    strcat(filepath_out, "/fd_test_1.txt");
+    strcat(filepath_out, "/env_test_output.txt");
     
-    // Create input file with test content
-    create_test_file(filepath_in, "apple\norange\nbanana\ngrape\nkiwi\nlemon\npeach\n");
+    // Create and set custom environment variables for testing
+    setenv("TEST_VAR1", "value1", 1);
+    setenv("TEST_VAR2", "value with spaces", 1);
+    setenv("TEST_EMPTY", "", 1);
+    setenv("TEST_PATH", "/usr/bin:/bin:/usr/local/bin", 1);
+    setenv("TEST_SPECIAL_CHARS", "!@#$%^&*()", 1);
     
-    // Create input and output redirections
-    t_infile *cat_input = create_infile(minishell, filepath_in, INF_IN, NULL);
-    t_outfile *cat_output = create_outfile(minishell, filepath_out, OUT_TRUNC);
+    // Test 1: Basic variable expansion
+    char *args_echo1[] = {"Basic: $HOME $USER $TEST_VAR1", NULL};
+    t_outfile *output1 = create_outfile(minishell, filepath_out, OUT_TRUNC);
+    t_command_tree *cmd1 = create_command_with_redirections(
+        minishell, "echo", args_echo1, NULL, output1);
     
-
-    t_command_tree *cat_cmd = create_command_with_redirections(
-        minishell, "cat", NULL, cat_input, cat_output);
+    run_test(minishell, cmd1, "Basic variable expansion ($HOME $USER $TEST_VAR1)");
     
-    char *args_ls[] = {"-l", NULL};
-    t_command_tree *ls_cmd = create_simple_command(minishell, "ls", args_ls);
+    // Test 2: Variable with spaces and special characters
+    char *args_echo2[] = {"With spaces: $TEST_VAR2, Special: $TEST_SPECIAL_CHARS", NULL};
+    t_outfile *output2 = create_outfile(minishell, filepath_out, OUT_APPEND);
+    t_command_tree *cmd2 = create_command_with_redirections(
+        minishell, "echo", args_echo2, NULL, output2);
     
-
-    char *args_grep[] = {"1", NULL};
-    t_command_tree *grep_cmd = create_simple_command(minishell, "grep", args_grep);
+    run_test(minishell, cmd2, "Variables with spaces and special characters");
     
-    t_command_tree *cat1_cmd = create_simple_command(minishell, "cat", NULL);
+    // Test 3: Non-existent variables
+    char *args_echo3[] = {"Non-existent: $NONEXISTENT_VAR", NULL};
+    t_outfile *output3 = create_outfile(minishell, filepath_out, OUT_APPEND);
+    t_command_tree *cmd3 = create_command_with_redirections(
+        minishell, "echo", args_echo3, NULL, output3);
     
-    t_command_tree *cat2_cmd = create_simple_command(minishell, "cat", NULL);
-
-    t_command_tree *pipe1 = create_pipe_node(minishell, cat_cmd, ls_cmd);
-    t_command_tree *pipe2 = create_pipe_node(minishell, pipe1, grep_cmd);
-    t_command_tree *pipe3 = create_pipe_node(minishell, pipe2, cat1_cmd);
-    t_command_tree *pipe4 = create_pipe_node(minishell, pipe3, cat2_cmd);
+    run_test(minishell, cmd3, "Non-existent variables ($NONEXISTENT_VAR)");
     
-    run_test(minishell, pipe4, "");
+    // Test 4: Variable followed by text
+    char *args_echo4[] = {"Variable with text: $HOME/documents", NULL};
+    t_outfile *output4 = create_outfile(minishell, filepath_out, OUT_APPEND);
+    t_command_tree *cmd4 = create_command_with_redirections(
+        minishell, "echo", args_echo4, NULL, output4);
     
-    // Display the output file content
-    // printf("Contents of output.txt after redirection:\n");
-    // int fd = open(filepath_out, O_RDONLY);
-    // if (fd >= 0) {
-    //     char buffer[1024];
-    //     ssize_t bytes_read = read(fd, buffer, sizeof(buffer) - 1);
-    //     if (bytes_read > 0) {
-    //         buffer[bytes_read] = '\0';
-    //         printf("%s\n", buffer);
-    //     }
-    //     close(fd);
-    // }
+    run_test(minishell, cmd4, "Variable followed by text ($HOME/documents)");
+    
+    // Test 5: Empty variable
+    char *args_echo5[] = {"Empty variable: '$TEST_EMPTY'", NULL};
+    t_outfile *output5 = create_outfile(minishell, filepath_out, OUT_APPEND);
+    t_command_tree *cmd5 = create_command_with_redirections(
+        minishell, "echo", args_echo5, NULL, output5);
+    
+    run_test(minishell, cmd5, "Empty variable ($TEST_EMPTY)");
+    
+    // Test 6: Exit status variable
+    // First run a command that will set $? to a specific value
+    t_command_tree *grep_cmd = create_simple_command(minishell, "grep", 
+        (char *[]){"nonexistentpattern", "/etc/passwd", NULL});
+    run_test(minishell, grep_cmd, "Command to set exit status");
+    
+    // Now check the exit status variable
+    char *args_echo6[] = {"Exit status: $?", NULL};
+    t_outfile *output6 = create_outfile(minishell, filepath_out, OUT_APPEND);
+    t_command_tree *cmd6 = create_command_with_redirections(
+        minishell, "echo", args_echo6, NULL, output6);
+    
+    run_test(minishell, cmd6, "Exit status variable ($?)");
+    
+    // Test 7: Multiple variables in a path-like string
+    char *args_echo7[] = {"Path like: $HOME/$USER/$TEST_VAR1", NULL};
+    t_outfile *output7 = create_outfile(minishell, filepath_out, OUT_APPEND);
+    t_command_tree *cmd7 = create_command_with_redirections(
+        minishell, "echo", args_echo7, NULL, output7);
+    
+    run_test(minishell, cmd7, "Multiple variables in path ($HOME/$USER/$TEST_VAR1)");
+    
+    // Display the combined test results
+    printf("\n=== TEST RESULTS ===\n");
+    int fd = open(filepath_out, O_RDONLY);
+    if (fd >= 0) {
+        char buffer[4096];
+        ssize_t bytes_read = read(fd, buffer, sizeof(buffer) - 1);
+        if (bytes_read > 0) {
+            buffer[bytes_read] = '\0';
+            printf("%s\n", buffer);
+        }
+        close(fd);
+    }
+    
+    printf("\n=== ENVIRONMENT VARIABLE EXPANSION TEST COMPLETED ===\n");
+    
+    // Clean up custom environment variables
+    unsetenv("TEST_VAR1");
+    unsetenv("TEST_VAR2");
+    unsetenv("TEST_EMPTY");
+    unsetenv("TEST_PATH");
+    unsetenv("TEST_SPECIAL_CHARS");
 }
 
-// Main test function
+// Test function for environment variable expansion during command execution
+void test_env_expansion_execution(t_minishell *minishell)
+{
+    printf("\n=== ENVIRONMENT VARIABLE EXPANSION EXECUTION TEST ===\n");
+    
+    // Set up test environment variables
+    // setenv("TEST_VAR", "test_value", 1);
+    // setenv("PATH_VAR", "/usr/bin:/bin", 1);
+    // setenv("EMPTY_VAR", "", 1);
+    // setenv("SPECIAL_CHARS", "!@#$%^&*()", 1);
+    // setenv("VAR_WITH_SPACES", "hello world", 1);
+    set_env_var("PATH_VAR", "/usr/bin:/bin", minishell);
+    set_env_var("TEST_VAR", "test_value", minishell);
+    set_env_var("EMPTY_VAR", "", minishell);
+    set_env_var("SPECIAL_CHARS", "!@#$%^&*()", minishell);
+    set_env_var("VAR_WITH_SPACES", "value with spaces", minishell);
+    
+    // Test 1: Basic variable expansion in echo
+    printf("\n--- Test 1: Basic variable expansion ---\n");
+    char *args_echo1[] = {"$TEST_VAR", NULL};
+    t_command_tree *cmd1 = create_simple_command(minishell, "echo", args_echo1);
+    execute_tree(cmd1, minishell);
+    printf("Exit code: %d\n", minishell->exit_code);
+    
+    // Test 2: Multiple variables and text
+    printf("\n--- Test 2: Multiple variables and text ---\n");
+    char *args_echo2[] = {"Path=$PATH_VAR, Value=$TEST_VAR", NULL};
+    t_command_tree *cmd2 = create_simple_command(minishell, "echo", args_echo2);
+    execute_tree(cmd2, minishell);
+    printf("Exit code: %d\n", minishell->exit_code);
+    
+    // Test 3: Empty variable
+    printf("\n--- Test 3: Empty variable ---\n");
+    char *args_echo3[] = {"Empty: [$EMPTY_VAR]", NULL};
+    t_command_tree *cmd3 = create_simple_command(minishell, "echo", args_echo3);
+    execute_tree(cmd3, minishell);
+    printf("Exit code: %d\n", minishell->exit_code);
+    
+    // Test 4: Special characters
+    printf("\n--- Test 4: Special characters ---\n");
+    char *args_echo4[] = {"Special: $SPECIAL_CHARS", NULL};
+    t_command_tree *cmd4 = create_simple_command(minishell, "echo", args_echo4);
+    execute_tree(cmd4, minishell);
+    printf("Exit code: %d\n", minishell->exit_code);
+    
+    // Test 5: Variable with spaces
+    printf("\n--- Test 5: Variable with spaces ---\n");
+    char *args_echo5[] = {"Spaces: [$VAR_WITH_SPACES]", NULL};
+    t_command_tree *cmd5 = create_simple_command(minishell, "echo", args_echo5);
+    execute_tree(cmd5, minishell);
+    printf("Exit code: %d\n", minishell->exit_code);
+    
+    // Test 6: Exit status variable
+    printf("\n--- Test 6: Exit status variable ---\n");
+    // First run a command that will set $? to 1
+    t_command_tree *grep_cmd = create_simple_command(minishell, "grep", 
+        (char *[]){"nonexistentpattern", "/etc/passwd", NULL});
+    execute_tree(grep_cmd, minishell);
+    
+    // Now check the exit status
+    char *args_echo6[] = {"Exit status: $?", NULL};
+    t_command_tree *cmd6 = create_simple_command(minishell, "echo", args_echo6);
+    execute_tree(cmd6, minishell);
+    printf("Exit code: %d\n", minishell->exit_code);
+    
+    // Clean up environment variables
+    unsetenv("TEST_VAR");
+    unsetenv("PATH_VAR");
+    unsetenv("EMPTY_VAR");
+    unsetenv("SPECIAL_CHARS");
+    unsetenv("VAR_WITH_SPACES");
+    
+    // Clear out the command tree
+    gc_collect(minishell->gc[GC_COMMAND]);
+    
+    printf("\n=== ENVIRONMENT VARIABLE EXPANSION TEST COMPLETED ===\n");
+}
+
+// Test function for quote handling during variable expansion
+void test_quote_expansion_execution(t_minishell *minishell)
+{
+    printf("\n=== QUOTE HANDLING TEST ===\n");
+    
+    // Set up test environment variables
+    set_env_var("TEST_VAR", "test_value", minishell);
+    set_env_var("HOME", "/Users/lakdogan", minishell);
+    set_env_var("SPECIAL_CHARS", "!@#$%^&*()", minishell);
+    
+    // Test 1: Single quotes should preserve literals and not expand variables
+    printf("\n--- Test 1: Single quotes (literal preservation) ---\n");
+    char *args_echo1[] = {"'$TEST_VAR $HOME'", NULL};
+    t_command_tree *cmd1 = create_simple_command(minishell, "echo", args_echo1);
+    execute_tree(cmd1, minishell);
+    printf("Exit code: %d\n", minishell->exit_code);
+    
+    // Test 2: Double quotes should preserve literals but expand variables
+    printf("\n--- Test 2: Double quotes (expand variables) ---\n");
+    char *args_echo2[] = {"\"$TEST_VAR $HOME\"", NULL};
+    t_command_tree *cmd2 = create_simple_command(minishell, "echo", args_echo2);
+    execute_tree(cmd2, minishell);
+    printf("Exit code: %d\n", minishell->exit_code);
+    
+    // Test 3: Mixed quotes - single quotes inside double quotes
+    printf("\n--- Test 3: Mixed quotes (single inside double) ---\n");
+    char *args_echo3[] = {"\"The variable is '$TEST_VAR'\"", NULL};
+    t_command_tree *cmd3 = create_simple_command(minishell, "echo", args_echo3);
+    execute_tree(cmd3, minishell);
+    printf("Exit code: %d\n", minishell->exit_code);
+    
+    // Test 4: Mixed quotes - double quotes inside single quotes
+    printf("\n--- Test 4: Mixed quotes (double inside single) ---\n");
+    char *args_echo4[] = {"'The variable is \"$TEST_VAR\"'", NULL};
+    t_command_tree *cmd4 = create_simple_command(minishell, "echo", args_echo4);
+    execute_tree(cmd4, minishell);
+    printf("Exit code: %d\n", minishell->exit_code);
+    
+    // Test 5: Escaped quotes
+    printf("\n--- Test 5: Escaped quotes ---\n");
+    char *args_echo5[] = {"$TEST_VAR", NULL};
+    t_command_tree *cmd5 = create_simple_command(minishell, "echo", args_echo5);
+    execute_tree(cmd5, minishell);
+    printf("Exit code: %d\n", minishell->exit_code);
+    
+    // Test 6: Quotes with special characters
+    printf("\n--- Test 6: Quotes with special characters ---\n");
+    char *args_echo6[] = {"\"Special chars: $SPECIAL_CHARS\"", NULL};
+    t_command_tree *cmd6 = create_simple_command(minishell, "echo", args_echo6);
+    execute_tree(cmd6, minishell);
+    printf("Exit code: %d\n", minishell->exit_code);
+    
+    // Clean up the command tree
+    gc_collect(minishell->gc[GC_COMMAND]);
+    
+    printf("\n=== QUOTE HANDLING TEST COMPLETED ===\n");
+}
+
+// Test function for exit status handling
+void test_exit_status_handling(t_minishell *minishell)
+{
+    printf("\n=== EXIT STATUS HANDLING TEST ===\n");
+    
+    // Test 1: Initial exit status (should be 0 at startup)
+    printf("\n--- Test 1: Initial exit status ---\n");
+    printf("Current exit status: %d\n", minishell->exit_code);
+    
+    // Test 2: Failed command (grep with non-existent pattern)
+    printf("\n--- Test 2: After failed command ---\n");
+    char *args_grep1[] = {"nonexistentpattern", "/etc/passwd", NULL};
+    t_command_tree *grep_cmd1 = create_simple_command(minishell, "grep", args_grep1);
+    execute_tree(grep_cmd1, minishell);
+    printf("Exit status after failed grep: %d\n", minishell->exit_code);
+    
+    // Test 3: Successful command after failure
+    printf("\n--- Test 3: After successful command ---\n");
+    char *args_echo1[] = {"Success resets exit status", NULL};
+    t_command_tree *echo_cmd1 = create_simple_command(minishell, "echo", args_echo1);
+    execute_tree(echo_cmd1, minishell);
+    printf("Exit status after successful echo: %d\n", minishell->exit_code);
+    
+    // Test 4: Exit status variable expansion after failure
+    printf("\n--- Test 4: Exit status variable expansion ---\n");
+    // First set a non-zero exit status
+    execute_tree(grep_cmd1, minishell);
+    // Then check if $? shows the correct value
+    char *args_echo2[] = {"Exit status: $?", NULL};
+    t_command_tree *echo_cmd2 = create_simple_command(minishell, "echo", args_echo2);
+    execute_tree(echo_cmd2, minishell);
+    printf("Exit code after $? expansion: %d\n", minishell->exit_code);
+    
+    // Test 5: Exit status in pipe chain
+    printf("\n--- Test 5: Exit status in pipe chain ---\n");
+    // Create: grep nonexistent /etc/passwd | sort
+    char *args_sort[] = {NULL};
+    t_command_tree *sort_cmd = create_simple_command(minishell, "sort", args_sort);
+    t_command_tree *pipe_cmd = create_pipe_node(minishell, grep_cmd1, sort_cmd);
+    execute_tree(pipe_cmd, minishell);
+    printf("Exit status after pipe with error in first command: %d\n", minishell->exit_code);
+    
+    // Test 6: Exit status from command not found
+    printf("\n--- Test 6: Command not found ---\n");
+    char *args_notfound[] = {"argument1", NULL};
+    t_command_tree *notfound_cmd = create_simple_command(minishell, "commanddoesnotexist", args_notfound);
+    execute_tree(notfound_cmd, minishell);
+    printf("Exit status after command not found: %d\n", minishell->exit_code);
+    
+    // Test 7: Check exit status variable after command not found
+    printf("\n--- Test 7: Exit status variable after command not found ---\n");
+    execute_tree(echo_cmd2, minishell);
+    printf("Exit code after $? expansion: %d\n", minishell->exit_code);
+    
+    // Clean up
+    gc_collect(minishell->gc[GC_COMMAND]);
+    
+    printf("\n=== EXIT STATUS HANDLING TEST COMPLETED ===\n");
+}
+
+void test_heredoc_with_large_content(t_minishell *minishell)
+{
+    printf("\n--- Heredoc with large content test ---\n");
+    printf("Enter multiple lines, including some very long ones (500+ chars if possible)\n");
+    printf("Type 'LARGE_EOF' when done\n");
+
+    // Create heredoc with large content
+    t_infile *heredoc = create_infile(minishell, NULL, INF_HEREDOC, "LARGE_EOF");
+    
+    // Pipe to two commands to stress-test the pipe mechanism
+    t_command_tree *cat_cmd = create_command_with_redirections(minishell, "cat", NULL, heredoc, NULL);
+    
+    char *grep_args[] = {"[a-z]", NULL};
+    t_command_tree *grep_cmd = create_simple_command(minishell, "grep", grep_args);
+    
+    char *wc_args[] = {"-l", NULL};
+    t_command_tree *wc_cmd = create_simple_command(minishell, "wc", wc_args);
+    
+    // Build pipe: cat << LARGE_EOF | grep [a-z] | wc -l
+    t_command_tree *pipe1 = create_pipe_node(minishell, cat_cmd, grep_cmd);
+    t_command_tree *pipe2 = create_pipe_node(minishell, pipe1, wc_cmd);
+    
+    run_test(minishell, pipe2, "Heredoc with large content (cat << LARGE_EOF | grep [a-z] | wc -l)");
+}
+
+// void debug_env(t_minishell *shell)
+// {
+//     printf("--- ENV DEBUG ---\n");
+//     t_list *node = shell->envp;
+//     int count = 0;
+    
+//     if (!node) {
+//         printf("Warning: Environment linked list is empty (shell->envp is NULL)\n");
+//         printf("----------------\n");
+//         return;
+//     }
+    
+//     while (node)
+//     {
+//         if (!node->content) {
+//             printf("[%d] ERROR: Node content is NULL\n", count++);
+//             node = node->next;
+//             continue;
+//         }
+        
+//         t_env *env = (t_env *)node->content;
+        
+//         // Print node address and content address for debugging
+//         printf("[%d] Node@%p Content@%p: ", count++, (void*)node, (void*)env);
+        
+//         // Validate env->value before accessing
+//         if (env->value) {
+//             printf("%s -> ", env->value);
+//         } else {
+//             printf("(null) -> ");
+//         }
+        
+//         // Validate env->content before accessing
+//         if (env->content) {
+//             // For content, extract just the value part if it has = sign
+//             char *equal_sign = ft_strchr(env->content, '=');
+//             if (equal_sign) {
+//                 printf("%s", equal_sign + 1);
+//             } else {
+//                 printf("%s", env->content);
+//             }
+//         } else {
+//             printf("(null)");
+//         }
+        
+//         printf(" (export: %d)\n", env->is_export);
+//         node = node->next;
+//     }
+//     printf("----------------\n");
+// }
+
+// void debug_env(t_minishell *shell)
+// {
+//     printf("--- ENV DEBUG ---\n");
+//     int i = 0;
+    
+//     // Print using the array instead of the corrupted linked list
+//     while (shell->envp_arr && shell->envp_arr[i])
+//     {
+//         char *entry = shell->envp_arr[i];
+//         char *equal_sign = ft_strchr(entry, '=');
+        
+//         if (equal_sign)
+//         {
+//             // Temporarily display the name part
+//             int name_len = equal_sign - entry;
+//             char name[name_len + 1];
+//             ft_strlcpy(name, entry, name_len + 1);
+//             printf("[%d] %s -> %s (export: 1)\n", i, name, equal_sign + 1);
+//         }
+//         else
+//         {
+//             printf("[%d] %s -> (null) (export: 0)\n", i, entry);
+//         }
+//         i++;
+//     }
+//     printf("----------------\n");
+// }
+
+void validate_memory(void *ptr, const char *message) {
+    if (ptr == NULL) {
+        fprintf(stderr, "Memory allocation failed: %s\n", message);
+        exit(EXIT_FAILURE);
+    }
+}
+
 int main(int argc, char **argv, char **envp)
 {
     (void)argc;
@@ -1118,33 +1472,38 @@ int main(int argc, char **argv, char **envp)
     t_minishell minishell;
 
     // Initialize minishell
-    if (init_minishell(&minishell, envp) != 0) {
+    if (!init_minishell(&minishell, envp)) {
         fprintf(stderr, "Failed to initialize minishell\n");
+        cleanup_memory(&minishell);
         return 1;
     }
-
+    init_environment(&minishell, envp);
     printf("=== ULTIMATE MINISHELL STRESS TEST ===\n");
-    
+    // debug_env(&minishell);
     //Run stress tests
-    test_deep_pipe_chain(&minishell);
-    test_pipes_with_redirections(&minishell);
-    test_multiple_heredocs(&minishell);
-    test_complex_redirections(&minishell);
-    test_large_file_processing(&minishell);
-    test_builtins_with_pipes(&minishell);
-    test_multi_level_redirections(&minishell);
-    test_max_file_descriptors(&minishell);
-    test_mixed_pipe_redirections(&minishell);
-    test_environment_variable_expansion(&minishell);
-    test_quote_handling(&minishell);
-    test_nested_pipes_redirections(&minishell);
-    test_special_characters(&minishell);
-    test_error_handling(&minishell);
-    test_background_processes(&minishell); 
-    test_stderr_redirection(&minishell);
-    test_command_substitution(&minishell); 
-    test_wildcards_and_globbing(&minishell); 
-    moooooo_test(&minishell);
+    // test_deep_pipe_chain(&minishell);
+    // test_pipes_with_redirections(&minishell);
+    // test_multiple_heredocs(&minishell);
+    // test_complex_redirections(&minishell);
+    // test_large_file_processing(&minishell);
+    // test_builtins_with_pipes(&minishell);
+    // test_multi_level_redirections(&minishell);
+    // test_max_file_descriptors(&minishell);
+    // test_mixed_pipe_redirections(&minishell);
+    // test_environment_variable_expansion(&minishell);
+    // test_quote_handling(&minishell);
+    // test_nested_pipes_redirections(&minishell);
+    // test_special_characters(&minishell);
+    // test_error_handling(&minishell);
+    // test_background_processes(&minishell); 
+    // test_stderr_redirection(&minishell);
+    // test_command_substitution(&minishell); 
+    // test_wildcards_and_globbing(&minishell); 
+    // test_env_expansion_edge_cases(&minishell);
+    // test_env_expansion_execution(&minishell);
+    // test_quote_expansion_execution(&minishell);
+    // test_exit_status_handling(&minishell);
+    test_heredoc_with_large_content(&minishell);
     printf("\n=== STRESS TEST COMPLETED ===\n");
 
     // Clean up
@@ -1156,3 +1515,93 @@ int main(int argc, char **argv, char **envp)
 
     return 0;
 }
+
+// Test: Simple redirections that should work on all systems
+// void test_simple_redirections(t_minishell *minishell)
+// {
+//     printf("\n=== SIMPLE REDIRECTION TEST (Linux Compatible) ===\n");
+    
+//     // Create a simple input file
+//     const char *input_path = "./simple_input.txt";
+//     const char *output_path = "./simple_output.txt";
+    
+//     // Create the input file with simple content
+//     FILE *fp = fopen(input_path, "w");
+//     if (fp) {
+//         fprintf(fp, "test line 1\ntest line 2\nIMPORTANT line\ntest line 4\n");
+//         fclose(fp);
+//         printf("Created test input file: %s\n", input_path);
+//     } else {
+//         printf("Error: Failed to create test file\n");
+//         return;
+//     }
+    
+//     // 1. Simple input redirection: cat < simple_input.txt
+//     printf("\n  Test 1: Simple input redirection (cat < simple_input.txt)\n");
+//     t_infile *input = create_infile(minishell, input_path, INF_IN, NULL);
+//     if (!input) {
+//         printf("Error: Failed to create input redirection\n");
+//         return;
+//     }
+    
+//     t_command_tree *cat_cmd = create_command_with_redirections(
+//         minishell, "cat", NULL, input, NULL);
+    
+//     run_test(minishell, cat_cmd, "Simple input redirection (cat < simple_input.txt)");
+    
+//     // 2. Simple output redirection: grep IMPORTANT < simple_input.txt > simple_output.txt
+//     printf("\n  Test 2: Input and output redirection (grep IMPORTANT < input > output)\n");
+    
+//     t_infile *grep_input = create_infile(minishell, input_path, INF_IN, NULL);
+//     t_outfile *grep_output = create_outfile(minishell, output_path, OUT_TRUNC);
+    
+//     char *grep_args[] = {"IMPORTANT", NULL};
+//     t_command_tree *grep_cmd = create_command_with_redirections(
+//         minishell, "grep", grep_args, grep_input, grep_output);
+    
+//     run_test(minishell, grep_cmd, "Combined redirections (grep IMPORTANT < input > output)");
+    
+//     // Display the output file content
+//     printf("\nOutput file content:\n");
+//     fp = fopen(output_path, "r");
+//     if (fp) {
+//         char buffer[1024];
+//         while (fgets(buffer, sizeof(buffer), fp)) {
+//             printf("%s", buffer);
+//         }
+//         fclose(fp);
+//     } else {
+//         printf("Error: Could not open output file\n");
+//     }
+    
+//     printf("\n=== SIMPLE REDIRECTION TEST COMPLETED ===\n\n");
+// }
+
+// int main(int argc, char **argv, char **envp)
+// {
+//     (void)argc;
+//     (void)argv;
+//     t_minishell minishell;
+
+//     // Initialize minishell
+//     if (init_minishell(&minishell, envp) != 0) {
+//         fprintf(stderr, "Failed to initialize minishell\n");
+//         return 1;
+//     }
+
+//     printf("=== MINISHELL REDIRECTION TEST ===\n");
+    
+//     // Run just our simple redirection test
+//     // test_simple_redirections(&minishell);
+//     test_pipes_with_redirections(&minishell);
+//     test_multiple_heredocs(&minishell);
+    
+//     // Clean up
+//     for (int i = 0; i < GC_COUNT; i++) {
+//         if (minishell.gc[i]) {
+//             gc_cleanup(&minishell.gc[i]);
+//         }
+//     }
+
+//     return 0;
+// }

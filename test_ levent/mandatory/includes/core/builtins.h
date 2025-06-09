@@ -25,6 +25,28 @@
 # include "minishell.h"
 # include "token.h"
 
+# define BUILTIN_SUCCESS 0
+# define BUILTIN_FAILURE 1
+# define ARRAY_NULL_TERMINATOR_SIZE 1
+# define ARRAY_LAST_ELEMENT_OFFSET 1
+# define STRING_COMPARISON_GREATER 0
+# define NEXT_ELEMENT_INDEX 1
+# define EXPORT_EQUALS_QUOTE "=\""
+# define SKIP_EQUALS_SIGN 1
+# define EXPORT_CLOSING_QUOTE "\""
+# define EXIT_INVALID_NUMERIC 255
+# define OPTION_VALID 1
+# define OPTION_INVALID 0
+# define DASH_CHAR '-'
+# define OPTION_N_CHAR 'n'
+# define SECOND_CHAR 1
+# define NEWLINE_ENABLE 1
+# define NEWLINE_DISABLED 0
+# define SPACE_STR " "
+# define SYSCALL_SUCCESS 0
+# define AUTO_BUFFER_SIZE 0
+# define BUILTIN_NOT_FOUND 1
+
 /* ------------------------------------------------------------------------- */
 /*                              builtins                                     */
 /* ------------------------------------------------------------------------- */
@@ -36,11 +58,13 @@ int		ft_cd(char **argv, t_minishell *minishell);
 int		ft_echo(char **argv);
 // env.c
 int		ft_env(t_minishell *minishell);
+// env_utils.c
+// int find_env_value(const char *name, t_minishell *minishell, char **result);
 // exit.c
 void	cleanup_memory(t_minishell *minishell);
 int		ft_exit(char **argv, t_minishell *minishell);
 // export_print.c
-void    print_export(t_minishell *minishell, t_list *envp);
+void	print_export(t_minishell *minishell, t_list *envp);
 // export_utils.c
 void	add_new_env(char *key, char *value, t_minishell *minishell);
 void	update_existing_env(t_minishell *minishell, t_env *env, char *key,

@@ -19,23 +19,24 @@
  *
  * @param cmd The command structure containing the command name and arguments
  * @param minishell Pointer to the shell state containing environment variables
- * @return int 0 if the command executed successfully, non-zero otherwise
+ * @return int STRINGS_EQUAL if the command executed successfully,
+	non-zero otherwise
  */
 int	exec_builtin(t_exec *cmd, t_minishell *minishell)
 {
-	if (ft_strncmp(cmd->command, "echo", SIZE_MAX) == 0)
+	if (ft_strcmp(cmd->command, "echo") == STRINGS_EQUAL)
 		return (ft_echo(cmd->argv));
-	else if (ft_strncmp(cmd->command, "cd", SIZE_MAX) == 0)
+	else if (ft_strcmp(cmd->command, "cd") == STRINGS_EQUAL)
 		return (ft_cd(cmd->argv, minishell));
-	else if (ft_strncmp(cmd->command, "pwd", SIZE_MAX) == 0)
+	else if (ft_strcmp(cmd->command, "pwd") == STRINGS_EQUAL)
 		return (ft_pwd());
-	else if (ft_strncmp(cmd->command, "export", SIZE_MAX) == 0)
+	else if (ft_strcmp(cmd->command, "export") == STRINGS_EQUAL)
 		return (ft_export(cmd->argv, minishell));
-	else if (ft_strncmp(cmd->command, "unset", SIZE_MAX) == 0)
+	else if (ft_strcmp(cmd->command, "unset") == STRINGS_EQUAL)
 		return (ft_unset(cmd->argv, minishell));
-	else if (ft_strncmp(cmd->command, "env", SIZE_MAX) == 0)
+	else if (ft_strcmp(cmd->command, "env") == STRINGS_EQUAL)
 		return (ft_env(minishell));
-	else if (ft_strncmp(cmd->command, "exit", SIZE_MAX) == 0)
+	else if (ft_strcmp(cmd->command, "exit") == STRINGS_EQUAL)
 		return (ft_exit(cmd->argv, minishell));
-	return (1);
+	return (BUILTIN_NOT_FOUND);
 }

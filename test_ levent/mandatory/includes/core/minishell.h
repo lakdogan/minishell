@@ -36,6 +36,8 @@ typedef enum e_gc_type
 	GC_TEMP,    // Temporary allocations
 	GC_ENV,     // value and content allocations
 	GC_CWD,
+	GC_EXPAND,
+	GC_PROC_HERE,
 	GC_COUNT // Number of GC categories (used for array size)
 }			t_gc_type;
 
@@ -59,5 +61,5 @@ typedef struct s_minishell
 # include "token.h"
 
 int	init_minishell(t_minishell *sh, char **envp);
-
+void validate_memory(void *ptr, const char *message);
 #endif

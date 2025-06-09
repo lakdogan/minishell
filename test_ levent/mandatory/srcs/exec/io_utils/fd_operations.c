@@ -1,4 +1,3 @@
-
 /**
  * @file fd_operations.c
  * @brief File descriptor operation utilities
@@ -9,8 +8,6 @@
  * and standard I/O redirection
  * with proper backup and restoration capabilities.
  *
- * @author lakdogan <lakdogan@student.42.fr>
- * @date 2025-05-19
  */
 
 #include "../../../includes/core/minishell.h"

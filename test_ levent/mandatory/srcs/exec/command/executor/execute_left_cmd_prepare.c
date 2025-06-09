@@ -3,10 +3,11 @@
 void	check_exec_outfile_and_prepare_pipes(t_minishell *shell, t_exec *exec,
 		int *pipefd)
 {
-	safe_close(shell, pipefd[0], "pipe close read end");
+	safe_close(shell, pipefd[PIPE_READ_END], "pipe close read end");
 	if (!exec->outfiles)
-		safe_dup2(shell, pipefd[1], STDOUT_FILENO, "pipe left command stdout");
-	safe_close(shell, pipefd[1], "pipe close write end after dup");
+		safe_dup2(shell, pipefd[PIPE_WRITE_END], STDOUT_FILENO,
+			"pipe left command stdout");
+	safe_close(shell, pipefd[PIPE_WRITE_END], "pipe close write end after dup");
 }
 
 void	check_if_right_cmd_has_infile(t_command_tree *node, t_exec **right_exec,

@@ -101,7 +101,7 @@ void	execute_tree(t_command_tree *root, t_minishell *minishell)
 	execute_node_by_type(root, minishell);
 	if (!minishell->in_nested_pipe)
 	{
-		while (waitpid(-1, &status, 0) > 0)
+		while (waitpid(WAIT_ANY, &status, WAIT_BLOCK) > NO_PROCESS)
 			continue ;
 	}
 	minishell->in_nested_pipe = false;

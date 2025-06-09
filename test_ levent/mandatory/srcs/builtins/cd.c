@@ -23,7 +23,7 @@ static char	*get_cd_target_path(char **argv)
 {
 	char	*path;
 
-	if (!argv[1])
+	if (!argv[COMMAND_ARGS_START])
 	{
 		path = getenv("HOME");
 		if (!path)
@@ -33,7 +33,7 @@ static char	*get_cd_target_path(char **argv)
 		}
 	}
 	else
-		path = argv[1];
+		path = argv[COMMAND_ARGS_START];
 	return (path);
 }
 
@@ -45,12 +45,12 @@ static char	*get_cd_target_path(char **argv)
  */
 static int	change_directory(const char *path)
 {
-	if (chdir(path) != 0)
+	if (chdir(path) != SYSCALL_SUCCESS)
 	{
 		perror("cd");
-		return (1);
+		return (BUILTIN_FAILURE);
 	}
-	return (0);
+	return (BUILTIN_SUCCESS);
 }
 
 /**
@@ -63,13 +63,13 @@ static int	update_current_directory(t_minishell *minishell)
 {
 	char	*temp_cwd;
 
-	temp_cwd = getcwd(NULL, 0);
+	temp_cwd = getcwd(NULL, AUTO_BUFFER_SIZE);
 	if (!temp_cwd)
-		return (1);
+		return (BUILTIN_FAILURE);
 	gc_collect(minishell->gc[GC_CWD]);
 	gc_register(minishell->gc[GC_CWD], temp_cwd, ft_strlen(temp_cwd));
 	minishell->cwd = temp_cwd;
-	return (0);
+	return (BUILTIN_SUCCESS);
 }
 
 /**
@@ -104,14 +104,14 @@ int	ft_cd(char **argv, t_minishell *minishell)
 	char	*old_pwd;
 
 	old_pwd = NULL;
-	get_env_value("PWD", minishell, &old_pwd);
+	lookup_env_value("PWD", minishell, &old_pwd);
 	path = get_cd_target_path(argv);
 	if (!path)
-		return (1);
-	if (change_directory(path) != 0)
-		return (1);
-	if (update_current_directory(minishell) != 0)
-		return (1);
+		return (BUILTIN_FAILURE);
+	if (change_directory(path) != BUILTIN_SUCCESS)
+		return (BUILTIN_FAILURE);
+	if (update_current_directory(minishell) != BUILTIN_SUCCESS)
+		return (BUILTIN_FAILURE);
 	update_pwd_variables(minishell, minishell->cwd, old_pwd);
-	return (0);
+	return (BUILTIN_SUCCESS);
 }

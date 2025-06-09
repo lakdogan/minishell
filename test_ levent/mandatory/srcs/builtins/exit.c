@@ -38,18 +38,17 @@ static bool	is_numeric(const char *str)
 	return (true);
 }
 
-void    cleanup_memory(t_minishell *minishell)
+void	cleanup_memory(t_minishell *minishell)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while(i < GC_COUNT)
-    {
-        gc_cleanup(&minishell->gc[i]);
-        i++;
-    }
+	i = 0;
+	while (i < GC_COUNT)
+	{
+		gc_cleanup(&minishell->gc[i]);
+		i++;
+	}
 }
-
 
 /**
  * @brief Implements the exit built-in command
@@ -71,25 +70,26 @@ int	ft_exit(char **argv, t_minishell *minishell)
 	long	code;
 
 	write(STDERR_FILENO, "exit\n", 5);
-	if (!argv[1])
-    {
-        cleanup_memory(minishell);
+	if (!argv[COMMAND_ARGS_START])
+	{
+		cleanup_memory(minishell);
 		exit(minishell->exit_code);
-    }
-	if (!is_numeric(argv[1]))
+	}
+	if (!is_numeric(argv[COMMAND_ARGS_START]))
 	{
 		write(STDERR_FILENO, "minishell: exit: ", 18);
-		write(STDERR_FILENO, argv[1], ft_strlen(argv[1]));
+		write(STDERR_FILENO, argv[COMMAND_ARGS_START],
+			ft_strlen(argv[COMMAND_ARGS_START]));
 		write(STDERR_FILENO, ": numeric argument required\n", 29);
-        cleanup_memory(minishell);
-		exit(255);
+		cleanup_memory(minishell);
+		exit(EXIT_INVALID_NUMERIC);
 	}
-	if (argv[2])
+	if (argv[COMMAND_ARGS_START + 1])
 	{
 		write(STDERR_FILENO, "minishell: exit: too many arguments\n", 36);
-		return (1);
+		return (BUILTIN_FAILURE);
 	}
-	code = ft_atol(argv[1]);
-    cleanup_memory(minishell);
+	code = ft_atol(argv[COMMAND_ARGS_START]);
+	cleanup_memory(minishell);
 	exit((unsigned char)code);
 }

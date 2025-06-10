@@ -45,7 +45,7 @@ static char	**populate_env_array(t_minishell *minishell, char **env_array)
 		if (env_var->is_export)
 		{
 			env_array[i] = gc_strjoin_3(minishell->gc[GC_ENV], env_var->value,
-					EQUALS_SIGN, env_var->content);
+					EQUALS_SIGN_STR, env_var->content);
 			if (!env_array[i])
 				return (NULL);
 			i++;

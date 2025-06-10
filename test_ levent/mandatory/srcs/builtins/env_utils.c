@@ -23,7 +23,7 @@ static int	update_existing_env_var(t_env *env, const char *name,
 
 	if (value)
 	{
-		full_var = gc_strjoin_3(minishell->gc[GC_ENV], name, EQUALS_SIGN,
+		full_var = gc_strjoin_3(minishell->gc[GC_ENV], name, EQUALS_SIGN_STR,
 				value);
 		if (!full_var)
 			return (BUILTIN_FAILURE);
@@ -48,7 +48,7 @@ static int	create_new_env_var(const char *name, const char *value,
 	env->content = NULL;
 	if (value)
 	{
-		full_var = gc_strjoin_3(minishell->gc[GC_ENV], name, EQUALS_SIGN,
+		full_var = gc_strjoin_3(minishell->gc[GC_ENV], name, EQUALS_SIGN_STR,
 				value);
 		if (!full_var)
 			return (BUILTIN_FAILURE);

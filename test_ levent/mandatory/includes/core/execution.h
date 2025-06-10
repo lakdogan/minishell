@@ -60,6 +60,7 @@
 # define INITIAL_CONSUMED_COUNT 0
 # define SKIP_DOLLAR_SIGN 1
 # define EQUALS_SIGN '='
+# define EQUALS_SIGN_STR "="
 # define SKIP_EQUALS_SIGN 1
 # define NO_PROCESS 0
 # define PATH_VAR_PREFIX "PATH="

@@ -1,0 +1,2 @@
+AND operator worked!
+This should NOT appear in the output file

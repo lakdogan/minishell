@@ -67,7 +67,7 @@ void	add_new_env(char *key, char *value, t_minishell *minishell)
 	new_env->value = gc_strdup(minishell->gc[GC_MAIN], key);
 	if (value)
 		new_env->content = gc_strjoin_3(minishell->gc[GC_MAIN], key,
-				EQUALS_SIGN, value);
+				EQUALS_SIGN_STR, value);
 	else
 		new_env->content = NULL;
 	new_env->is_export = true;
@@ -95,7 +95,7 @@ void	update_existing_env(t_minishell *minishell, t_env *env, char *key,
 	{
 		gc_collect(minishell->gc[GC_ENV]);
 		env->value = gc_strdup(minishell->gc[GC_ENV], key);
-		env->content = gc_strjoin_3(minishell->gc[GC_ENV], key, EQUALS_SIGN,
+		env->content = gc_strjoin_3(minishell->gc[GC_ENV], key, EQUALS_SIGN_STR,
 				value);
 	}
 	env->is_export = true;

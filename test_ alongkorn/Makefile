@@ -1,20 +1,20 @@
 
 
 
-CC 					:= 	cc 
+CC 					:= 	cc
 CFLAGS				:=	-Wall -Wextra -Werror
 
-LIBFT_URL			:=	https://github.com/lakdogan/libft.git	
+LIBFT_URL			:=	https://github.com/lakdogan/libft.git
 LIBFT_DIR			:=	libft
-	
+
 INCLUDES			:=	-I./mandatory/inc -I./$(LIBFT_DIR)
 BONUS_INCLUDES		:=	-I./bonus/inc_bonus -I./$(LIBFT_DIR)
-	
+
 NAME				:=	minishell
 BONUS_NAME			:=	minishell_bonus
 
 LIBFT				:=	$(LIBFT_DIR)/libft_ftpf_gnl.a
-	
+
 OBJECTS_DIR			:=	./objs/
 BONUS_OBJECTS_DIR   :=  ./bonus_objs/
 MANDATORY_DIR		:=	./mandatory/
@@ -30,11 +30,15 @@ FREE_DIR			:=	$(MEM_DIR)free/
 PARSING_DIR			:=	$(SRCS_DIR)parse/
 UTILS_DIR			:=	$(SRCS_DIR)utils/
 VALID_DIR			:=	$(SRCS_DIR)valid/
+GC_LEXER_DIR 		:= $(PARSING_DIR)gc_lexer/
 BONUS_SRCS_DIR		:=	$(BONUS_DIR)srcs_bonus/
 BONUS_UTILS_DIR		:=	$(BONUS_SRCS_DIR)utils_bonus/
 
 MINISHELL_MANDATORY_FILES := \
 				$(SRCS_DIR)minishell.c \
+				$(GC_LEXER_DIR)token.c \
+				$(GC_LEXER_DIR)token_len.c \
+				$(GC_LEXER_DIR)token_init.c \
 
 MINISHELL_BONUS_FILES := \
 				$(BONUS_SRCS_DIR)minishell_bonus.c \
@@ -58,10 +62,10 @@ $(LIBFT): $(LIBFT_DIR)
 	@$(MAKE) -C $(LIBFT_DIR)
 	@cd $(LIBFT_DIR) && make
 	@touch $(LIBFT)
-		
+
 $(NAME): $(LIBFT) $(MINISHELL_OBJS)
 	$(CC) $(CFLAGS) $(MINISHELL_OBJS) $(LIBFT) -o $(NAME)
-	
+
 $(OBJECTS_DIR)%.o: $(SRCS_DIR)%.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
@@ -95,6 +99,6 @@ fclean: clean
 	rm -rf $(LIBFT_DIR)
 
 re: fclean all
-	
+
 
 .PHONY: all bonus clean fclean re

@@ -27,6 +27,7 @@ typedef enum e_token_type
 	AND_IF,
 	OR,
 	PARENTHESSIS,
+	END,
 }					t_token_type;
 
 typedef enum e_token_state
@@ -34,15 +35,16 @@ typedef enum e_token_state
 	GENERAL,
 	IN_DQUOTES,
 	IN_SQUOTES,
+	UNCLOSED_QUOTES,
 	EXPAND,
 }					t_token_state;
 
 typedef struct s_token
 {
-	char			*value;
-	t_token_type	type;
-	t_token_state	state;
-	int				pos;
+	char			*value;		// String value of token
+	t_token_type	type;		// e.g., WORD, PIPE, etc.
+	t_token_state	state;		// Quoting/expansion context
+	int				pos;		// Position in the input string
 }					t_token;
 
 #endif

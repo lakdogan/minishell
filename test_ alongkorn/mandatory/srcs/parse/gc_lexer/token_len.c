@@ -10,11 +10,11 @@ int	is_special_char(char c)
 		return (0);
 }
 
-int	check_next_char(const char *cmd, int *i, int len)
+int	check_next_char(const char *cmd, int *i, int *len)
 {
-	if (cmd[(*i) + len + 1] != '\0')
+	if (cmd[(*i) + (*len) + 1] != '\0')
 	{
-		if (cmd[(*i) + len + 1] == cmd[(*i) + len])
+		if (cmd[(*i) + (*len) + 1] == cmd[(*i) + (*len)])
 			return (1);
 	}
 	return (0);
@@ -26,7 +26,7 @@ int	tok_len(const char *cmd, int *i)
 	char	quote;
 
 	len = 0;
-	while (cmd[(*i) + len] && ft_isspace(cmd[(*i) + len]))
+	while (cmd[(*i) + len])
 	{
 		if (cmd[(*i) + len] == '"' || cmd[(*i) + len] == '\'')
 		{
@@ -38,10 +38,13 @@ int	tok_len(const char *cmd, int *i)
 		}
 		else if (is_special_char(cmd[(*i) + len]))
 		{
-			if (check_next_char(cmd, i, len) == 1)
+			if (check_next_char(cmd, i, &len))
 				len++;
+			len++;
 			break ;
 		}
+		else if (ft_isspace(cmd[(*i) + len]))
+			break ;
 		else
 			len++;
 	}

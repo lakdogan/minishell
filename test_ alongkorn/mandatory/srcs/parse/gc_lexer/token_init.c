@@ -29,26 +29,21 @@ t_token_type	get_tok_type(char *value)
 	return (WORD);
 }
 
-char	is_special_char(char c)
+t_token_state	get_toke_state(char *value, int len)
 {
-	if (c == '|' || c == '>' || c == '<' || '"' || c == '\'')
-		return (1);
-	else
-		return (0);
-}
-
-int	tok_len(const char *cmd, int *i)
-{
-	int len;
-
-	len = 0;
-	while (cmd[(*i) + len] && !ft_isspace(cmd[(*i) + len]))
+	if (value[0] == '\'' || value[0] == '"')
 	{
-		if (is_special_char(cmd[(*i) + len]))
-			break ; //TODO quote funktion um die laenge von den quote zu berechnen;
-		len++;
+		if (value[0] == value[len - 1])
+		{
+			if (value[0] == '"')
+				return (IN_DQUOTES);
+			else
+				return (IN_SQUOTES);
+		}
+		else
+			return (UNCLOSED_QUOTES);
 	}
-	return (len);
+	return (GENERAL);
 }
 
 t_token	init_token(const char *cmd, int *i, const int t_count, t_gc *gc)
@@ -73,7 +68,7 @@ t_token	init_token(const char *cmd, int *i, const int t_count, t_gc *gc)
 		index++;
 	}
 	new_token.value[len] = '\0';
-	new_token.state = //TODO: get_tok_state;
+	new_token.state = get_token_state(new_token.value, len);
 	new_token.type = get_tok_type(new_token.value);
 	new_token.pos = t_count;
 	(*i) += len;

@@ -1,21 +1,19 @@
-
 #include "../../../includes/core/minishell.h"
 #include "../../../includes/core/token.h"
 #include "../../../includes/core/parser.h"
 
-
-t_token	*resize_array(t_token *tokens, int *cap, t_gc *gc[GC_TOKEN])
+t_token	*resize_array(t_token *tokens, int *cap, t_gc *gc[GC_COUNT])
 {
 	t_token	*new;
 
-	new = gc_realloc(gc[GC_TOKEN], tokens, ((*cap) + 10) * sizeof(t_token));
+	new = gc_realloc(gc[GC_COUNT], tokens, ((*cap) + 10) * sizeof(t_token));
 	if (!new)
 		return (NULL);
 	(*cap) += 10;
 	return (new);
 }
 
-static int	lexer_loop(t_token **tokens, const char *cmd, int *cap, t_gc *gc[GC_TOKEN])
+static int	lexer_loop(t_token **tokens, const char *cmd, int *cap, t_gc *gc[GC_COUNT])
 {
 	int		i;
 	int		t_count;
@@ -49,7 +47,7 @@ t_token	*lexer(const char *cmd, t_minishell *shell)
 	int		cap;
 
 	cap = 10;
-	tokens = gc_malloc(shell->gc[GC_TOKEN], (cap + 1) * sizeof(t_token));
+	tokens = gc_malloc(shell->gc[GC_COUNT], (cap + 1) * sizeof(t_token));
 	if (!tokens)
 		return (NULL);
 	count = lexer_loop(&tokens, cmd, &cap, shell->gc);

@@ -1,3 +1,4 @@
+and_results.txt
 both_output.txt
 builtin_output.txt
 cmd_subst_output.txt

@@ -6,6 +6,9 @@
         "minishell_bonus.h": "c",
         "readline.h": "c",
         "libft.h": "c",
-        "minishell.h": "c"
+        "minishell.h": "c",
+        "token.h": "c",
+        "stat.h": "c",
+        "unistd.h": "c"
     }
 }

@@ -22,13 +22,35 @@
  * @param node Pointer to the AND operator node in the command tree
  * @param minishell Pointer to the shell state structure
  */
-void	handle_and_operator(t_minishell *minishell, t_command_tree *node)
+// void	handle_and_operator(t_minishell *minishell, t_command_tree *node)
+// {
+// 	int left_exit_code;
+
+// 	execute_tree(node->left, minishell);
+
+// 	left_exit_code = minishell->exit_code;
+// 	// if (!node || !node->left || !node->right)
+// 	// 	return ;
+// 	if (minishell->exit_code == EXIT_SUCCESS)
+// 		execute_tree(node->right, minishell);
+// 	else 
+// 		minishell->exit_code = left_exit_code;
+// }
+void handle_and_operator(t_minishell *minishell, t_command_tree *node)
 {
-	if (!node || !node->left || !node->right)
-		return ;
-	execute_tree(node->left, minishell);
-	if (minishell->exit_code == EXIT_SUCCESS)
-		execute_tree(node->right, minishell);
+    printf("AND: Before left exec, exit_code=%d\n", minishell->exit_code);
+    execute_tree(node->left, minishell);
+    
+    int left_exit_code = minishell->exit_code;
+    printf("AND: After left exec, exit_code=%d\n", left_exit_code);
+    
+    if (left_exit_code == EXIT_SUCCESS) {
+        execute_tree(node->right, minishell);
+        printf("AND: After right exec, exit_code=%d\n", minishell->exit_code);
+    } else {
+        minishell->exit_code = left_exit_code;
+        printf("AND: Short-circuit, final exit_code=%d\n", minishell->exit_code);
+    }
 }
 
 /**
@@ -41,9 +63,20 @@ void	handle_and_operator(t_minishell *minishell, t_command_tree *node)
  * @param node Pointer to the OR operator node in the command tree
  * @param minishell Pointer to the shell state structure
  */
-void	handle_or_operator(t_minishell *minishell, t_command_tree *node)
+void handle_or_operator(t_minishell *minishell, t_command_tree *node)
 {
-	execute_tree(node->left, minishell);
-	if (minishell->exit_code != EXIT_SUCCESS)
-		execute_tree(node->right, minishell);
+    // Execute left command
+    execute_tree(node->left, minishell);
+    
+    // Save left result
+    int left_exit_code = minishell->exit_code;
+    
+    if (left_exit_code != EXIT_SUCCESS) {
+        // Left failed, execute right
+        execute_tree(node->right, minishell);
+        // Exit code is now from right command
+    } else {
+        // Left succeeded, preserve its exit code
+        minishell->exit_code = left_exit_code;
+    }
 }

@@ -4,7 +4,6 @@
 #include <string.h>
 #include <unistd.h>
 
-// Define these OUTSIDE any function, at global scope
 t_command_tree *create_exit_cmd(t_minishell *minishell, int exit_code) {
     t_command_tree *cmd = gc_malloc(minishell->gc[GC_COMMAND], sizeof(t_command_tree));
     t_exec *exec = gc_malloc(minishell->gc[GC_COMMAND], sizeof(t_exec));
@@ -13,15 +12,31 @@ t_command_tree *create_exit_cmd(t_minishell *minishell, int exit_code) {
     cmd->right = NULL;
     cmd->data = exec;
     
-    exec->command = gc_strdup(minishell->gc[GC_COMMAND], "exit");
-    exec->argv = gc_malloc(minishell->gc[GC_COMMAND], sizeof(char *) * 3);
-    
-    char code_str[10];
-    snprintf(code_str, sizeof(code_str), "%d", exit_code);
-    
-    exec->argv[0] = exec->command;
-    exec->argv[1] = gc_strdup(minishell->gc[GC_COMMAND], code_str);
-    exec->argv[2] = NULL;
+    if (exit_code == 0) {
+        // 'true' always returns exit code 0
+        exec->command = gc_strdup(minishell->gc[GC_COMMAND], "true");
+        exec->argv = gc_malloc(minishell->gc[GC_COMMAND], sizeof(char *) * 2);
+        exec->argv[0] = exec->command;
+        exec->argv[1] = NULL;
+    } else if (exit_code == 1) {
+        // 'false' always returns exit code 1
+        exec->command = gc_strdup(minishell->gc[GC_COMMAND], "false");
+        exec->argv = gc_malloc(minishell->gc[GC_COMMAND], sizeof(char *) * 2);
+        exec->argv[0] = exec->command;
+        exec->argv[1] = NULL;
+    } else {
+        // For other exit codes, use test with a condition that will fail
+        // and specify a custom exit code
+        exec->command = gc_strdup(minishell->gc[GC_COMMAND], "sh");
+        exec->argv = gc_malloc(minishell->gc[GC_COMMAND], sizeof(char *) * 4);
+        exec->argv[0] = exec->command;
+        exec->argv[1] = gc_strdup(minishell->gc[GC_COMMAND], "-c");
+        
+        char exit_script[32];
+        snprintf(exit_script, sizeof(exit_script), "exit %d", exit_code);
+        exec->argv[2] = gc_strdup(minishell->gc[GC_COMMAND], exit_script);
+        exec->argv[3] = NULL;
+    }
     
     exec->infiles = NULL;
     exec->outfiles = NULL;
@@ -159,12 +174,7 @@ int main(int argc, char **argv, char **envp)
     test_exit_codes(&minishell);
     printf("\n=== TEST COMPLETED ===\n");
 
-    // Clean up
-    for (int i = 0; i < GC_COUNT; i++) {
-        if (minishell.gc[i]) {
-            gc_cleanup(&minishell.gc[i]);
-        }
-    }
+    cleanup_memory(&minishell); 
 
     return 0;
 }

@@ -9,6 +9,8 @@
         "minishell.h": "c",
         "token.h": "c",
         "stat.h": "c",
-        "unistd.h": "c"
+        "unistd.h": "c",
+        "builtins.h": "c",
+        "garbage_collector.h": "c"
     }
 }

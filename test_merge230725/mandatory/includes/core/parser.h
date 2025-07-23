@@ -40,10 +40,10 @@ void				error_msg_paren(void);
 /*-----lexer--------------------------------------------------------------------------------*/
 //main functions:
 int					tok_len(const char *cmd, int *i);
-t_token				*lexer(const char *cmd, t_minishell *shell);
-t_token				*init_token(const char *cmd, int *i, const int t_count, t_gc **gc);
+t_tokens			*lexer(const char *cmd, t_minishell *shell);
+t_token				init_token(const char *cmd, int *i, const int t_count, t_gc *gc);
 //side functions:
-t_token				*resize_array(t_token *tokens, int *cap, t_gc **gc);
+t_token				*resize_array(t_token *tokens, int *cap, t_gc *gc);
 t_token_type		get_tok_type(char *value);
 t_token_state		get_tok_state(char *value, int len);
 int					check_for_paren(const char *cmd, int *i, int len);

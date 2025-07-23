@@ -41,8 +41,6 @@ ALLOC_DIR				:=	$(MEM_DIR)alloc/
 FREE_DIR				:=	$(MEM_DIR)free/
 PARSING_DIR				:=	$(SRCS_DIR)parse/
 PARSE_ERROR_DIR			:=	$(PARSING_DIR)error/
-PARSE_GC_LEXER_DIR		:=	$(PARSING_DIR)gc_lexer/
-PARSE_LEXER_DIR			:=	$(PARSING_DIR)lexer/
 PARSE_RD_PARSER_DIR		:=	$(PARSING_DIR)rd_parser/
 PARSE_TOKENIZER_DIR		:=	$(PARSING_DIR)tokenizer/
 UTILS_DIR				:=	$(SRCS_DIR)utils/
@@ -99,12 +97,6 @@ MINISHELL_MANDATORY_FILES := \
 				$(INIT_DIR)init_env.c \
 				$(INIT_DIR)init_minishell.c \
 				$(PARSE_ERROR_DIR)error.c \
-				$(PARSE_GC_LEXER_DIR)token_init.c \
-				$(PARSE_GC_LEXER_DIR)token_len.c \
-				$(PARSE_GC_LEXER_DIR)token.c \
-				$(PARSE_LEXER_DIR)init_token.c \
-				$(PARSE_LEXER_DIR)lexer.c \
-				$(PARSE_LEXER_DIR)token_type_state.c \
 				$(PARSE_RD_PARSER_DIR)parse_cmd.c \
 				$(PARSE_RD_PARSER_DIR)parse_logic_ops.c \
 				$(PARSE_RD_PARSER_DIR)parse_pipeline.c \
@@ -116,7 +108,6 @@ MINISHELL_MANDATORY_FILES := \
 				$(PARSE_TOKENIZER_DIR)token_valid.c \
 				$(PARSE_TOKENIZER_DIR)token.c \
 				$(SRCS_DIR)minishell.c \
-				$(SRCS_DIR)prep_shell.c \
 
 MINISHELL_BONUS_FILES := \
 				$(BONUS_SRCS_DIR)minishell_bonus.c \

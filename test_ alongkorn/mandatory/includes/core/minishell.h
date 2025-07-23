@@ -17,6 +17,8 @@
 # include "../../../libft/garbage_collector/inc/garbage_collector.h"
 # include "../../../libft/inc/libft.h"
 # include "command_tree.h"
+# include <stdio.h>
+# include <stdlib.h>
 # include <errno.h>
 # include <readline/history.h>
 # include <readline/readline.h>
@@ -58,6 +60,8 @@ typedef struct s_minishell
 # include "builtins.h"
 # include "environment.h"
 # include "execution.h"
+# include "parser.h"
+# include "command_tree.h"
 # include "token.h"
 
 int	init_minishell(t_minishell *sh, char **envp);

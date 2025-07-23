@@ -26,8 +26,9 @@ typedef enum e_token_type
 	HEREDOC,
 	AND_IF,
 	OR,
-	PARENTHESSIS,
 	END,
+	L_PAREN,
+	R_PAREN,
 }					t_token_type;
 
 typedef enum e_token_state
@@ -46,5 +47,11 @@ typedef struct s_token
 	t_token_state	state;		// Quoting/expansion context
 	int				pos;		// Position in the input string
 }					t_token;
+
+typedef struct	s_tokens
+{
+	t_token	*arr;
+	int		count;
+}			t_tokens;
 
 #endif

@@ -16,11 +16,6 @@ t_command_tree	*setup_ast(char *line, t_minishell *shell)
 	return (ast);
 }
 
-void	start_exec(t_command_tree *ast, t_minishell *shell)
-{
-	execute_tree(ast, shell);
-}
-
 int	main(int argc, char **argv, char **env)
 {
 	char			*line;
@@ -41,7 +36,7 @@ int	main(int argc, char **argv, char **env)
 			add_history((const char *)line);
 			shell.root = setup_ast(line, &shell);
 			if (shell.root)
-				start_exec(shell.root, &shell);
+				execute_tree(shell.root, &shell);
 		}
 		free(line);
 	}

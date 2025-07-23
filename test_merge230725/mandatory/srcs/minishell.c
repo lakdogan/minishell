@@ -8,7 +8,7 @@ t_command_tree	*setup_ast(char *line, t_minishell *shell)
 
 	tokens = lexer(line, shell);
 	if (!lexer)
-		gc_cleanup(shell->gc[GC_COMMAND]);
+		gc_collect(shell->gc[GC_COMMAND]);
 	else
 		ast = start_parser(tokens, shell->gc[GC_COMMAND]);
 	if (!ast)

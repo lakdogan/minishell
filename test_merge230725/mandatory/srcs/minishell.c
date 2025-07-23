@@ -18,7 +18,7 @@ t_command_tree	*setup_ast(char *line, t_minishell *shell)
 
 void	start_exec(t_command_tree *ast, t_minishell *shell)
 {
-	
+	execute_tree(ast, shell);
 }
 
 int	main(int argc, char **argv, char **env)

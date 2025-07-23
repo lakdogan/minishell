@@ -69,6 +69,8 @@ t_token	init_token(const char *cmd, int *i, const int t_count, t_gc *gc)
 	if (!new_token.value)
 		return (new_token);
 	new_token.state = get_tok_state(new_token.value, len);
+	if (new_token.state == UNCLOSED_QUOTES)
+		return (init_token_default());
 	new_token.type = get_tok_type(new_token.value);
 	type = new_token.type;
 	if (type != WORD && type != L_PAREN && type != R_PAREN)

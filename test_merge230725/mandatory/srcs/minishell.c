@@ -7,6 +7,11 @@ t_command_tree	*setup_ast(char *line, t_minishell *shell)
 	t_command_tree	*ast;
 
 	tokens = lexer(line, shell);
+	if (!tokens)
+	{
+		error_msg_paren();
+		return (NULL);
+	}
 	ast = start_parser(tokens, shell->gc[GC_COMMAND]);
 	if (!ast)
 		return (NULL);
@@ -39,6 +44,5 @@ int	main(int argc, char **argv, char **env)
 		}
 		free(line);
 	}
-	gc_cleanup(shell.gc);
-	return (shell.exit_code);
+	return (gc_cleanup(shell.gc), shell.exit_code);
 }

@@ -9,6 +9,23 @@
 
 #include "../../../includes/core/minishell.h"
 
+
+static bool has_heredoc_redirection(t_exec *exec)
+{
+	t_infile *current;
+	
+	if (!exec || !exec->infiles)
+		return false;
+		
+	current = exec->infiles;
+	while (current)
+	{
+		if (current->type == INF_HEREDOC)
+			return true;
+		current = current->next;
+	}
+	return false;
+}
 /**
  * @brief Routes execution to the appropriate handler based on node type
  *
@@ -47,6 +64,27 @@ static int	validate_command_tree(t_command_tree *root)
 	return (VALIDATION_SUCCESS);
 }
 
+static bool has_heredoc_in_tree(t_minishell *minishell, t_command_tree *node)
+{
+	t_exec *exec;
+	
+	if (!node)
+		return false;
+		
+	if (node->type == N_EXEC)
+	{
+		exec = node->data;
+		if (exec && has_heredoc_redirection(exec))
+			return true;
+	}
+	else if (node->type == N_PIPE)
+	{
+		return (has_heredoc_in_tree(minishell, node->left) || 
+				has_heredoc_in_tree(minishell, node->right));
+	}
+	
+	return false;
+}
 /**
  * @brief Prepares heredocs for the command tree if not already prepared
  *
@@ -57,23 +95,26 @@ static int	validate_command_tree(t_command_tree *root)
  *
  * @param root Pointer to the root of the command tree
  */
-static void	prepare_heredocs_if_needed(t_minishell *minishell,
-		t_command_tree *root)
+static void prepare_heredocs_if_needed(t_minishell *minishell, t_command_tree *root)
 {
-	static int	heredocs_prepared;
-	static void	*last_root;
+    static int heredocs_prepared;
+    static void *last_root;
 
-	if (root != last_root)
-	{
-		heredocs_prepared = HEREDOCS_NOT_PREPARED;
-		last_root = root;
-	}
-	if (!heredocs_prepared)
-	{
-		prepare_heredocs(minishell, root);
-		heredocs_prepared = HEREDOCS_PREPARED;
-	}
+    if (root != last_root)
+    {
+        heredocs_prepared = HEREDOCS_NOT_PREPARED;
+        last_root = root;
+    }
+    if (!heredocs_prepared && has_heredoc_in_tree(minishell, root))
+    {
+        prepare_heredocs(minishell, root);
+        heredocs_prepared = HEREDOCS_PREPARED;
+    }
 }
+
+
+
+
 
 /**
  * @brief Main entry point for executing a command tree

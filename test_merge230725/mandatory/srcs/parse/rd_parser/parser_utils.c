@@ -96,7 +96,8 @@ int	add_infile(t_exec *exec, t_token_type type, char *filename, t_gc *gc)
 	if (type == HEREDOC)
 	{
 		node->type = INF_HEREDOC;
-		node->name = filename;
+		node->delimeter = filename;
+		node->name = NULL;
 	}
 	else
 	{

@@ -46,11 +46,15 @@ static int	handle_input_file(t_minishell *shell, t_infile *in)
  */
 static void	handle_heredoc_input(t_minishell *shell, int heredoc_fd)
 {
-	if (heredoc_fd != INVALID_FD)
+	if (heredoc_fd > 0 && heredoc_fd != INVALID_FD)
 	{
 		safe_dup2(shell, heredoc_fd, STDIN_FILENO, "heredoc redirection");
 		safe_close(shell, heredoc_fd, "close heredoc fd");
 	}
+	else
+    {
+        ft_putstr_fd("DEBUG: Invalid heredoc fd!\n", STDERR_FILENO);
+    }
 }
 
 /**
@@ -62,20 +66,22 @@ static void	handle_heredoc_input(t_minishell *shell, int heredoc_fd)
  *
  * @param exec Pointer to the command execution structure
  */
-void	setup_input_redirections(t_minishell *shell, t_exec *exec)
+void setup_input_redirections(t_minishell *shell, t_exec *exec)
 {
-	t_infile	*in;
+    t_infile *in;
 
-	if (!shell || !exec)
-		return ;
-	in = exec->infiles;
-	while (in)
-	{
-		if (in->type == INF_IN && in->name)
-			handle_input_file(shell, in);
-		in = in->next;
-	}
-	handle_heredoc_input(shell, exec->heredoc_fd);
+    if (!shell || !exec)
+        return;
+        
+    in = exec->infiles;
+    while (in)
+    {
+        if (in->type == INF_IN && in->name)
+            handle_input_file(shell, in);
+        in = in->next;
+    }
+    if (exec->heredoc_fd > 0 && exec->heredoc_fd != INVALID_FD)
+        handle_heredoc_input(shell, exec->heredoc_fd);
 }
 
 /**

@@ -66,10 +66,14 @@ static int	setup_heredoc_redirection(t_minishell *shell, t_exec *exec)
 {
 	int	stdin_backup;
 
-	stdin_backup = redirect_stdin_with_backup(shell, exec->heredoc_fd,
-			"heredoc stdin redirection");
-	if (exec->heredoc_fd != INVALID_FD)
+	stdin_backup = INVALID_FD;
+
+	if (exec && exec->heredoc_fd > 0 && exec->heredoc_fd != INVALID_FD)
+	{
+		stdin_backup = redirect_stdin_with_backup(shell, exec->heredoc_fd,
+				"heredoc stdin redirection");
 		safe_close(shell, exec->heredoc_fd, "close heredoc fd after backup");
+	}
 	return (stdin_backup);
 }
 

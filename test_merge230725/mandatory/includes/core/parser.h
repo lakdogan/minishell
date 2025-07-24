@@ -74,4 +74,6 @@ t_command_tree		*get_node(t_node_type type, t_command_tree *left, t_command_tree
 					t_gc *gc);
 t_arg_lst			*get_args(t_exec *exec, t_tokens *tokens, int *pos, t_gc *gc);
 /*------AST------------------------------------------------------------------------------*/
+
+char *remove_quotes(char *token_value, t_gc *gc);
 #endif

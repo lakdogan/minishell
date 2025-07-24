@@ -30,6 +30,14 @@ int	tok_len(const char *cmd, int *i)
 	int		len;
 
 	len = 0;
+
+	if (cmd[*i] == '>' || cmd[*i] == '<')
+	{
+		if (cmd[*i] == cmd[*i + 1])
+			return (2);
+		else
+			return (1);
+	}
 	while (cmd[(*i) + len])
 	{
 		if (cmd[(*i) + len] == '"' || cmd[(*i) + len] == '\'')

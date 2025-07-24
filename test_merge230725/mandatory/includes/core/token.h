@@ -46,6 +46,7 @@ typedef struct s_token
 	t_token_type	type;		// e.g., WORD, PIPE, etc.
 	t_token_state	state;		// Quoting/expansion context
 	int				pos;		// Position in the input string
+	bool			no_expand;	// flag to prevent expansion
 }					t_token;
 
 typedef struct	s_tokens

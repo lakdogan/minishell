@@ -60,6 +60,7 @@ t_token	init_token(const char *cmd, int *i, const int t_count, t_gc *gc)
 	int				len;
 	t_token_type	type;
 	t_token	new_token;
+	char *orginal_value;
 
 	new_token = init_token_default();
 	// printf("%s\n", new_token.value);
@@ -70,7 +71,13 @@ t_token	init_token(const char *cmd, int *i, const int t_count, t_gc *gc)
 	// printf("%s\n", new_token.value);
 	if (!new_token.value)
 		return (new_token);
+	// changes
+	orginal_value = new_token.value;
+	new_token.type = get_tok_type(new_token.value);
 	new_token.state = get_tok_state(new_token.value, len);
+	new_token.no_expand = (new_token.state == IN_SQUOTES);
+	if (get_tok_type(orginal_value) == WORD)
+		new_token.value = remove_quotes(orginal_value, gc);
 	// if (new_token.state == UNCLOSED_QUOTES)
 	// 	return (init_token_default());
 	new_token.type = get_tok_type(new_token.value);
@@ -84,4 +91,33 @@ t_token	init_token(const char *cmd, int *i, const int t_count, t_gc *gc)
 	new_token.pos = t_count;
 	(*i) += len;
 	return (new_token);
+}
+
+char *remove_quotes(char *token_value, t_gc *gc)
+{
+
+    int len = ft_strlen(token_value);
+    char *cleaned = gc_malloc(gc, len + 1);
+    int i = 0, j = 0;
+    
+    if (!cleaned)
+        return token_value;
+    
+    while (token_value[i]) {
+        // Skip quote characters
+        if (token_value[i] == '\'' || token_value[i] == '"') {
+            char quote = token_value[i++];
+            // Copy characters until matching quote
+            while (token_value[i] && token_value[i] != quote) {
+                cleaned[j++] = token_value[i++];
+            }
+            if (token_value[i] == quote)
+                i++; // Skip closing quote
+        } else {
+            // Copy non-quoted characters
+            cleaned[j++] = token_value[i++];
+        }
+    }
+    cleaned[j] = '\0';
+    return cleaned;
 }

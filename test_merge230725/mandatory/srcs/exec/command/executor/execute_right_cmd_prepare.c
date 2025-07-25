@@ -26,7 +26,7 @@ void	check_if_infile_exists(t_minishell *shell, t_exec *exec, int *pipefd)
 
 void	setup_in_and_output_redirections(t_minishell *shell, t_exec *exec)
 {
-	setup_input_redirections(shell, exec);
+	setup_input_redirections(shell, exec, true);
 	setup_output_redirections(shell, exec);
 }
 

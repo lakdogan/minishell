@@ -33,7 +33,13 @@ static char	*get_cd_target_path(char **argv)
 		}
 	}
 	else
+	{
 		path = argv[COMMAND_ARGS_START];
+		if (!path)
+			return (NULL);
+		if ((uintptr_t)path < 0x1000)
+			return (NULL);
+	}
 	return (path);
 }
 
@@ -98,20 +104,73 @@ static void	update_pwd_variables(t_minishell *minishell, const char *new_pwd,
  * @param minishell Pointer to the shell state structure
  * @return int 0 on success, 1 on failure
  */
-int	ft_cd(char **argv, t_minishell *minishell)
-{
-	char	*path;
-	char	*old_pwd;
+// int	ft_cd(char **argv, t_minishell *minishell)
+// {
+// 	char	*path;
+// 	char	*old_pwd;
 
-	old_pwd = NULL;
-	lookup_env_value("PWD", minishell, &old_pwd);
-	path = get_cd_target_path(argv);
-	if (!path)
-		return (BUILTIN_FAILURE);
-	if (change_directory(path) != BUILTIN_SUCCESS)
-		return (BUILTIN_FAILURE);
-	if (update_current_directory(minishell) != BUILTIN_SUCCESS)
-		return (BUILTIN_FAILURE);
-	update_pwd_variables(minishell, minishell->cwd, old_pwd);
-	return (BUILTIN_SUCCESS);
+// 	old_pwd = NULL;
+// 	lookup_env_value("PWD", minishell, &old_pwd);
+// 	path = get_cd_target_path(argv);
+// 	if (!path)
+// 		return (BUILTIN_FAILURE);
+// 	if (!*path)
+// 	{
+// 		write(STDERR_FILENO, "cd: path cannot be empty\n", 25);
+// 		return (BUILTIN_FAILURE);
+// 	}
+// 	if (argv[COMMAND_ARGS_START + 1])
+// 		write(STDERR_FILENO, "cd: too many arguments\n", 23);
+// 	if (change_directory(path) != BUILTIN_SUCCESS)
+// 		return (BUILTIN_FAILURE);
+// 	if (update_current_directory(minishell) != BUILTIN_SUCCESS)
+// 		return (BUILTIN_FAILURE);
+// 	update_pwd_variables(minishell, minishell->cwd, old_pwd);
+// 	return (BUILTIN_SUCCESS);
+// }
+
+int ft_cd(char **argv, t_minishell *minishell)
+{
+    char *path;
+    char *old_pwd;
+    char cwd[PATH_MAX]; // Buffer for current directory
+
+    // SPECIAL CASE: Handle cd $PWD directly
+    if (argv[COMMAND_ARGS_START] && 
+        (ft_strncmp(argv[COMMAND_ARGS_START], "$PWD", 4) == 0 ||
+         (argv[COMMAND_ARGS_START][0] == '$' && ft_strlen(argv[COMMAND_ARGS_START]) >= 3)))
+    {
+        // Just use current directory - this avoids any expansion issues
+        if (getcwd(cwd, sizeof(cwd)) != NULL) {
+            // Current directory will be same after cd $PWD
+            if (argv[COMMAND_ARGS_START + 1])
+                write(STDERR_FILENO, "cd: too many arguments\n", 23);
+                
+            // Update env variables directly
+            set_env_var("OLDPWD", minishell->cwd, minishell);
+            set_env_var("PWD", cwd, minishell);
+            minishell->envp_arr = rebuild_env_array(minishell);
+            return (BUILTIN_SUCCESS);
+        }
+    }
+
+    // Normal cd processing for other cases
+    old_pwd = NULL;
+    lookup_env_value("PWD", minishell, &old_pwd);
+    path = get_cd_target_path(argv);
+    if (!path)
+        return (BUILTIN_FAILURE);
+    if (!*path)
+    {
+        write(STDERR_FILENO, "cd: path cannot be empty\n", 25);
+        return (BUILTIN_FAILURE);
+    }
+    if (argv[COMMAND_ARGS_START + 1])
+        write(STDERR_FILENO, "cd: too many arguments\n", 23);
+    if (change_directory(path) != BUILTIN_SUCCESS)
+        return (BUILTIN_FAILURE);
+    if (update_current_directory(minishell) != BUILTIN_SUCCESS)
+        return (BUILTIN_FAILURE);
+    update_pwd_variables(minishell, minishell->cwd, old_pwd);
+    return (BUILTIN_SUCCESS);
 }

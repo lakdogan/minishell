@@ -35,6 +35,8 @@ char	*expand_variables(const char *str, t_minishell *shell)
 	int		i;
 	int		consumed;
 
+	if (!str || (uintptr_t)str < 0x1000)
+        return NULL;
 	result = gc_strdup(shell->gc[GC_EXPAND], EMPTY_STRING);
 	i = 0;
 	while (str[i])

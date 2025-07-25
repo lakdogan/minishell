@@ -83,6 +83,5 @@ static char	**create_env_array(t_minishell *minishell)
  */
 char	**rebuild_env_array(t_minishell *minishell)
 {
-	gc_collect(minishell->gc[GC_ENV]);
 	return (create_env_array(minishell));
 }

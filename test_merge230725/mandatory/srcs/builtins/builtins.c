@@ -24,6 +24,8 @@
  */
 int	exec_builtin(t_exec *cmd, t_minishell *minishell)
 {
+	if (!cmd || !cmd->command || !*cmd->command)
+		return (BUILTIN_FAILURE);
 	if (ft_strcmp(cmd->command, "echo") == STRINGS_EQUAL)
 		return (ft_echo(cmd->argv));
 	else if (ft_strcmp(cmd->command, "cd") == STRINGS_EQUAL)

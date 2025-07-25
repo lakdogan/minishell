@@ -49,7 +49,7 @@ t_token_type		get_tok_type(char *value);
 t_token_state		get_tok_state(char *value, int len);
 int					check_for_paren(const char *cmd, int *i, int len);
 int					check_for_qoutes(const char *cmd, int *i, int *len);
-int					is_token_valid(char *value);
+int					is_token_valid(char *value, t_token_state state);
 /*-----lexer-------------------------------------------------------------------------------*/
 
 /*------AST--------------------------------------------------------------------------------*/

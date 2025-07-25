@@ -76,16 +76,28 @@ t_token	init_token(const char *cmd, int *i, const int t_count, t_gc *gc)
 	new_token.type = get_tok_type(new_token.value);
 	new_token.state = get_tok_state(new_token.value, len);
 	new_token.no_expand = (new_token.state == IN_SQUOTES);
-	if (get_tok_type(orginal_value) == WORD)
-		new_token.value = remove_quotes(orginal_value, gc);
+	if (new_token.type == WORD)
+    {
+        new_token.value = remove_quotes(orginal_value, gc);
+        // DO NOT reassign the type after removing quotes!
+        // Keep it as WORD
+    }
+    else
+    {
+        // For non-WORD tokens, validate if needed
+        if (!is_token_valid(new_token.value, new_token.state))
+            return (init_token_default());
+    }
+	// if (get_tok_type(orginal_value) == WORD)
+	// 	new_token.value = remove_quotes(orginal_value, gc);
 	// if (new_token.state == UNCLOSED_QUOTES)
 	// 	return (init_token_default());
-	new_token.type = get_tok_type(new_token.value);
+	// new_token.type = get_tok_type(new_token.value);
 	// printf("Token type: %d\n", new_token.type);
 	type = new_token.type;
 	if (type != WORD && type != L_PAREN && type != R_PAREN)
 	{
-		if (!is_token_valid(new_token.value))
+		if (!is_token_valid(new_token.value, new_token.state))
 			return (init_token_default());
 	}
 	new_token.pos = t_count;

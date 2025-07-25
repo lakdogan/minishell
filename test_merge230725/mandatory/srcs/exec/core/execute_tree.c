@@ -147,3 +147,40 @@ void	execute_tree(t_command_tree *root, t_minishell *minishell)
 	}
 	minishell->in_nested_pipe = false;
 }
+
+// void execute_tree(t_command_tree *root, t_minishell *minishell)
+// {
+//     int status;
+//     // Reset the flag at the beginning
+//     minishell->redirection_failed = false;
+
+//     if (!validate_command_tree(root))
+//     {
+//         minishell->exit_code = EXIT_FAILURE;
+//         return;
+//     }
+    
+//     if (!minishell->in_nested_pipe)
+//         prepare_heredocs_if_needed(minishell, root);
+        
+//     // Execute the command tree
+//     execute_node_by_type(root, minishell);
+    
+//     // Only wait for processes if we're not in a nested pipe
+//     if (!minishell->in_nested_pipe)
+//     {
+//         // Check if any processes were actually created
+//         if (minishell->last_pid > 0) {
+//             // Wait for all child processes to complete
+//             while (waitpid(WAIT_ANY, &status, WAIT_BLOCK) > NO_PROCESS)
+//                 continue;
+//             minishell->last_pid = 0; // Reset PID tracker after waiting
+//         }
+//         // If no processes were created but redirection failed, ensure exit code is set
+//         else if (minishell->redirection_failed) {
+//             minishell->exit_code = 1;  // Force exit code to 1 for failed redirection
+//             // No waiting needed - return to prompt immediately
+//         }
+//     }
+//     minishell->in_nested_pipe = false;
+// }

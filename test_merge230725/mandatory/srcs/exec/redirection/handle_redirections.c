@@ -19,21 +19,99 @@
  * @param in Pointer to the input file structure containing the file name
  * @return int EXIT_SUCCESS on successful redirection
  */
-static int	handle_input_file(t_minishell *shell, t_infile *in)
-{
-	char	*expanded_name;
-	int		fd;
+// static int	handle_input_file(t_minishell *shell, t_infile *in)
+// {
+// 	char	*expanded_name;
+// 	int		fd;
 
-	if (!shell || !in || !in->name)
-		return (EXIT_FAILURE);
-	expanded_name = expand_variables_with_quotes(in->name, shell);
-	if (!expanded_name)
-		expanded_name = ft_strdup(in->name);
-	fd = open_infile(shell, expanded_name);
-	safe_dup2(shell, fd, STDIN_FILENO, "input redirection");
-	safe_close(shell, fd, "close input file");
-	return (EXIT_SUCCESS);
+// 	if (!shell || !in || !in->name)
+// 		return (EXIT_FAILURE);
+// 	expanded_name = expand_variables_with_quotes(in->name, shell);
+// 	if (!expanded_name)
+// 		expanded_name = ft_strdup(in->name);
+// 	fd = open_infile(shell, expanded_name);
+// 	if (fd == INVALID_FD)
+// 		_exit(EXIT_FAILURE);
+// 	safe_dup2(shell, fd, STDIN_FILENO, "");
+// 	safe_close(shell, fd, "close input file");
+// 	return (EXIT_SUCCESS);
+// }
+
+static int handle_input_file(t_minishell *shell, t_infile *in, bool in_child_process)
+{
+    char *expanded_name;
+    int fd;
+
+    if (!shell || !in || !in->name)
+        return (EXIT_FAILURE);
+    expanded_name = expand_variables_with_quotes(in->name, shell);
+    if (!expanded_name)
+        expanded_name = ft_strdup(in->name);
+    fd = open_infile(shell, expanded_name);
+    
+    // Only try to use the fd if it's valid
+    if (fd != INVALID_FD) {
+        safe_dup2(shell, fd, STDIN_FILENO, "");
+        safe_close(shell, fd, "close input file");
+        return (EXIT_SUCCESS);
+    } else {
+        // File couldn't be opened
+        shell->exit_code = 1;
+        
+        // If in child process, exit immediately
+        if (in_child_process)
+            exit(EXIT_FAILURE);
+            
+        return (EXIT_FAILURE);
+    }
 }
+
+// static int handle_input_file(t_minishell *shell, t_infile *in)
+// {
+//     char *expanded_name;
+//     int fd;
+
+//     if (!shell || !in || !in->name)
+//         return (EXIT_FAILURE);
+//     expanded_name = expand_variables_with_quotes(in->name, shell);
+//     if (!expanded_name)
+//         expanded_name = ft_strdup(in->name);
+//     fd = open_infile(shell, expanded_name);
+    
+//     // Only try to use the fd if it's valid
+//     if (fd != INVALID_FD) {
+//         safe_dup2(shell, fd, STDIN_FILENO, "");
+//         safe_close(shell, fd, "close input file");
+//         return (EXIT_SUCCESS);
+//     } else {
+//         // File couldn't be opened, return failure
+//         shell->exit_code = 1;
+//         return (EXIT_FAILURE);
+//     }
+// }
+// static int handle_input_file(t_minishell *shell, t_infile *in)
+// {
+//     char *expanded_name;
+//     int fd;
+
+//     if (!shell || !in || !in->name)
+//         return (EXIT_FAILURE);
+//     expanded_name = expand_variables_with_quotes(in->name, shell);
+//     if (!expanded_name)
+//         expanded_name = ft_strdup(in->name);
+//     fd = open_infile(shell, expanded_name);
+    
+//     // Only try to use the fd if it's valid
+//     if (fd != INVALID_FD) {
+//         safe_dup2(shell, fd, STDIN_FILENO, "");
+//         safe_close(shell, fd, "close input file");
+//     } else {
+//         // File couldn't be opened, return failure
+//         return (EXIT_FAILURE);
+//     }
+    
+//     return (EXIT_SUCCESS);
+// }
 
 /**
  * @brief Handles heredoc input redirection
@@ -66,22 +144,73 @@ static void	handle_heredoc_input(t_minishell *shell, int heredoc_fd)
  *
  * @param exec Pointer to the command execution structure
  */
-void setup_input_redirections(t_minishell *shell, t_exec *exec)
+// void setup_input_redirections(t_minishell *shell, t_exec *exec)
+// {
+//     t_infile *in;
+
+//     if (!shell || !exec)
+//         return;
+        
+//     in = exec->infiles;
+//     while (in)
+//     {
+//         if (in->type == INF_IN && in->name)
+//             handle_input_file(shell, in);
+//         in = in->next;
+//     }
+//     if (exec->heredoc_fd > 0 && exec->heredoc_fd != INVALID_FD)
+//         handle_heredoc_input(shell, exec->heredoc_fd);
+// }
+// void setup_input_redirections(t_minishell *shell, t_exec *exec)
+// {
+//     t_infile *in;
+//     int result;
+
+//     result = EXIT_SUCCESS;
+//     if (!shell || !exec)
+//         return;
+        
+//     in = exec->infiles;
+//     while (in)
+//     {
+//         if (in->type == INF_IN && in->name) {
+//             if (handle_input_file(shell, in) == EXIT_FAILURE)
+//                 result = EXIT_FAILURE; 
+//         }
+//         in = in->next;
+//     }
+    
+//     if (exec->heredoc_fd > 0 && exec->heredoc_fd != INVALID_FD)
+//         handle_heredoc_input(shell, exec->heredoc_fd);
+//     exec->redirection_failed = (result == EXIT_FAILURE);
+// }
+
+void setup_input_redirections(t_minishell *shell, t_exec *exec, bool in_child_process)
 {
     t_infile *in;
+    int result;
 
+    result = EXIT_SUCCESS;
     if (!shell || !exec)
         return;
+
+	if (exec->command)
+        shell->current_command = exec->command;
         
     in = exec->infiles;
     while (in)
     {
-        if (in->type == INF_IN && in->name)
-            handle_input_file(shell, in);
+        if (in->type == INF_IN && in->name) {
+            if (handle_input_file(shell, in, in_child_process) == EXIT_FAILURE)
+                result = EXIT_FAILURE;
+        }
         in = in->next;
     }
+    
     if (exec->heredoc_fd > 0 && exec->heredoc_fd != INVALID_FD)
         handle_heredoc_input(shell, exec->heredoc_fd);
+        
+    exec->redirection_failed = (result == EXIT_FAILURE);
 }
 
 /**

@@ -42,6 +42,7 @@ typedef enum e_gc_type
 	GC_CWD,
 	GC_EXPAND,
 	GC_PROC_HERE,
+	GC_PWD,
 	GC_COUNT // Number of GC categories (used for array size)
 }			t_gc_type;
 
@@ -57,6 +58,12 @@ typedef struct s_minishell
 	int last_signal;      // Last received signal (used for signal handling)
 	t_gc *gc[GC_COUNT];   // Array of garbage collectors
 	bool	in_nested_pipe;
+	char *last_executed_command;  // Track last command for special case handling
+    char *last_command_arg;  
+	int last_pid;
+	bool redirection_failed;
+	char *current_command;
+
 }			t_minishell;
 
 # include "builtins.h"

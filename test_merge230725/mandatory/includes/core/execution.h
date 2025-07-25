@@ -108,6 +108,7 @@ typedef struct s_exec
 	t_outfile			*outfiles;
 	int					heredoc_fd;
 	bool				heredoc_prepared;
+	bool            	redirection_failed;
 }						t_exec;
 
 typedef struct s_pipe_state
@@ -278,8 +279,8 @@ char					*read_from_pipe(t_minishell *shell, int pipe_fd);
 /* 	~	file_utils.c  ~ */
 int						open_infile(t_minishell *shell, char *filename);
 /* 	~	handle_redirections.c ~		*/
-void					setup_input_redirections(t_minishell *shell,
-							t_exec *exec);
+void 					setup_input_redirections(t_minishell *shell,
+							t_exec *exec, bool in_child_process);
 void					setup_output_redirections(t_minishell *shell,
 							t_exec *exec);
 /* 	~	heredoc_content.c ~		*/

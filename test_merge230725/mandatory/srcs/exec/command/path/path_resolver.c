@@ -125,6 +125,8 @@ char	*get_absolute_path(t_minishell *shell, char *cmd, char **envp)
 	char	*path_env;
 	char	*result;
 
+	if (!cmd || (uintptr_t)cmd < 0x1000)
+        return NULL;
 	abs_path = check_absolute_path(shell, cmd);
 	if (abs_path)
 		return (abs_path);

@@ -38,8 +38,14 @@ int	tok_len(const char *cmd, int *i)
 		else
 			return (1);
 	}
+	if (cmd[*i] == '|' || cmd[*i] == '&' || cmd[*i] == '(' || cmd[*i] == ')')
+		return (1);
 	while (cmd[(*i) + len])
 	{
+		if (cmd[(*i) + len] == '|' || cmd[(*i) + len] == '<' || 
+            cmd[(*i) + len] == '>' || cmd[(*i) + len] == '&' ||
+            cmd[(*i) + len] == '(' || cmd[(*i) + len] == ')')
+            break;
 		if (cmd[(*i) + len] == '"' || cmd[(*i) + len] == '\'')
 		{
 			if (!check_for_qoutes(cmd, i, &len))

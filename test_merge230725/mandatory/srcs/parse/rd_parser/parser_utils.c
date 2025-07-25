@@ -10,7 +10,7 @@ int	is_redir(t_token_type type)
 		return (0);
 }
 
-void	arg_to_list(t_arg_lst **head, char *value, t_gc *gc)
+void	arg_to_list(t_arg_lst **head, char *value, bool no_expand, t_gc *gc)
 {
 	t_arg_lst	*new_node;
 	t_arg_lst	*current;
@@ -19,6 +19,7 @@ void	arg_to_list(t_arg_lst **head, char *value, t_gc *gc)
 	if (!new_node)
 		return ;
 	new_node->arg = value;
+	new_node->no_expand = no_expand;
 	new_node->next = NULL;
 	if ((*head) == NULL)
 	{

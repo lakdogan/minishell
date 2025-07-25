@@ -30,8 +30,9 @@ static int	is_valid_export_key(const char *argv)
 	int	i;
 
 	i = FIRST_CHAR;
-	if (!argv || !argv[i] || ft_isdigit(argv[i]))
+	if (!argv || !argv[i] || !(ft_isalpha(argv[i]) || argv[i] == UNDERSCORE))
 		return (IDENTIFIER_INVALID);
+	i++;
 	while (argv[i] && argv[i] != EQUALS_SIGN)
 	{
 		if (!ft_isalnum(argv[i]) && argv[i] != UNDERSCORE)
@@ -60,7 +61,9 @@ static int	is_valid_export_key(const char *argv)
 int	ft_export(char **argv, t_minishell *minishell)
 {
 	int	i;
+	int status;
 
+	status = BUILTIN_SUCCESS;
 	i = COMMAND_ARGS_START;
 	if (!argv[i])
 	{
@@ -74,11 +77,12 @@ int	ft_export(char **argv, t_minishell *minishell)
 			write(STDERR_FILENO, "export: `", 9);
 			write(STDERR_FILENO, argv[i], ft_strlen(argv[i]));
 			write(STDERR_FILENO, "': not a valid identifier\n", 27);
+			status = BUILTIN_FAILURE;
 		}
 		else
 			update_or_add_env(argv[i], minishell);
 		i++;
 	}
 	minishell->envp_arr = rebuild_env_array(minishell);
-	return (BUILTIN_SUCCESS);
+	return (status);
 }

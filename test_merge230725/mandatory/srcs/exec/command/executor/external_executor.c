@@ -12,6 +12,19 @@
 
 #include "../../../../includes/core/minishell.h"
 
+int ft_is_whitespace_str(const char *str)
+{
+    if (!str)
+        return 1;  // NULL is considered whitespace
+        
+    while (*str) {
+        if (!ft_isspace(*str))
+            return 0;  // Found non-whitespace
+        str++;
+    }
+    return 1;  // Only whitespace
+}
+
 void	handle_var_expansion_exec(t_minishell *shell, t_exec *exec)
 {
 	int			i;
@@ -23,10 +36,32 @@ void	handle_var_expansion_exec(t_minishell *shell, t_exec *exec)
 		i = 0;
 		while (exec->argv[i])
 		{
-			exec->argv[i] = expand_variables_with_quotes(exec->argv[i], shell);
+			if (!exec->no_expand_flags || !exec->no_expand_flags[i])
+			{
+				exec->argv[i] = expand_variables_with_quotes(exec->argv[i], shell);
+				if (i == 0)
+					exec->command = exec->argv[0];
+			}
 			i++;
 		}
 	}
+	if (exec->argv[0] && (!*exec->argv[0] || ft_is_whitespace_str(exec->argv[0])))
+	{
+		i = 0;
+		while (exec->argv[i + 1])
+		{
+			exec->argv[i] = exec->argv[i + 1];
+			if (exec->no_expand_flags)
+				exec->no_expand_flags[i] = exec->no_expand_flags[i + 1];
+			i++;
+		}
+		exec->argv[i] = NULL;
+		if (exec->argv[0])
+			exec->command = exec->argv[0];
+		else
+			exec->command = NULL;
+	}
+
 	infile = exec->infiles;
 	while (infile)
 	{
@@ -62,15 +97,23 @@ void	handle_var_expansion_exec(t_minishell *shell, t_exec *exec)
 void	execute_command(t_exec *exec, t_minishell *minishell)
 {
 	char	*abs_path;
+	struct	stat path_stat;
 
+	handle_var_expansion_exec(minishell, exec);
+	if (!exec->command || !*exec->command || ft_is_whitespace_str(exec->command))
+		exit(EXIT_SUCCESS);
 	abs_path = get_absolute_path(minishell, exec->command, minishell->envp_arr);
 	if (!abs_path)
 		exit_with_error(minishell, "command not found: ", exec->command,
 			CMD_NOT_FOUND);
+	if (stat(abs_path, &path_stat) == 0 && S_ISDIR(path_stat.st_mode))
+		exit_with_error(minishell, "is a directory: ", exec->command, PERMISSION_DENIED);
 	else if (errno == EACCES)
 		exit_with_error(minishell, "permission denied: ", exec->command,
 			PERMISSION_DENIED);
-	handle_var_expansion_exec(minishell, exec);
 	execve(abs_path, exec->argv, minishell->envp_arr);
-	exit_with_error(minishell, "execve", strerror(errno), CMD_NOT_FOUND);
+	if (errno == EISDIR)
+		exit_with_error(minishell, "is a directory: ", exec->command, PERMISSION_DENIED);
+	else
+		exit_with_error(minishell, "execve", strerror(errno), CMD_NOT_FOUND);
 }

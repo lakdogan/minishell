@@ -28,6 +28,7 @@
 typedef struct s_arg_lst
 {
 	char				*arg;
+	bool				no_expand;
 	struct s_arg_lst	*next;
 }						t_arg_lst;
 
@@ -60,7 +61,7 @@ t_command_tree		*parse_subshell(t_tokens *tokens, int *pos, t_gc *gc);
 t_command_tree		*parse_pipeline(t_tokens *tokens, int *pos, t_gc *gc);
 t_command_tree		*parse_logic_ops(t_tokens *tokens, int *pos, t_gc *gc);
 //helper functions for parsing:
-void				arg_to_list(t_arg_lst **head, char *value, t_gc *gc);
+void				arg_to_list(t_arg_lst **head, char *value, bool no_expand, t_gc *gc);
 char				**lst_to_argv(t_arg_lst *head, t_gc *gc);
 int					handle_redir(t_exec	*exec, t_tokens *tokens, int *pos, t_gc *gc);
 int					is_redir(t_token_type type);

@@ -27,6 +27,7 @@
 # include <sys/signal.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 # include <termios.h>
 
 # define	GC_STRUCT_ALLOCATION_FAILED 1

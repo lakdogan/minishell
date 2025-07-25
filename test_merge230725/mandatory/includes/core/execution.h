@@ -103,6 +103,7 @@ typedef struct s_exec
 {
 	char				*command;
 	char				**argv;
+	bool				*no_expand_flags;
 	t_infile			*infiles;
 	t_outfile			*outfiles;
 	int					heredoc_fd;

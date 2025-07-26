@@ -111,10 +111,10 @@ char *remove_quotes(char *token_value, t_gc *gc)
     int len = ft_strlen(token_value);
     char *cleaned = gc_malloc(gc, len + 1);
     int i = 0, j = 0;
-    
+
     if (!cleaned)
         return token_value;
-    
+
     while (token_value[i]) {
         // Skip quote characters
         if (token_value[i] == '\'' || token_value[i] == '"') {

@@ -1,6 +1,6 @@
 #include "../../../includes/core/minishell.h"
 
-t_command_tree	*start_parser(t_tokens *tokens, t_gc *gc)
+t_command_tree	*start_parser(t_tokens *tokens, t_gc *gc, t_minishell *shell)
 {
 	t_command_tree	*ast;
 	int				pos;
@@ -13,7 +13,7 @@ t_command_tree	*start_parser(t_tokens *tokens, t_gc *gc)
 		return (NULL);
 	if (pos < tokens->count)
 	{
-		error_msg(tokens, &pos);
+		error_msg(tokens, &pos, shell);
 		return (NULL);
 	}
 	return (ast);

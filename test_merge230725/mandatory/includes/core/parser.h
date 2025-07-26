@@ -54,7 +54,7 @@ int					is_token_valid(char *value, t_token_state state);
 
 /*------AST--------------------------------------------------------------------------------*/
 //main function for parsing:
-t_command_tree		*start_parser(t_tokens *tokens, t_gc *gc);
+t_command_tree		*start_parser(t_tokens *tokens, t_gc *gc, t_minishell *shell);
 t_command_tree		*parse_sub_or_cmd(t_tokens *tokens, int *pos, t_gc *gc);
 t_command_tree		*parse_cmd(t_tokens *tokens, int *pos, t_gc *gc);
 t_command_tree		*parse_subshell(t_tokens *tokens, int *pos, t_gc *gc);

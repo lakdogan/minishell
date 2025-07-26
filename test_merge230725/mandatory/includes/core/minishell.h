@@ -59,10 +59,11 @@ typedef struct s_minishell
 	t_gc *gc[GC_COUNT];   // Array of garbage collectors
 	bool	in_nested_pipe;
 	char *last_executed_command;  // Track last command for special case handling
-    char *last_command_arg;  
+    char *last_command_arg;
 	int last_pid;
 	bool redirection_failed;
 	char *current_command;
+	char *line;
 
 }			t_minishell;
 

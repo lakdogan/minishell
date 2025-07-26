@@ -15,6 +15,7 @@ int	is_token_valid(char *value, t_token_state state)
 		if (value[i + 1] != c)
 		{
 			ft_printf("minishell: syntax error near unexpected token '%c'\n", c);
+			
 			return (0);
 		}
 		if (value[i + 2])

@@ -49,7 +49,7 @@ int	check_for_qoutes(const char *cmd, int *i, int *len)
 //             // Continue processing after the quote - important to not break on special chars inside quotes
 //             continue;
 //         }
-// 		if (cmd[(*i) + len] == '|' || cmd[(*i) + len] == '<' || 
+// 		if (cmd[(*i) + len] == '|' || cmd[(*i) + len] == '<' ||
 //             cmd[(*i) + len] == '>' || cmd[(*i) + len] == '&' ||
 //             cmd[(*i) + len] == '(' || cmd[(*i) + len] == ')')
 //             break;
@@ -91,7 +91,7 @@ int tok_len(const char *cmd, int *i)
     }
     if (cmd[*i] == '|' || cmd[*i] == '&' || cmd[*i] == '(' || cmd[*i] == ')')
         return (1);
-    
+
     // Process normal word tokens
     while (cmd[(*i) + len])
     {
@@ -102,22 +102,22 @@ int tok_len(const char *cmd, int *i)
                 break;
             continue;
         }
-        
+
         // Break on special characters (crucial for adjacent tokens)
-        if (cmd[(*i) + len] == '|' || cmd[(*i) + len] == '<' || 
+        if (cmd[(*i) + len] == '|' || cmd[(*i) + len] == '<' ||
             cmd[(*i) + len] == '>' || cmd[(*i) + len] == '&' ||
             cmd[(*i) + len] == '(' || cmd[(*i) + len] == ')')
             break;
-            
+
         // Break on whitespace
         else if (ft_isspace(cmd[(*i) + len]))
             break;
-            
+
         // Otherwise keep building the token
         else
             len++;
     }
-    
+
     // Ensure we return at least one character for non-empty tokens
     return (len > 0 ? len : 0);
 }

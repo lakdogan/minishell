@@ -54,7 +54,10 @@ t_tokens	*lexer(const char *cmd, t_minishell *shell)
 		return (NULL);
 	count = lexer_loop(&tokens, cmd, &cap, shell->gc[GC_COMMAND]);
 	if (count <= 0)
+	{
+		shell->exit_code = 2;
 		return (NULL);
+	}
 	array->arr = tokens;
 	array->count = count;
 	return (array);

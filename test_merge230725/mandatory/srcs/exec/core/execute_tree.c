@@ -13,10 +13,10 @@
 static bool has_heredoc_redirection(t_exec *exec)
 {
 	t_infile *current;
-	
+
 	if (!exec || !exec->infiles)
 		return false;
-		
+
 	current = exec->infiles;
 	while (current)
 	{
@@ -67,10 +67,10 @@ static int	validate_command_tree(t_command_tree *root)
 static bool has_heredoc_in_tree(t_minishell *minishell, t_command_tree *node)
 {
 	t_exec *exec;
-	
+
 	if (!node)
 		return false;
-		
+
 	if (node->type == N_EXEC)
 	{
 		exec = node->data;
@@ -79,10 +79,10 @@ static bool has_heredoc_in_tree(t_minishell *minishell, t_command_tree *node)
 	}
 	else if (node->type == N_PIPE)
 	{
-		return (has_heredoc_in_tree(minishell, node->left) || 
+		return (has_heredoc_in_tree(minishell, node->left) ||
 				has_heredoc_in_tree(minishell, node->right));
 	}
-	
+
 	return false;
 }
 /**
@@ -111,10 +111,6 @@ static void prepare_heredocs_if_needed(t_minishell *minishell, t_command_tree *r
         heredocs_prepared = HEREDOCS_PREPARED;
     }
 }
-
-
-
-
 
 /**
  * @brief Main entry point for executing a command tree
@@ -159,13 +155,13 @@ void	execute_tree(t_command_tree *root, t_minishell *minishell)
 //         minishell->exit_code = EXIT_FAILURE;
 //         return;
 //     }
-    
+
 //     if (!minishell->in_nested_pipe)
 //         prepare_heredocs_if_needed(minishell, root);
-        
+
 //     // Execute the command tree
 //     execute_node_by_type(root, minishell);
-    
+
 //     // Only wait for processes if we're not in a nested pipe
 //     if (!minishell->in_nested_pipe)
 //     {

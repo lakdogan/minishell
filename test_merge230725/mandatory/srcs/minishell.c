@@ -9,12 +9,16 @@ t_command_tree *setup_ast(char *line, t_minishell *shell)
 	tokens = lexer(line, shell);
 	if (!tokens)
 	{
-		error_msg_paren();
+		//error_msg_paren();
+        shell->exit_code = 2;
 		return (NULL);
 	}
 	ast = start_parser(tokens, shell->gc[GC_COMMAND], shell);
 	if (!ast)
+    {
+        shell->exit_code = 2;
 		return (NULL);
+    }
 	return (ast);
 }
 
@@ -99,9 +103,7 @@ int main(int argc, char **argv, char **env)
             add_history((const char *)shell.input);
             shell.root = setup_ast(shell.input, &shell);
             if (shell.root)
-            {
                 execute_tree(shell.root, &shell);
-            }
         }
 
         // Korrektes Aufräumen für die nächste Runde

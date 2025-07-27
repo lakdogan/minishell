@@ -22,7 +22,6 @@ void	save_heredoc_contents(t_minishell *shell, t_exec *exec)
 				content = gc_strdup(shell->gc[GC_MAIN], EMPTY_STRING);
 			write_heredoc_to_fd(shell, exec, content);
 			exec->heredoc_prepared = true;
-			break ;
 		}
 		current = current->next;
 	}

@@ -16,7 +16,7 @@ int ft_is_whitespace_str(const char *str)
 {
     if (!str)
         return 1;  // NULL is considered whitespace
-        
+
     while (*str) {
         if (!ft_isspace(*str))
             return 0;  // Found non-whitespace
@@ -101,7 +101,11 @@ void	execute_command(t_exec *exec, t_minishell *minishell)
 
 	handle_var_expansion_exec(minishell, exec);
 	if (!exec->command || !*exec->command || ft_is_whitespace_str(exec->command))
-		exit(EXIT_SUCCESS);
+	{
+		exit_with_error(minishell, "command not found: ", "",
+			CMD_NOT_FOUND);
+		//exit(EXIT_SUCCESS);
+	}
 	abs_path = get_absolute_path(minishell, exec->command, minishell->envp_arr);
 	if (!abs_path)
 		exit_with_error(minishell, "command not found: ", exec->command,

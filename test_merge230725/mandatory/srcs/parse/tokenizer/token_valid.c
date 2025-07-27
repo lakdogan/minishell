@@ -15,7 +15,7 @@ int	is_token_valid(char *value, t_token_state state)
 		if (value[i + 1] != c)
 		{
 			ft_printf("minishell: syntax error near unexpected token '%c'\n", c);
-			
+
 			return (0);
 		}
 		if (value[i + 2])
@@ -26,3 +26,24 @@ int	is_token_valid(char *value, t_token_state state)
 	}
 	return (1);
 }
+
+// int	is_quote_empty(t_tokens *tokens)
+// {
+// 	int				i;
+// 	char			*value;
+// 	t_token_state	state;
+
+// 	i = 0;
+// 	value = tokens->arr[0].value;
+// 	state = tokens->arr[0].state;
+// 	if (state == IN_DQUOTES || state == IN_SQUOTES)
+// 	{
+// 		while (value[i])
+// 		{
+// 			if (value[i] != ' ' && value[i] != '	')
+// 				return (0);
+// 			i++;
+// 		}
+// 	}
+// 	return (1);
+// }

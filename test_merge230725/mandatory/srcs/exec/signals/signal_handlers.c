@@ -45,11 +45,11 @@ void	setup_child_signals(void)
  */
 void	signal_handler(int sig)
 {
-	const char	*msg = "\nMinishell$ ";
+	// const char	*msg = "\n";
 
 	(void)sig;
 	write(STDERR_FILENO, "\n", 1);
-	write(STDERR_FILENO, msg, 12);
+	// write(STDERR_FILENO, msg, 12);
 	rl_on_new_line();
 	rl_replace_line("", 0);
 }

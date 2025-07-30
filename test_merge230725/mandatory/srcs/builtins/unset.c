@@ -84,6 +84,7 @@ int	ft_unset(char **argv, t_minishell *minishell)
 			write(STDERR_FILENO, "unset: `", 8);
 			write(STDERR_FILENO, argv[i], ft_strlen(argv[i]));
 			write(STDERR_FILENO, "': not a valid identifier\n", 27);
+			exit(1);
 		}
 		else
 			remove_env_var(argv[i], minishell);

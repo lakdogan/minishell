@@ -102,9 +102,15 @@ void	execute_command(t_exec *exec, t_minishell *minishell)
 	handle_var_expansion_exec(minishell, exec);
 	if (!exec->command || !*exec->command || ft_is_whitespace_str(exec->command))
 	{
-		exit_with_error(minishell, "command not found: ", "",
-			CMD_NOT_FOUND);
-		//exit(EXIT_SUCCESS);
+		// if (!exec->command)
+		// {
+		// 	ft_putstr_fd("command not found: \n", STDERR_FILENO);
+		// 	exit(CMD_NOT_FOUND);
+		// }
+		// ft_putstr_fd("command not found: ", STDERR_FILENO);
+		// ft_putstr_fd(exec->command, STDERR_FILENO);
+		// ft_putstr_fd("\n", STDERR_FILENO);
+		exit(CMD_NOT_FOUND);
 	}
 	abs_path = get_absolute_path(minishell, exec->command, minishell->envp_arr);
 	if (!abs_path)

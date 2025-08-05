@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_logic_ops.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: almatsch <almatsch@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/04 06:28:09 by almatsch          #+#    #+#             */
+/*   Updated: 2025/08/04 06:28:27 by almatsch         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../../includes/core/minishell.h"
 
 t_command_tree	*start_parser(t_tokens *tokens, t_gc *gc, t_minishell *shell)
@@ -10,7 +22,10 @@ t_command_tree	*start_parser(t_tokens *tokens, t_gc *gc, t_minishell *shell)
 	pos = 0;
 	ast = parse_logic_ops(tokens, &pos, gc);
 	if (!ast)
+	{
+		ft_putstr_fd("Invalid syntax\n", STDERR_FILENO);
 		return (NULL);
+	}
 	if (pos < tokens->count)
 	{
 		shell->exit_code = 2;
@@ -36,7 +51,7 @@ t_command_tree	*parse_logic_ops(t_tokens *tokens, int *pos, t_gc *gc)
 	left = parse_pipeline(tokens, pos, gc);
 	if (!left)
 		return (NULL);
-	while((*pos) < tokens->count && is_logical_op(tokens->arr[(*pos)].type))
+	while ((*pos) < tokens->count && is_logical_op(tokens->arr[(*pos)].type))
 	{
 		type = tokens->arr[(*pos)].type;
 		(*pos)++;

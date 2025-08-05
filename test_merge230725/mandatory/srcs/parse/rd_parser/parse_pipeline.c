@@ -1,8 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_pipeline.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: almatsch <almatsch@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/04 06:28:38 by almatsch          #+#    #+#             */
+/*   Updated: 2025/08/04 06:29:16 by almatsch         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../../../includes/core/minishell.h"
 
-t_command_tree	*get_node(t_node_type type, t_command_tree *left, t_command_tree *right,
-				t_gc *gc)
+t_command_tree	*get_node(t_node_type type, t_command_tree *left,
+				t_command_tree *right, t_gc *gc)
 {
 	t_command_tree	*new_node;
 
@@ -36,4 +47,3 @@ t_command_tree	*parse_pipeline(t_tokens *tokens, int *pos, t_gc *gc)
 	}
 	return (left);
 }
-

@@ -61,7 +61,7 @@ static int	is_valid_export_key(const char *argv)
 int	ft_export(char **argv, t_minishell *minishell)
 {
 	int	i;
-	int status;
+	int	status;
 
 	status = BUILTIN_SUCCESS;
 	i = COMMAND_ARGS_START;

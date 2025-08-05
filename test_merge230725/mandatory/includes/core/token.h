@@ -1,4 +1,14 @@
-
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   token.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: almatsch <almatsch@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/04 08:48:58 by almatsch          #+#    #+#             */
+/*   Updated: 2025/08/05 23:56:09 by almatsch         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 /**
  * @file token.h
@@ -42,14 +52,14 @@ typedef enum e_token_state
 
 typedef struct s_token
 {
-	char			*value;		// String value of token
-	t_token_type	type;		// e.g., WORD, PIPE, etc.
-	t_token_state	state;		// Quoting/expansion context
-	int				pos;		// Position in the input string
-	bool			no_expand;	// flag to prevent expansion
+	char			*value;
+	t_token_type	type;
+	t_token_state	state;
+	int				pos;
+	bool			no_expand;
 }					t_token;
 
-typedef struct	s_tokens
+typedef struct s_tokens
 {
 	t_token	*arr;
 	int		count;

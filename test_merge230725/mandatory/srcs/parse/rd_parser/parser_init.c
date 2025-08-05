@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_init.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: almatsch <almatsch@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/04 06:31:24 by almatsch          #+#    #+#             */
+/*   Updated: 2025/08/04 06:31:42 by almatsch         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../../includes/core/minishell.h"
 
 t_exec	*exec_init(t_gc *gc)
@@ -11,7 +23,6 @@ t_exec	*exec_init(t_gc *gc)
 	exec->outfiles = NULL;
 	exec->heredoc_fd = -1;
 	exec->heredoc_prepared = false;
-
 	return (exec);
 }
 

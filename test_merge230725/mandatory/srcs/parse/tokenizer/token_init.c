@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   token_init.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: almatsch <almatsch@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/04 07:48:08 by almatsch          #+#    #+#             */
+/*   Updated: 2025/08/06 01:24:49 by almatsch         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../../includes/core/minishell.h"
 
 t_token_type	get_tok_type(char *value)
@@ -55,79 +67,97 @@ t_token	init_token_default(void)
 	return (new_token);
 }
 
-t_token	init_token(const char *cmd, int *i, const int t_count, t_gc *gc)
+// t_token	get_token(const char *cmd, int i, int *len, t_gc *gc)
+// {
+// 	t_token	new_token;
+
+// 	new_token = init_token_default();
+// 	(*len) = tok_len(cmd, &i);
+// 	if ((*len) == -1)
+// 		return (new_token);
+// 	new_token.value = gc_substr(gc, cmd, i, (*len));
+// 	if (!new_token.value)
+// 		return (new_token);
+// 	new_token.type = get_tok_type(new_token.value);
+// 	new_token.state = get_tok_state(new_token.value, (*len));
+// 	new_token.no_expand = (new_token.state == IN_SQUOTES);
+// 	return (new_token);
+// }
+
+// t_token	init_token(const char *cmd, int *i, int t_count, t_minishell *shell)
+// {
+// 	t_token	new_token;
+// 	char	*o_value;
+// 	int		len;
+
+// 	len = 0;
+// 	new_token = get_token(cmd, *i, &len, shell->gc[GC_COMMAND]);
+// 	if (!new_token.value)
+// 		return (new_token);
+// 	o_value = new_token.value;
+// 	if (new_token.type == WORD)
+// 		new_token.value = remove_quotes(o_value, shell->gc[GC_COMMAND]);
+// 	else if (new_token.type != L_PAREN && new_token.type != R_PAREN)
+// 	{
+// 		if (!is_token_valid(o_value, new_token.state))
+// 			return (init_token_default());
+// 	}
+// 	new_token.pos = t_count;
+// 	(*i) += len;
+// 	return (new_token);
+// }
+
+void	process_token(t_token *token, t_minishell *shell)
 {
-	int				len;
-	t_token_type	type;
+	char	*o_value;
+	char	*tmp;
+	char	quote;
+
+	o_value = token->value;
+	quote = 0;
+	if (o_value[0] == '\'' || o_value[0] == '"')
+		quote = o_value[0];
+	token->value = remove_quotes(o_value, shell->gc[GC_COMMAND]);
+	if (!token->value)
+		token->value = gc_strdup(shell->gc[GC_COMMAND], "");
+	if (!token->no_expand && ft_strchr(token->value, '$'))
+	{
+		tmp = expand_variables(token->value, shell);
+		if (tmp)
+		{
+			token->value = tmp;
+			if (quote == '\'')
+				token->value = reapply_quote(token->value, quote, shell->gc[GC_COMMAND]);
+		}
+		else
+			token->value = gc_strdup(shell->gc[GC_COMMAND], "");
+	}
+}
+
+t_token	init_token(const char *cmd, int *i, int t_count, t_minishell *shell)
+{
 	t_token	new_token;
-	char *orginal_value;
+	int		len;
 
 	new_token = init_token_default();
-	// printf("%s\n", new_token.value);
 	len = tok_len(cmd, i);
 	if (len == -1)
 		return (new_token);
-	new_token.value = gc_substr(gc, cmd, *i, len);
-	// printf("%s\n", new_token.value);
+	new_token.value = gc_substr(shell->gc[GC_COMMAND], cmd, *i, len);
 	if (!new_token.value)
 		return (new_token);
-	// changes
-	orginal_value = new_token.value;
 	new_token.type = get_tok_type(new_token.value);
 	new_token.state = get_tok_state(new_token.value, len);
 	new_token.no_expand = (new_token.state == IN_SQUOTES);
 	if (new_token.type == WORD)
-    {
-        new_token.value = remove_quotes(orginal_value, gc);
-        // DO NOT reassign the type after removing quotes!
-        // Keep it as WORD
-    }
-    else
-    {
-        // For non-WORD tokens, validate if needed
-        if (!is_token_valid(new_token.value, new_token.state))
-            return (init_token_default());
-    }
-	// if (get_tok_type(orginal_value) == WORD)
-	// 	new_token.value = remove_quotes(orginal_value, gc);
-	// if (new_token.state == UNCLOSED_QUOTES)
-	// 	return (init_token_default());
-	// new_token.type = get_tok_type(new_token.value);
-	// printf("Token type: %d\n", new_token.type);
-	type = new_token.type;
-	if (type != WORD && type != L_PAREN && type != R_PAREN)
+		process_token(&new_token, shell);
+	else
 	{
-		if (!is_token_valid(new_token.value, new_token.state))
-			return (init_token_default());
+		if (new_token.type != L_PAREN && new_token.type != R_PAREN)
+			if (!is_token_valid(new_token.value, new_token.state))
+				return (init_token_default());
 	}
 	new_token.pos = t_count;
 	(*i) += len;
 	return (new_token);
-}
-
-char *remove_quotes(char *token_value, t_gc *gc)
-{
-    int len = ft_strlen(token_value);
-    char *cleaned = gc_malloc(gc, len + 1);
-    int i = 0, j = 0;
-	
-    if (!cleaned)
-        return token_value;
-    while (token_value[i]) {
-        // Skip quote characters
-        if (token_value[i] == '\'' || token_value[i] == '"') {
-            char quote = token_value[i++];
-            // Copy characters until matching quote
-            while (token_value[i] && token_value[i] != quote) {
-                cleaned[j++] = token_value[i++];
-            }
-            if (token_value[i] == quote)
-                i++; // Skip closing quote
-        } else {
-            // Copy non-quoted characters
-            cleaned[j++] = token_value[i++];
-        }
-    }
-    cleaned[j] = '\0';
-    return cleaned;
 }

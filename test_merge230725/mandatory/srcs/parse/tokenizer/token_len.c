@@ -1,7 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   token_len.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: almatsch <almatsch@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/04 07:45:08 by almatsch          #+#    #+#             */
+/*   Updated: 2025/08/04 07:45:53 by almatsch         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../../../includes/core/minishell.h"
 
-int check_for_paren(const char *cmd, int *i, int len)
+int	check_for_paren(const char *cmd, int *i, int len)
 {
 	if (cmd[(*i) + len] == '(' || cmd[(*i) + len] == ')')
 		return (1);
@@ -25,99 +36,45 @@ int	check_for_qoutes(const char *cmd, int *i, int *len)
 	return (0);
 }
 
-// int	tok_len(const char *cmd, int *i)
-// {
-// 	int		len;
-
-// 	len = 0;
-
-// 	if (cmd[*i] == '>' || cmd[*i] == '<')
-// 	{
-// 		if (cmd[*i] == cmd[*i + 1])
-// 			return (2);
-// 		else
-// 			return (1);
-// 	}
-// 	if (cmd[*i] == '|' || cmd[*i] == '&' || cmd[*i] == '(' || cmd[*i] == ')')
-// 		return (1);
-// 	while (cmd[(*i) + len])
-// 	{
-// 		if (cmd[(*i) + len] == '"' || cmd[(*i) + len] == '\'')
-//         {
-//             if (!check_for_qoutes(cmd, i, &len))
-//                 break;
-//             // Continue processing after the quote - important to not break on special chars inside quotes
-//             continue;
-//         }
-// 		if (cmd[(*i) + len] == '|' || cmd[(*i) + len] == '<' ||
-//             cmd[(*i) + len] == '>' || cmd[(*i) + len] == '&' ||
-//             cmd[(*i) + len] == '(' || cmd[(*i) + len] == ')')
-//             break;
-// 		else if (ft_isspace(cmd[*i] + len))
-// 			break;
-// 		if (cmd[(*i) + len] == '"' || cmd[(*i) + len] == '\'')
-// 		{
-// 			if (!check_for_qoutes(cmd, i, &len))
-// 				break ;
-// 		}
-// 		else if (ft_isspace(cmd[(*i) + len]))
-// 			break ;
-// 		else if (check_for_paren(cmd, i, len) && len == 0)
-// 		{
-// 			len++;
-// 			break ;
-// 		}
-// 		else if (check_for_paren(cmd, i, len) && len > 0)
-// 			break ;
-// 		else
-// 			len++;
-// 	}
-// 	return (len);
-// }
-
-int tok_len(const char *cmd, int *i)
+int	get_op_len(const char *cmd, int i)
 {
-    int len;
+	if (cmd[i] == '>' || cmd[i] == '<')
+	{
+		if (cmd[i] == cmd[i + 1])
+			return (2);
+		return (1);
+	}
+	if (cmd[i] == '|' || cmd[i] == '&' || cmd[i] == '(' || cmd[i] == ')')
+		return (1);
+	return (0);
+}
 
-    len = 0;
+int	get_word_len(const char *cmd, int *i)
+{
+	int	len;
 
-    // First handle special operators
-    if (cmd[*i] == '>' || cmd[*i] == '<')
-    {
-        if (cmd[*i] == cmd[*i + 1])
-            return (2);
-        else
-            return (1);
-    }
-    if (cmd[*i] == '|' || cmd[*i] == '&' || cmd[*i] == '(' || cmd[*i] == ')')
-        return (1);
+	len = 0;
+	while (cmd[(*i) + len])
+	{
+		if (cmd[(*i) + len] == '"' || cmd[(*i) + len] == '\'')
+		{
+			if (!check_for_qoutes(cmd, i, &len))
+				break ;
+			continue ;
+		}
+		if (ft_isspace(cmd[(*i) + len]) || get_op_len(cmd, (*i) + len) > 0)
+			break ;
+		len++;
+	}
+	return (len);
+}
 
-    // Process normal word tokens
-    while (cmd[(*i) + len])
-    {
-        // Handle quoted content
-        if (cmd[(*i) + len] == '"' || cmd[(*i) + len] == '\'')
-        {
-            if (!check_for_qoutes(cmd, i, &len))
-                break;
-            continue;
-        }
+int	tok_len(const char *cmd, int *i)
+{
+	int	len;
 
-        // Break on special characters (crucial for adjacent tokens)
-        if (cmd[(*i) + len] == '|' || cmd[(*i) + len] == '<' ||
-            cmd[(*i) + len] == '>' || cmd[(*i) + len] == '&' ||
-            cmd[(*i) + len] == '(' || cmd[(*i) + len] == ')')
-            break;
-
-        // Break on whitespace
-        else if (ft_isspace(cmd[(*i) + len]))
-            break;
-
-        // Otherwise keep building the token
-        else
-            len++;
-    }
-
-    // Ensure we return at least one character for non-empty tokens
-    return (len > 0 ? len : 0);
+	len = get_op_len(cmd, (*i));
+	if (len > 0)
+		return (len);
+	return (get_word_len(cmd, i));
 }

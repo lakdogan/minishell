@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_utils.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: almatsch <almatsch@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/04 06:32:02 by almatsch          #+#    #+#             */
+/*   Updated: 2025/08/04 06:45:06 by almatsch         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../../../includes/core/minishell.h"
 
@@ -91,20 +102,9 @@ int	add_infile(t_exec *exec, t_token_type type, char *filename, t_gc *gc)
 	t_infile	*node;
 	t_infile	*current;
 
-	node = gc_calloc(gc, 1, sizeof(t_infile));
+	node = create_infile(type, filename, gc);
 	if (!node)
 		return (0);
-	if (type == HEREDOC)
-	{
-		node->type = INF_HEREDOC;
-		node->delimeter = filename;
-		node->name = NULL;
-	}
-	else
-	{
-		node->type = INF_IN;
-		node->name = filename;
-	}
 	if (exec->infiles == NULL)
 		exec->infiles = node;
 	else

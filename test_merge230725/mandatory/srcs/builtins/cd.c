@@ -136,7 +136,7 @@ int ft_cd(char **argv, t_minishell *minishell)
     char cwd[PATH_MAX]; // Buffer for current directory
 
     // SPECIAL CASE: Handle cd $PWD directly
-    if (argv[COMMAND_ARGS_START] && 
+    if (argv[COMMAND_ARGS_START] &&
         (ft_strncmp(argv[COMMAND_ARGS_START], "$PWD", 4) == 0 ||
          (argv[COMMAND_ARGS_START][0] == '$' && ft_strlen(argv[COMMAND_ARGS_START]) >= 3)))
     {
@@ -145,7 +145,7 @@ int ft_cd(char **argv, t_minishell *minishell)
             // Current directory will be same after cd $PWD
             if (argv[COMMAND_ARGS_START + 1])
                 write(STDERR_FILENO, "cd: too many arguments\n", 23);
-                
+
             // Update env variables directly
             set_env_var("OLDPWD", minishell->cwd, minishell);
             set_env_var("PWD", cwd, minishell);

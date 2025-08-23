@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_subshell.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: almatsch <almatsch@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 06:29:26 by almatsch          #+#    #+#             */
-/*   Updated: 2025/08/04 06:29:28 by almatsch         ###   ########.fr       */
+/*   Updated: 2025/08/23 15:08:29 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 
 t_command_tree	*parse_sub_or_cmd(t_tokens *tokens, int *pos, t_gc *gc)
 {
+	// Handle assignment tokens first
+	if ((*pos) < tokens->count && tokens->arr[*pos].type == ASSIGNMENT)
+		return (parse_command(tokens, pos, gc));
 	if (tokens->arr[(*pos)].type == L_PAREN)
 		return (parse_subshell(tokens, pos, gc));
 	else
@@ -54,7 +57,7 @@ t_command_tree	*parse_subshell(t_tokens *tokens, int *pos, t_gc *gc)
 		return (NULL);
 	}
 	(*pos)++;
-	node = node_init(N_SUBSHELL, gc);
+	node = node_init(NODE_SUBSHELL, gc);
 	if (!node)
 		return (NULL);
 	node->left = sub;

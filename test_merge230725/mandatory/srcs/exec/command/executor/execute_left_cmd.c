@@ -24,9 +24,9 @@ void	execute_left_subtree(t_minishell *shell, t_command_tree *node,
 {
 	if (!node || !node->left)
 		return ;
-	if (node->left->type == N_EXEC)
+	if (node->left->type == NODE_CMD)
 		handle_standard_left_cmds(shell, node, pipefd);
-	else if (node->left->type == N_PIPE)
+	else if (node->left->type == NODE_PIPE)
 	{
 		setup_default_pipe_output(shell, pipefd);
 		execute_tree(node->left, shell);
@@ -41,7 +41,7 @@ void	execute_left_subtree(t_minishell *shell, t_command_tree *node,
 static void	execute_left_by_type(t_minishell *shell, t_command_tree *node,
 		int *pipefd)
 {
-	if (node->left->type == N_EXEC)
+	if (node->left->type == NODE_CMD)
 		handle_standard_left_cmds(shell, node, pipefd);
 	else
 		execute_left_subtree(shell, node, pipefd);

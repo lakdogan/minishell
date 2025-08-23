@@ -12,6 +12,9 @@
 
 #include "../../../../includes/core/minishell.h"
 
+// Helper function: Apply environment variables to the current process
+
+
 int ft_is_whitespace_str(const char *str)
 {
     if (!str)
@@ -102,14 +105,6 @@ void	execute_command(t_exec *exec, t_minishell *minishell)
 	handle_var_expansion_exec(minishell, exec);
 	if (!exec->command || !*exec->command || ft_is_whitespace_str(exec->command))
 	{
-		// if (!exec->command)
-		// {
-		// 	ft_putstr_fd("command not found: \n", STDERR_FILENO);
-		// 	exit(CMD_NOT_FOUND);
-		// }
-		// ft_putstr_fd("command not found: ", STDERR_FILENO);
-		// ft_putstr_fd(exec->command, STDERR_FILENO);
-		// ft_putstr_fd("\n", STDERR_FILENO);
 		exit(CMD_NOT_FOUND);
 	}
 	abs_path = get_absolute_path(minishell, exec->command, minishell->envp_arr);
@@ -121,6 +116,7 @@ void	execute_command(t_exec *exec, t_minishell *minishell)
 	else if (errno == EACCES)
 		exit_with_error(minishell, "permission denied: ", exec->command,
 			PERMISSION_DENIED);
+
 	execve(abs_path, exec->argv, minishell->envp_arr);
 	if (errno == EISDIR)
 		exit_with_error(minishell, "is a directory: ", exec->command, PERMISSION_DENIED);

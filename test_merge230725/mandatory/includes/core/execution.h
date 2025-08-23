@@ -104,6 +104,7 @@ typedef struct s_exec
 	char				*command;
 	char				**argv;
 	bool				*no_expand_flags;
+	char				**env_vars;  // Added to store environment variable assignments
 	t_infile			*infiles;
 	t_outfile			*outfiles;
 	int					heredoc_fd;

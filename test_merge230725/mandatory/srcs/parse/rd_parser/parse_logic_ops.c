@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_logic_ops.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: almatsch <almatsch@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 06:28:09 by almatsch          #+#    #+#             */
-/*   Updated: 2025/08/04 06:28:27 by almatsch         ###   ########.fr       */
+/*   Updated: 2025/08/11 22:01:01 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ t_command_tree	*start_parser(t_tokens *tokens, t_gc *gc, t_minishell *shell)
 	t_command_tree	*ast;
 	int				pos;
 
+	(void)shell;
 	if (!tokens || tokens->count == 0)
 		return (NULL);
 	pos = 0;
@@ -59,9 +60,9 @@ t_command_tree	*parse_logic_ops(t_tokens *tokens, int *pos, t_gc *gc)
 		if (!right)
 			return (NULL);
 		if (type == AND_IF)
-			left = get_node(N_ANDIF, left, right, gc);
+			left = get_node(NODE_ANDIF, left, right, gc);
 		else
-			left = get_node(N_OR, left, right, gc);
+			left = get_node(NODE_OR, left, right, gc);
 	}
 	return (left);
 }

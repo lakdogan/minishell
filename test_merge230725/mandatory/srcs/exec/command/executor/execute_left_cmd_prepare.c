@@ -24,7 +24,7 @@ void	prepare_for_execute(t_minishell *shell, t_command_tree *node,
 	bool	right_has_input;
 
 	right_has_input = false;
-	if (node->right->type == N_EXEC)
+	if (node->right->type == NODE_CMD)
 		check_if_right_cmd_has_infile(node, &right_exec, &right_has_input);
 	setup_in_and_output_redirections(shell, exec);
 	if (right_has_input)

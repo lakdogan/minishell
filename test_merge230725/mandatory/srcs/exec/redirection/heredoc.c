@@ -6,13 +6,13 @@ void	prepare_heredocs(t_minishell *shell, t_command_tree *node)
 
 	if (!node)
 		return ;
-	if (node->type == N_EXEC)
+	if (node->type == NODE_CMD)  // Replaced N_EXEC with NODE_CMD
 	{
 		exec = node->data;
 		if (exec)
 			save_heredoc_contents(shell, exec);
 	}
-	if (node->type == N_PIPE)
+	if (node->type == NODE_PIPE)  // Replaced N_PIPE with NODE_PIPE
 	{
 		if (node->left)
 			prepare_heredocs(shell, node->left);

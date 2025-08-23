@@ -38,9 +38,9 @@ static bool has_heredoc_redirection(t_exec *exec)
  */
 static void	execute_node_by_type(t_command_tree *node, t_minishell *minishell)
 {
-	if (node->type == N_EXEC)
+	if (node->type == NODE_CMD)
 		handle_exec(node, minishell);
-	else if (node->type == N_PIPE)
+	else if (node->type == NODE_PIPE)
 		handle_pipe(minishell, node);
 }
 
@@ -71,13 +71,13 @@ static bool has_heredoc_in_tree(t_minishell *minishell, t_command_tree *node)
 	if (!node)
 		return false;
 
-	if (node->type == N_EXEC)
+	if (node->type == NODE_CMD)
 	{
 		exec = node->data;
 		if (exec && has_heredoc_redirection(exec))
 			return true;
 	}
-	else if (node->type == N_PIPE)
+	else if (node->type == NODE_PIPE)
 	{
 		return (has_heredoc_in_tree(minishell, node->left) ||
 				has_heredoc_in_tree(minishell, node->right));
@@ -112,6 +112,39 @@ static void prepare_heredocs_if_needed(t_minishell *minishell, t_command_tree *r
     }
 }
 
+// Helper function to handle assignment-only commands
+static void handle_assignment_command(t_command *cmd, t_minishell *shell)
+{
+    int i;
+    char *name, *value, *eq_pos;
+    
+    if (!cmd->env_vars)
+        return;
+    
+    i = 0;
+    while (cmd->env_vars[i])
+    {
+        eq_pos = ft_strchr(cmd->env_vars[i], '=');
+        if (eq_pos)
+        {
+            // Extract name and value
+            *eq_pos = '\0';  // Temporarily null-terminate
+            name = cmd->env_vars[i];
+            value = eq_pos + 1;
+            
+            // Set the environment variable
+            set_env_var(name, value, shell);
+            
+            *eq_pos = '=';  // Restore the string
+        }
+        i++;
+    }
+    
+    // Rebuild the environment array
+    shell->envp_arr = rebuild_env_array(shell);
+    shell->exit_code = 0;  // Assignment commands always succeed
+}
+
 /**
  * @brief Main entry point for executing a command tree
  *
@@ -135,6 +168,18 @@ void	execute_tree(t_command_tree *root, t_minishell *minishell)
 	}
 	if (!minishell->in_nested_pipe)
 		prepare_heredocs_if_needed(minishell, root);
+
+	if (root->type == NODE_CMD)
+	{
+		// Check if this is an assignment-only command
+		if (root->cmd && root->cmd->env_vars && !root->cmd->argv)
+		{
+			handle_assignment_command(root->cmd, minishell);
+			return;
+		}
+		// ...existing execution code for regular commands...
+	}
+
 	execute_node_by_type(root, minishell);
 	if (!minishell->in_nested_pipe)
 	{

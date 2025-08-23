@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: almatsch <almatsch@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 08:48:58 by almatsch          #+#    #+#             */
-/*   Updated: 2025/08/05 23:56:09 by almatsch         ###   ########.fr       */
+/*   Updated: 2025/08/11 21:33:23 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ typedef enum e_token_type
 	END,
 	L_PAREN,
 	R_PAREN,
+	ASSIGNMENT,
 }					t_token_type;
 
 typedef enum e_token_state

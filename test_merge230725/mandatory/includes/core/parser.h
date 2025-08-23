@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: almatsch <almatsch@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 08:40:53 by almatsch          #+#    #+#             */
-/*   Updated: 2025/08/06 01:28:51 by almatsch         ###   ########.fr       */
+/*   Updated: 2025/08/23 15:08:29 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ t_command_tree		*parse_cmd(t_tokens *tokens, int *pos, t_gc *gc);
 t_command_tree		*parse_subshell(t_tokens *tokens, int *pos, t_gc *gc);
 t_command_tree		*parse_pipeline(t_tokens *tokens, int *pos, t_gc *gc);
 t_command_tree		*parse_logic_ops(t_tokens *tokens, int *pos, t_gc *gc);
+t_command_tree		*parse_command(t_tokens *tokens, int *pos, t_gc *gc);
 void				check_expand(t_exec *exec, t_arg_lst *args, t_gc *gc);
 void				arg_to_list(t_arg_lst **head, char *value,
 						bool no_expand, t_gc *gc);

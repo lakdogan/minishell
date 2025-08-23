@@ -41,6 +41,7 @@ static void	remove_env_var(const char *name, t_minishell *minishell)
 {
 	t_list	*prev;
 	t_list	*node;
+	t_list	*to_remove;
 	t_env	*env;
 
 	prev = NULL;
@@ -50,10 +51,14 @@ static void	remove_env_var(const char *name, t_minishell *minishell)
 		env = (t_env *)node->content;
 		if (env && ft_strcmp(env->value, name) == STRINGS_EQUAL)
 		{
+			to_remove = node;
 			if (prev)
 				prev->next = node->next;
 			else
 				minishell->envp = node->next;
+			node = node->next;
+			// Note: We don't free here since it's managed by GC
+			return; // Found and removed, exit
 		}
 		prev = node;
 		node = node->next;
@@ -76,6 +81,9 @@ int	ft_unset(char **argv, t_minishell *minishell)
 {
 	int	i;
 
+	if (!argv || !argv[1])  // Wenn keine Argumente gegeben sind, ist das OK
+		return (BUILTIN_SUCCESS);
+
 	i = 1;
 	while (argv[i])
 	{
@@ -84,7 +92,8 @@ int	ft_unset(char **argv, t_minishell *minishell)
 			write(STDERR_FILENO, "unset: `", 8);
 			write(STDERR_FILENO, argv[i], ft_strlen(argv[i]));
 			write(STDERR_FILENO, "': not a valid identifier\n", 27);
-			exit(1);
+			// Nicht exit(1) hier - das würde die ganze Shell beenden
+			// return (BUILTIN_FAILURE);  // Stattdessen Failure zurückgeben
 		}
 		else
 			remove_env_var(argv[i], minishell);

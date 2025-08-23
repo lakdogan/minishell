@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils_2.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: almatsch <almatsch@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 06:21:59 by almatsch          #+#    #+#             */
-/*   Updated: 2025/08/04 06:43:57 by almatsch         ###   ########.fr       */
+/*   Updated: 2025/08/11 22:03:24 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ t_command_tree	*create_exec_node(t_exec *exec, t_arg_lst *args, t_gc *gc)
 	if (exec->argv)
 		exec->command = exec->argv[0];
 	check_expand(exec, args, gc);
-	node = node_init(N_EXEC, gc);
+	node = node_init(NODE_CMD, gc);
 	if (!node)
 		return (NULL);
 	node->data = exec;

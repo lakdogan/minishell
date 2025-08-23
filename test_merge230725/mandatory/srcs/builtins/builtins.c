@@ -34,7 +34,7 @@ int	exec_builtin(t_exec *cmd, t_minishell *minishell)
 		return (ft_pwd());
 	else if (ft_strcmp(cmd->command, "export") == STRINGS_EQUAL)
 		return (ft_export(cmd->argv, minishell));
-	else if (ft_strcmp(cmd->command, "unset") == STRINGS_EQUAL)
+	else if (ft_strcmp(cmd->command, "unset") == STRINGS_EQUAL)  // Stellen Sie sicher, dass unset hier behandelt wird
 		return (ft_unset(cmd->argv, minishell));
 	else if (ft_strcmp(cmd->command, "env") == STRINGS_EQUAL)
 		return (ft_env(minishell));

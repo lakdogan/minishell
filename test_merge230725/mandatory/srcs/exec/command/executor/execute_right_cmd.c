@@ -33,9 +33,9 @@ void	execute_right_subtree(t_minishell *shell, t_command_tree *node,
 static void	execute_right_by_type(t_minishell *shell, t_command_tree *node,
 		int *pipefd)
 {
-	if (node->right->type == N_PIPE)
+	if (node->right->type == NODE_PIPE)
 		handle_nested_cmds_recursively(shell, node, pipefd);
-	else if (node->right->type == N_EXEC)
+	else if (node->right->type == NODE_CMD)
 		handle_standard_cmds(shell, node, pipefd);
 	else
 		execute_right_subtree(shell, node, pipefd);

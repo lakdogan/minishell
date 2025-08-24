@@ -21,26 +21,35 @@
  */
 static char	*get_cd_target_path(char **argv)
 {
-	char	*path;
+    char	*path;
 
-	if (!argv[COMMAND_ARGS_START])
-	{
-		path = getenv("HOME");
-		if (!path)
-		{
-			write(STDERR_FILENO, "cd: HOME not set\n", 18);
-			return (NULL);
-		}
-	}
-	else
-	{
-		path = argv[COMMAND_ARGS_START];
-		if (!path)
-			return (NULL);
-		if ((uintptr_t)path < 0x1000)
-			return (NULL);
-	}
-	return (path);
+    if (!argv[COMMAND_ARGS_START])
+    {
+        path = getenv("HOME");
+        if (!path)
+        {
+            write(STDERR_FILENO, "cd: HOME not set\n", 18);
+            return (NULL);
+        }
+    }
+    else if (ft_strcmp(argv[COMMAND_ARGS_START], "~") == 0)
+    {
+        path = getenv("HOME");
+        if (!path)
+        {
+            write(STDERR_FILENO, "cd: HOME not set\n", 18);
+            return (NULL);
+        }
+    }
+    else
+    {
+        path = argv[COMMAND_ARGS_START];
+        if (!path)
+            return (NULL);
+        if ((uintptr_t)path < 0x1000)
+            return (NULL);
+    }
+    return (path);
 }
 
 /**

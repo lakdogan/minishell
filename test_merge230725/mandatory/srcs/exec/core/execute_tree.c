@@ -161,6 +161,10 @@ void	execute_tree(t_command_tree *root, t_minishell *minishell)
 {
 	int	status;
 
+	if (!root) {
+        printf("execute_tree: root is NULL\n");
+        return;
+    }
 	if (!validate_command_tree(root))
 	{
 		minishell->exit_code = EXIT_FAILURE;

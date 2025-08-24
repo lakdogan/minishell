@@ -16,22 +16,22 @@ static size_t	read_pipe_chunk(int pipe_fd, char *buffer, size_t buffer_size)
 }
 
 static char	*accumulate_pipe_content(t_minishell *shell, int pipe_fd,
-		char *content)
+	char *content)
 {
-	char	buffer[BUFFER_SIZE_TEE];
-	ssize_t	bytes;
+char	buffer[BUFFER_SIZE_TEE];
+ssize_t	bytes;
 
+bytes = read_pipe_chunk(pipe_fd, buffer, BUFFER_SIZE_TEE);
+while (bytes > SUCCESSFUL_READ)
+{
+	content = gc_safe_strjoin(shell->gc[GC_TEMP], content, buffer);
+	if (!content)
+		return (NULL);
 	bytes = read_pipe_chunk(pipe_fd, buffer, BUFFER_SIZE_TEE);
-	while (bytes > SUCCESSFUL_READ)
-	{
-		content = gc_safe_strjoin(shell->gc[GC_TEMP], content, buffer);
-		if (!content)
-			return (NULL);
-		bytes = read_pipe_chunk(pipe_fd, buffer, BUFFER_SIZE_TEE);
-	}
-	if (bytes == READ_ERROR)
-		exit_with_error(shell, "read from pipe", strerror(errno), EXIT_FAILURE);
-	return (content);
+}
+if (bytes == READ_ERROR)
+	exit_with_error(shell, "minishell: ", "read from pipe", strerror(errno), EXIT_FAILURE);
+return (content);
 }
 
 static char	*finalize_pipe_content(t_minishell *shell, char *temp_content)

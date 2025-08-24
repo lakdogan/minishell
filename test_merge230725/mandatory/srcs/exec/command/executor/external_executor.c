@@ -97,29 +97,107 @@ void	handle_var_expansion_exec(t_minishell *shell, t_exec *exec)
  * containing environment variables
  * @note This function terminates the process on both success and failure
  */
+// void	execute_command(t_exec *exec, t_minishell *minishell)
+// {
+// 	char	*abs_path;
+// 	struct	stat path_stat;
+
+// 	handle_var_expansion_exec(minishell, exec);
+// 	if (!exec->command || !*exec->command || ft_is_whitespace_str(exec->command))
+// 	{
+// 		exit(CMD_NOT_FOUND);
+// 	}
+// 	abs_path = get_absolute_path(minishell, exec->command, minishell->envp_arr);
+// 	if (!abs_path)
+// 		exit_with_error(minishell, "command not found: ", exec->command,
+// 			CMD_NOT_FOUND);
+// 	if (stat(abs_path, &path_stat) == 0 && S_ISDIR(path_stat.st_mode))
+// 		exit_with_error(minishell, "is a directory: ", exec->command, PERMISSION_DENIED);
+// 	else if (errno == EACCES)
+// 		exit_with_error(minishell, "permission denied: ", exec->command,
+// 			PERMISSION_DENIED);
+
+// 	execve(abs_path, exec->argv, minishell->envp_arr);
+// 	if (errno == EISDIR)
+// 		exit_with_error(minishell, "is a directory: ", exec->command, PERMISSION_DENIED);
+// 	else
+// 		exit_with_error(minishell, "execve", strerror(errno), CMD_NOT_FOUND);
+// }
+
+// void	execute_command(t_exec *exec, t_minishell *minishell)
+// {
+//     struct stat path_stat;
+//     char *abs_path = NULL;
+
+//     handle_var_expansion_exec(minishell, exec);
+//     if (!exec->command || !*exec->command || ft_is_whitespace_str(exec->command))
+//     {
+//         exit(CMD_NOT_FOUND);
+//     }
+
+//     // FIX: If command contains '/', do not search PATH, use as-is
+//     if (ft_strchr(exec->command, '/'))
+//     {
+//         abs_path = exec->command;
+//         if (stat(abs_path, &path_stat) != 0)
+//             exit_with_error(minishell, abs_path, "No such file or directory", CMD_NOT_FOUND);
+//         if (S_ISDIR(path_stat.st_mode))
+//             exit_with_error(minishell, abs_path, "is a directory", PERMISSION_DENIED);
+//         if (access(abs_path, X_OK) != 0)
+//             exit_with_error(minishell, abs_path, "Permission denied", PERMISSION_DENIED);
+//     }
+//     else
+//     {
+//         abs_path = get_absolute_path(minishell, exec->command, minishell->envp_arr);
+//         if (!abs_path)
+//             exit_with_error(minishell, "command not found: ", exec->command, CMD_NOT_FOUND);
+//         if (stat(abs_path, &path_stat) == 0 && S_ISDIR(path_stat.st_mode))
+//             exit_with_error(minishell, "is a directory: ", exec->command, PERMISSION_DENIED);
+//         else if (errno == EACCES)
+//             exit_with_error(minishell, "permission denied: ", exec->command, PERMISSION_DENIED);
+//     }
+
+//     execve(abs_path, exec->argv, minishell->envp_arr);
+//     if (errno == EISDIR)
+//         exit_with_error(minishell, "is a directory: ", exec->command, PERMISSION_DENIED);
+//     else
+//         exit_with_error(minishell, "execve", strerror(errno), CMD_NOT_FOUND);
+// }
 void	execute_command(t_exec *exec, t_minishell *minishell)
 {
-	char	*abs_path;
-	struct	stat path_stat;
+    struct stat path_stat;
+    char *abs_path = NULL;
 
-	handle_var_expansion_exec(minishell, exec);
-	if (!exec->command || !*exec->command || ft_is_whitespace_str(exec->command))
-	{
-		exit(CMD_NOT_FOUND);
-	}
-	abs_path = get_absolute_path(minishell, exec->command, minishell->envp_arr);
-	if (!abs_path)
-		exit_with_error(minishell, "command not found: ", exec->command,
-			CMD_NOT_FOUND);
-	if (stat(abs_path, &path_stat) == 0 && S_ISDIR(path_stat.st_mode))
-		exit_with_error(minishell, "is a directory: ", exec->command, PERMISSION_DENIED);
-	else if (errno == EACCES)
-		exit_with_error(minishell, "permission denied: ", exec->command,
-			PERMISSION_DENIED);
+    handle_var_expansion_exec(minishell, exec);
+    if (!exec->command || !*exec->command || ft_is_whitespace_str(exec->command))
+        exit(CMD_NOT_FOUND);
 
-	execve(abs_path, exec->argv, minishell->envp_arr);
-	if (errno == EISDIR)
-		exit_with_error(minishell, "is a directory: ", exec->command, PERMISSION_DENIED);
-	else
-		exit_with_error(minishell, "execve", strerror(errno), CMD_NOT_FOUND);
+    if (ft_strchr(exec->command, '/'))
+    {
+        abs_path = exec->command;
+		if (!abs_path)
+        	exit_with_error(minishell, "minishell: ", exec->command, ": command not found", CMD_NOT_FOUND); 
+        if (stat(abs_path, &path_stat) != 0)
+            exit_with_error(minishell, "minishell: ", abs_path, ": No such file or directory", PERMISSION_DENIED);
+        if (S_ISDIR(path_stat.st_mode))
+            exit_with_error(minishell, "minishell: ", abs_path, ": is a directory", PERMISSION_DENIED);
+        if (access(abs_path, X_OK) != 0)
+            exit_with_error(minishell, "minishell: ", abs_path, ": Permission denied", PERMISSION_DENIED);
+    }
+    else
+    {
+        abs_path = get_absolute_path(minishell, exec->command, minishell->envp_arr);
+        if (!abs_path)
+            exit_with_error(minishell, "minishell: ", exec->command, ": command not found", CMD_NOT_FOUND);
+        if (stat(abs_path, &path_stat) == 0 && S_ISDIR(path_stat.st_mode))
+            exit_with_error(minishell, "minishell: ", exec->command, ": is a directory", PERMISSION_DENIED);
+        else if (errno == EACCES)
+            exit_with_error(minishell, "minishell: ", exec->command, ": permission denied", PERMISSION_DENIED);
+    }
+
+    execve(abs_path, exec->argv, minishell->envp_arr);
+    if (errno == EISDIR)
+        exit_with_error(minishell, "minishell: ", exec->command, ": is a directory", PERMISSION_DENIED);
+    else
+        exit_with_error(minishell, "minishell: ", exec->command, ": execve error", CMD_NOT_FOUND);
 }

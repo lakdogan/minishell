@@ -9,6 +9,21 @@
 
 #include "../../includes/core/minishell.h"
 
+
+static t_env *find_env_by_key(t_minishell *minishell, const char *key)
+{
+    t_list *node = minishell->envp;
+    t_env  *env;
+
+    while (node)
+    {
+        env = (t_env *)node->content;
+        if (ft_strcmp(env->value, key) == 0)
+            return env;
+        node = node->next;
+    }
+    return NULL;
+}
 /**
  * @brief Extracts the key (name) part from an environment variable string
  *
@@ -37,14 +52,26 @@ static char	*extract_key(t_minishell *minishell, const char *arg)
  * @param arg String containing the environment variable assignment
  * @return char* Extracted value or NULL if no equals sign (caller must free)
  */
+// static char	*extract_value(t_minishell *minishell, const char *arg)
+// {
+// 	char	*equal;
+
+// 	equal = ft_strchr(arg, EQUALS_SIGN);
+// 	if (!equal)
+// 		return (NULL);
+// 	return (gc_strdup(minishell->gc[GC_TEMP], equal + NULL_TERMINATOR_SIZE));
+// }
 static char	*extract_value(t_minishell *minishell, const char *arg)
 {
-	char	*equal;
+    char	*equal;
 
-	equal = ft_strchr(arg, EQUALS_SIGN);
-	if (!equal)
-		return (NULL);
-	return (gc_strdup(minishell->gc[GC_TEMP], equal + NULL_TERMINATOR_SIZE));
+    equal = ft_strchr(arg, EQUALS_SIGN);
+    if (!equal)
+        return (NULL);
+    // Wenn das '=' am Ende steht, gib einen leeren String zurück
+    if (*(equal + 1) == '\0')
+        return (gc_strdup(minishell->gc[GC_TEMP], ""));
+    return (gc_strdup(minishell->gc[GC_TEMP], equal + 1));
 }
 
 /**
@@ -58,25 +85,60 @@ static char	*extract_value(t_minishell *minishell, const char *arg)
  * @param value The value of the environment variable (can be NULL)
  * @param minishell Pointer to the shell state structure
  */
-void	add_new_env(char *key, char *value, t_minishell *minishell)
+// void	add_new_env(char *key, char *value, t_minishell *minishell)
+// {
+// 	t_env	*new_env;
+// 	t_list	*new_node;
+
+// 	new_env = gc_malloc(minishell->gc[GC_MAIN], sizeof(t_env));
+// 	new_env->value = gc_strdup(minishell->gc[GC_MAIN], key);
+// 	if (value)
+// 		new_env->content = gc_strjoin_3(minishell->gc[GC_MAIN], key,
+// 				EQUALS_SIGN_STR, value);
+// 	else
+// 		new_env->content = NULL;
+// 	new_env->is_export = true;
+// 	new_env->printed = false;
+// 	new_node = gc_lstnew(minishell->gc[GC_MAIN], new_env);
+// 	gc_lstadd_back(minishell->gc[GC_MAIN], &minishell->envp, new_node);
+// 	gc_collect(minishell->gc[GC_TEMP]);
+// }
+// void	add_new_env(char *key, char *value, t_minishell *minishell)
+// {
+//     t_env	*new_env;
+//     t_list	*new_node;
+
+//     new_env = gc_malloc(minishell->gc[GC_MAIN], sizeof(t_env));
+//     new_env->value = gc_strdup(minishell->gc[GC_MAIN], key);
+//     if (value != NULL)
+//         new_env->content = gc_strjoin_3(minishell->gc[GC_MAIN], key, "=", value);
+//     else
+//         new_env->content = NULL;
+//     new_env->is_export = true;
+//     new_env->printed = false;
+//     new_node = gc_lstnew(minishell->gc[GC_MAIN], new_env);
+//     gc_lstadd_back(minishell->gc[GC_MAIN], &minishell->envp, new_node);
+//     gc_collect(minishell->gc[GC_TEMP]);
+// }
+
+void add_new_env(char *key, char *value, t_minishell *minishell)
 {
-	t_env	*new_env;
-	t_list	*new_node;
+    if (!key) // Defensive!
+        return;
 
-	new_env = gc_malloc(minishell->gc[GC_MAIN], sizeof(t_env));
-	new_env->value = gc_strdup(minishell->gc[GC_MAIN], key);
-	if (value)
-		new_env->content = gc_strjoin_3(minishell->gc[GC_MAIN], key,
-				EQUALS_SIGN_STR, value);
-	else
-		new_env->content = NULL;
-	new_env->is_export = true;
-	new_env->printed = false;
-	new_node = gc_lstnew(minishell->gc[GC_MAIN], new_env);
-	gc_lstadd_back(minishell->gc[GC_MAIN], &minishell->envp, new_node);
-	gc_collect(minishell->gc[GC_TEMP]);
+    t_env *new_env = gc_malloc(minishell->gc[GC_MAIN], sizeof(t_env));
+    new_env->value = gc_strdup(minishell->gc[GC_MAIN], key);
+    if (value)
+        new_env->content = gc_strjoin_3(minishell->gc[GC_MAIN], key, "=", value);
+    else
+        new_env->content = NULL;
+
+    new_env->is_export = true;
+    new_env->printed = false;
+    t_list *new_node = gc_lstnew(minishell->gc[GC_MAIN], new_env);
+    gc_lstadd_back(minishell->gc[GC_MAIN], &minishell->envp, new_node);
+    gc_collect(minishell->gc[GC_TEMP]);
 }
-
 /**
  * @brief Updates an existing environment variable
  *
@@ -88,20 +150,43 @@ void	add_new_env(char *key, char *value, t_minishell *minishell)
  * @param key The name of the environment variable (will be freed)
  * @param value The new value for the variable (will be freed, can be NULL)
  */
-void	update_existing_env(t_minishell *minishell, t_env *env, char *key,
-		char *value)
-{
-	if (value)
-	{
-		gc_collect(minishell->gc[GC_ENV]);
-		env->value = gc_strdup(minishell->gc[GC_ENV], key);
-		env->content = gc_strjoin_3(minishell->gc[GC_ENV], key, EQUALS_SIGN_STR,
-				value);
-	}
-	env->is_export = true;
-	gc_collect(minishell->gc[GC_TEMP]);
-}
+// void	update_existing_env(t_minishell *minishell, t_env *env, char *key,
+// 		char *value)
+// {
+// 	if (value)
+// 	{
+// 		gc_collect(minishell->gc[GC_ENV]);
+// 		env->value = gc_strdup(minishell->gc[GC_ENV], key);
+// 		env->content = gc_strjoin_3(minishell->gc[GC_ENV], key, EQUALS_SIGN_STR,
+// 				value);
+// 	}
+// 	env->is_export = true;
+// 	gc_collect(minishell->gc[GC_TEMP]);
+// }
+// void	update_existing_env(t_minishell *minishell, t_env *env, char *key, char *value)
+// {
+//     if (value)
+//     {
+//         gc_collect(minishell->gc[GC_ENV]);
+//         env->value = gc_strdup(minishell->gc[GC_ENV], key);
+//         env->content = gc_strjoin_3(minishell->gc[GC_ENV], key, EQUALS_SIGN_STR, value);
+//     }
+//     env->is_export = true;
+//     gc_collect(minishell->gc[GC_TEMP]);
+// }
 
+void	update_existing_env(t_minishell *minishell, t_env *env, char *key, char *value)
+{
+    if (value)
+    {
+        // Setze neuen Wert
+        env->value = gc_strdup(minishell->gc[GC_ENV], key);
+        env->content = gc_strjoin_3(minishell->gc[GC_ENV], key, "=", value);
+    }
+    // Markiere immer als exportiert!
+    env->is_export = true;
+    gc_collect(minishell->gc[GC_TEMP]);
+}
 /**
  * @brief Updates an existing variable or adds a new one if it doesn't exist
  *
@@ -111,25 +196,84 @@ void	update_existing_env(t_minishell *minishell, t_env *env, char *key,
  * @param arg String in the format "KEY=VALUE" or "KEY"
  * @param minishell Pointer to the shell state structure
  */
-void	update_or_add_env(const char *arg, t_minishell *minishell)
-{
-	t_list	*node;
-	t_env	*env;
-	char	*key;
-	char	*value;
+// void	update_or_add_env(const char *arg, t_minishell *minishell)
+// {
+// 	t_list	*node;
+// 	t_env	*env;
+// 	char	*key;
+// 	char	*value;
 
-	node = minishell->envp;
-	key = extract_key(minishell, arg);
-	value = extract_value(minishell, arg);
-	while (node)
-	{
-		env = (t_env *)node->content;
-		if (ft_strcmp(env->value, key) == STRINGS_EQUAL)
-		{
-			update_existing_env(minishell, env, key, value);
-			return ;
-		}
-		node = node->next;
-	}
-	add_new_env(key, value, minishell);
+// 	node = minishell->envp;
+// 	key = extract_key(minishell, arg);
+// 	value = extract_value(minishell, arg);
+// 	while (node)
+// 	{
+// 		env = (t_env *)node->content;
+// 		if (ft_strcmp(env->value, key) == STRINGS_EQUAL)
+// 		{
+// 			update_existing_env(minishell, env, key, value);
+// 			return ;
+// 		}
+// 		node = node->next;
+// 	}
+// 	add_new_env(key, value, minishell);
+// }
+// void	update_or_add_env(const char *arg, t_minishell *minishell)
+// {
+//     char	*key;
+//     char	*value;
+//     t_env	*env;
+
+//     key = extract_key(minishell, arg);
+//     value = extract_value(minishell, arg);
+
+//     env = find_env_by_key(minishell, key);
+//     if (env)
+//         update_env(env, value, minishell);
+//     else
+//         add_new_env(key, value, minishell);
+
+//     gc_collect(minishell->gc[GC_TEMP]);
+// }
+
+// void	update_or_add_env(const char *arg, t_minishell *minishell)
+// {
+//     char	*key;
+//     char	*value;
+//     t_env	*env;
+
+//     key = extract_key(minishell, arg);
+//     value = extract_value(minishell, arg);
+
+//     env = find_env_by_key(minishell, key);
+//     if (env)
+//         update_existing_env(minishell, env, key, value); // <-- HIER!
+//     else
+//     {
+//         add_new_env(key, value, minishell);
+//         puts("add new env");
+//     }
+
+//     gc_collect(minishell->gc[GC_TEMP]);
+// }
+
+void update_or_add_env(const char *arg, t_minishell *minishell)
+{
+    char *key = extract_key(minishell, arg);
+    char *value = extract_value(minishell, arg);
+    t_env *env = find_env_by_key(minishell, key);
+
+
+    if (env)
+    {
+
+        update_existing_env(minishell, env, key, value);
+    }
+    else
+    {
+
+        add_new_env(key, value, minishell);
+    }
+    gc_collect(minishell->gc[GC_TEMP]);
+    minishell->envp_arr = rebuild_env_array(minishell);
 }

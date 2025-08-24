@@ -21,16 +21,19 @@
  */
 int	ft_env(t_minishell *minishell)
 {
-	t_list	*node;
-	t_env	*env;
+    t_list	*node;
+    t_env	*env;
 
-	node = minishell->envp;
-	while (node)
-	{
+    node = minishell->envp;
+    while (node) {
 		env = (t_env *)node->content;
+		if (!env || !env->value) {
+
+			break;
+		}
 		if (env->is_export && env->content)
-			ft_printf("%s\n", env->content);
+			printf("%s\n", env->content);
 		node = node->next;
 	}
-	return (BUILTIN_SUCCESS);
+    return (0);
 }

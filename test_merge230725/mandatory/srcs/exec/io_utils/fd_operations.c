@@ -24,10 +24,10 @@
  * @param error_msg Message to display if the duplication fails
  */
 void	safe_dup2(t_minishell *shell, int oldfd, int newfd,
-		const char *error_msg)
+	const char *error_msg)
 {
-	if (dup2(oldfd, newfd) == INVALID_FD)
-		exit_with_error(shell, error_msg, strerror(errno), EXIT_FAILURE);
+if (dup2(oldfd, newfd) == INVALID_FD)
+	exit_with_error(shell, "minishell: ", error_msg, strerror(errno), EXIT_FAILURE);
 }
 
 /**
@@ -41,11 +41,11 @@ void	safe_dup2(t_minishell *shell, int oldfd, int newfd,
  */
 void	safe_close(t_minishell *shell, int fd, const char *error_msg)
 {
-	if (fd != INVALID_FD)
-	{
-		if (close(fd) == CLOSE_ERROR)
-			exit_with_error(shell, error_msg, strerror(errno), EXIT_FAILURE);
-	}
+    if (fd != INVALID_FD)
+    {
+        if (close(fd) == CLOSE_ERROR)
+            exit_with_error(shell, "minishell: ", error_msg, strerror(errno), EXIT_FAILURE);
+    }
 }
 
 /**
@@ -60,8 +60,8 @@ void	safe_close(t_minishell *shell, int fd, const char *error_msg)
  */
 void	check_fd_error(t_minishell *shell, int fd, const char *filename)
 {
-	if (fd == INVALID_FD)
-		exit_with_error(shell, "Error opening", filename, EXIT_FAILURE);
+    if (fd == INVALID_FD)
+        exit_with_error(shell, "minishell: ", "Error opening", filename, EXIT_FAILURE);
 }
 
 /**

@@ -41,7 +41,6 @@ static void	remove_env_var(const char *name, t_minishell *minishell)
 {
 	t_list	*prev;
 	t_list	*node;
-	t_list	*to_remove;
 	t_env	*env;
 
 	prev = NULL;
@@ -51,7 +50,6 @@ static void	remove_env_var(const char *name, t_minishell *minishell)
 		env = (t_env *)node->content;
 		if (env && ft_strcmp(env->value, name) == STRINGS_EQUAL)
 		{
-			to_remove = node;
 			if (prev)
 				prev->next = node->next;
 			else

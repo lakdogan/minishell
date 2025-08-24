@@ -16,12 +16,12 @@
  */
 int	create_pipe(t_minishell *shell, int *pipefd)
 {
-	if (pipe(pipefd) == SYSCALL_ERROR)
-	{
-		exit_with_error(shell, "pipe", strerror(errno), EXIT_FAILURE);
-		return (OPERATION_FAILURE);
-	}
-	return (OPERATION_SUCCESS);
+    if (pipe(pipefd) == SYSCALL_ERROR)
+    {
+        exit_with_error(shell, "minishell: ", "pipe", strerror(errno), EXIT_FAILURE);
+        return (OPERATION_FAILURE);
+    }
+    return (OPERATION_SUCCESS);
 }
 
 /**

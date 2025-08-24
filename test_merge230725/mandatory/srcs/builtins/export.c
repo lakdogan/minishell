@@ -29,7 +29,7 @@ static int	is_valid_export_key(const char *argv)
 {
 	int	i;
 
-	i = FIRST_CHAR;
+	i = 0;
 	if (!argv || !argv[i] || !(ft_isalpha(argv[i]) || argv[i] == UNDERSCORE))
 		return (IDENTIFIER_INVALID);
 	i++;
@@ -58,10 +58,88 @@ static int	is_valid_export_key(const char *argv)
  * @param minishell Pointer to the shell state structure
  * @return int 0 on success, 1 if any argument was invalid
  */
+// int	ft_export(char **argv, t_minishell *minishell)
+// {
+// 	int	i;
+// 	int	status;
+
+// 	status = BUILTIN_SUCCESS;
+// 	i = COMMAND_ARGS_START;
+// 	if (!argv[i])
+// 	{
+// 		print_export(minishell, minishell->envp);
+// 		return (BUILTIN_SUCCESS);
+// 	}
+// 	while (argv[i])
+//     {
+//         char *equal = ft_strchr(argv[i], '=');
+//         int key_len = equal ? (equal - argv[i]) : ft_strlen(argv[i]);
+//         char *key = gc_substr(minishell->gc[GC_TEMP], argv[i], 0, key_len);
+
+//         if (!is_valid_export_key(key))
+//         {
+//             write(STDERR_FILENO, "export: `", 9);
+//             write(STDERR_FILENO, argv[i], ft_strlen(argv[i]));
+//             write(STDERR_FILENO, "': not a valid identifier\n", 27);
+//             status = BUILTIN_FAILURE;
+//         }
+//         else
+// 		{
+//             update_or_add_env(argv[i], minishell);
+// 			printf("arg: %s\n", argv[i]);
+// 		}
+
+//         i++;
+//     }
+// 	minishell->envp_arr = rebuild_env_array(minishell);
+// 	return (status);
+// }
+
+// int	ft_export(char **argv, t_minishell *minishell)
+// {
+// 	int i;
+// 	int status;
+
+// 	status = BUILTIN_SUCCESS;
+// 	i = COMMAND_ARGS_START;
+// 	if (!argv[i])
+// 	{
+// 		print_export(minishell, minishell->envp);
+// 		return (BUILTIN_SUCCESS);
+// 	}
+// 	while (argv[i])
+// 	{
+// 		char *equal = ft_strchr(argv[i], '=');
+// 		int key_len = equal ? (equal - argv[i]) : ft_strlen(argv[i]);
+// 		char *key = gc_substr(minishell->gc[GC_TEMP], argv[i], 0, key_len);
+
+// 		if (!is_valid_export_key(key))
+// 		{
+// 			write(STDERR_FILENO, "export: `", 9);
+// 			write(STDERR_FILENO, argv[i], ft_strlen(argv[i]));
+// 			write(STDERR_FILENO, "': not a valid identifier\n", 27);
+// 			status = BUILTIN_FAILURE;
+// 		}
+// 		else if (equal)
+// 		{
+// 			// Assignment + Export
+// 			update_or_add_env(argv[i], minishell);
+// 		}
+// 		else
+// 		{
+// 			// Nur Export
+// 			update_or_add_env(key, minishell);
+// 		}
+// 		i++;
+// 	}
+// 	minishell->envp_arr = rebuild_env_array(minishell);
+// 	return (status);
+// }
+
 int	ft_export(char **argv, t_minishell *minishell)
 {
-	int	i;
-	int	status;
+	int i;
+	int status;
 
 	status = BUILTIN_SUCCESS;
 	i = COMMAND_ARGS_START;
@@ -72,15 +150,30 @@ int	ft_export(char **argv, t_minishell *minishell)
 	}
 	while (argv[i])
 	{
-		if (!is_valid_export_key(argv[i]))
+		char *equal = ft_strchr(argv[i], '=');
+		int key_len = equal ? (equal - argv[i]) : ft_strlen(argv[i]);
+		char *key = gc_substr(minishell->gc[GC_TEMP], argv[i], 0, key_len);
+
+		if (!is_valid_export_key(key))
 		{
-			write(STDERR_FILENO, "export: `", 9);
-			write(STDERR_FILENO, argv[i], ft_strlen(argv[i]));
-			write(STDERR_FILENO, "': not a valid identifier\n", 27);
-			status = BUILTIN_FAILURE;
+			// Fehlerbehandlung ...
+		}
+		else if (equal)
+		{
+			// 1. ZUERST Variable setzen (Assignment wie bei name=foo)
+			set_env_var(key, equal + 1, minishell); // <-- Assignment
+			// 2. Dann exportieren (is_export setzen)
+			t_env *env = find_env_var(key, minishell);
+			if (env)
+				env->is_export = true;
 		}
 		else
-			update_or_add_env(argv[i], minishell);
+		{
+			// Nur exportieren, kein Assignment
+			t_env *env = find_env_var(key, minishell);
+			if (env)
+				env->is_export = true;
+		}
 		i++;
 	}
 	minishell->envp_arr = rebuild_env_array(minishell);

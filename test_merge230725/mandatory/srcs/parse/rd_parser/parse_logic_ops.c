@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 06:28:09 by almatsch          #+#    #+#             */
-/*   Updated: 2025/08/11 22:01:01 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/08/24 13:12:34 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,26 +14,26 @@
 
 t_command_tree	*start_parser(t_tokens *tokens, t_gc *gc, t_minishell *shell)
 {
-	t_command_tree	*ast;
-	int				pos;
+    t_command_tree	*ast;
+    int				pos;
 
-	(void)shell;
-	if (!tokens || tokens->count == 0)
-		return (NULL);
-	pos = 0;
-	ast = parse_logic_ops(tokens, &pos, gc);
-	if (!ast)
-	{
-		ft_putstr_fd("Invalid syntax\n", STDERR_FILENO);
-		return (NULL);
-	}
-	if (pos < tokens->count)
-	{
-		shell->exit_code = 2;
-		error_msg(tokens, &pos);
-		return (NULL);
-	}
-	return (ast);
+    if (!tokens || tokens->count == 0)
+        return (NULL);
+    pos = 0;
+    ast = parse_logic_ops(tokens, &pos, gc);
+    if (!ast)
+    {
+        shell->exit_code = 2;
+        error_msg(tokens, &pos, shell);
+        return (NULL);
+    }
+    if (pos < tokens->count)
+    {
+        shell->exit_code = 2;
+        error_msg(tokens, &pos, shell);
+        return (NULL);
+    }
+    return (ast);
 }
 
 int	is_logical_op(t_token_type type)

@@ -23,18 +23,16 @@ void	prepare_heredocs(t_minishell *shell, t_command_tree *node)
 
 void	write_heredoc_to_fd(t_minishell *shell, t_exec *exec, char *content)
 {
-	int		pipefd[PIPE_FD_COUNT];
-	ssize_t	write_ret;
+    int		pipefd[PIPE_FD_COUNT];
+    ssize_t	write_ret;
 
-	if (!content)
-		return ;
-	if (!create_pipe(shell, pipefd))
-		exit_with_error(shell, "heredoc", "Failed to create pipe",
-			EXIT_FAILURE);
-	write_ret = write(pipefd[PIPE_WRITE_END], content, ft_strlen(content));
-	if (write_ret == WRITE_ERROR)
-		exit_with_error(shell, "heredoc", "Failed to write to pipe",
-			EXIT_FAILURE);
-	close(pipefd[PIPE_WRITE_END]);
-	exec->heredoc_fd = pipefd[PIPE_READ_END];
+    if (!content)
+        return ;
+    if (!create_pipe(shell, pipefd))
+        exit_with_error(shell, "minishell: ", "heredoc", strerror(errno), EXIT_FAILURE);
+    write_ret = write(pipefd[PIPE_WRITE_END], content, ft_strlen(content));
+    if (write_ret == WRITE_ERROR)
+        exit_with_error(shell, "minishell: ", "heredoc", "Failed to write to pipe", EXIT_FAILURE);
+    close(pipefd[PIPE_WRITE_END]);
+    exec->heredoc_fd = pipefd[PIPE_READ_END];
 }

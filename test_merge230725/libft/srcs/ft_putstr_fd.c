@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 12:10:13 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/02/20 18:28:06 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/08/24 13:43:22 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
  */
 void	ft_putstr_fd(char *s, int fd)
 {
+	if (!s)
+		return;
 	while (*s)
 		ft_putchar_fd(*s++, fd);
 }

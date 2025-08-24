@@ -1,96 +1,80 @@
-/**
- * @file env_utils.c
- * @brief Utility functions for environment variable management
- *
- * This file contains utility functions for getting, setting, and
- * manipulating environment variables in the shell.
- */
-
 #include "../../includes/core/minishell.h"
 
 int	lookup_env_value(const char *name, t_minishell *minishell, char **result)
 {
-	*result = find_env_value(minishell, name);
-	if (*result == NULL)
-		return (BUILTIN_FAILURE);
-	return (BUILTIN_SUCCESS);
+    *result = find_env_value(minishell, name);
+    if (*result == NULL)
+        return (BUILTIN_FAILURE);
+    return (BUILTIN_SUCCESS);
 }
 
 static int	update_existing_env_var(t_env *env, const char *name,
-		const char *value, t_minishell *minishell)
+        const char *value, t_minishell *minishell)
 {
-	char	*full_var;
+    char	*full_var;
 
-	if (value)
-	{
-		full_var = gc_strjoin_3(minishell->gc[GC_ENV], name, EQUALS_SIGN_STR,
-				value);
-		if (!full_var)
-			return (BUILTIN_FAILURE);
-		env->content = full_var;
-	}
-	env->is_export = true;
-	return (BUILTIN_SUCCESS);
+    if (value)
+    {
+        full_var = gc_strjoin_3(minishell->gc[GC_ENV], name, EQUALS_SIGN_STR, value);
+        if (!full_var)
+            return (BUILTIN_FAILURE);
+        env->content = full_var;
+    }
+    env->is_export = true;
+    return (BUILTIN_SUCCESS);
 }
 
-static int	create_new_env_var(const char *name, const char *value,
-		t_minishell *minishell)
+static int	create_new_env_var(const char *name, const char *value, t_minishell *minishell)
 {
-	t_env	*env;
-	char	*full_var;
+    t_env	*env;
+    char	*full_var;
 
-	env = gc_alloc_struct(minishell->gc[GC_ENV], sizeof(t_env));
-	if (!env)
-		return (BUILTIN_FAILURE);
-	env->value = gc_strdup(minishell->gc[GC_ENV], name);
-	if (!env->value)
-		return (BUILTIN_FAILURE);
-	env->content = NULL;
-	if (value)
-	{
-		full_var = gc_strjoin_3(minishell->gc[GC_ENV], name, EQUALS_SIGN_STR,
-				value);
-		if (!full_var)
-			return (BUILTIN_FAILURE);
-		env->content = full_var;
-	}
-	env->is_export = true;
-	gc_lstadd_back(minishell->gc[GC_ENV], &(minishell->envp), env);
-	return (BUILTIN_SUCCESS);
+    if (!name || !*name)
+        return (BUILTIN_FAILURE);
+    env = gc_alloc_struct(minishell->gc[GC_ENV], sizeof(t_env));
+    if (!env)
+        return (BUILTIN_FAILURE);
+    env->value = gc_strdup(minishell->gc[GC_ENV], name);
+    if (!env->value)
+        return (BUILTIN_FAILURE);
+    env->content = NULL;
+    if (value)
+    {
+        full_var = gc_strjoin_3(minishell->gc[GC_ENV], name, EQUALS_SIGN_STR, value);
+        if (!full_var)
+            return (BUILTIN_FAILURE);
+        env->content = full_var;
+    }
+    env->is_export = true;
+    gc_lstadd_back(minishell->gc[GC_ENV], &(minishell->envp), env);
+    return (BUILTIN_SUCCESS);
 }
 
-/**
- * @brief Finds an environment variable by name
- *
- * @param name The name to search for
- * @param minishell The shell state structure
- * @return t_env* The found environment variable, or NULL if not found
- */
 t_env	*find_env_var(const char *name, t_minishell *minishell)
 {
-	t_list	*node;
-	t_env	*env;
+    t_list	*node;
+    t_env	*env;
 
-	node = minishell->envp;
-	while (node)
-	{
-		env = (t_env *)node->content;
-		if (ft_strcmp(env->value, name) == STRINGS_EQUAL)
-			return (env);
-		node = node->next;
-	}
-	return (NULL);
+    node = minishell->envp;
+    while (node)
+    {
+        env = (t_env *)node->content;
+        if (ft_strcmp(env->value, name) == STRINGS_EQUAL)
+            return (env);
+        node = node->next;
+    }
+    return (NULL);
 }
 
 int	set_env_var(const char *name, const char *value, t_minishell *minishell)
 {
-	t_env	*existing_env;
+    t_env	*existing_env;
 
-	if (!name || !minishell)
-		return (BUILTIN_FAILURE);
-	existing_env = find_env_var(name, minishell);
-	if (existing_env)
-		return (update_existing_env_var(existing_env, name, value, minishell));
-	else
-		return (create_new_env_var(name, value, minishell));
+    if (!name || !minishell)
+        return (BUILTIN_FAILURE);
+    existing_env = find_env_var(name, minishell);
+    if (existing_env)
+        return (update_existing_env_var(existing_env, name, value, minishell));
+    else
+        return (create_new_env_var(name, value, minishell));
 }

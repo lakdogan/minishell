@@ -14,7 +14,17 @@ void	handle_exec(t_command_tree *node, t_minishell *minishell)
 {
 	t_exec	*exec;
 
+	if (!node)
+        return;
 	exec = (t_exec *)node->data;
+	if (!exec) {
+        printf("handle_exec: exec is NULL\n");
+        return;
+    }
+    if (!exec->command) {
+        printf("handle_exec: exec->command is NULL\n");
+        return;
+    }
 	if (!exec || !exec->command || exec->command[FIRST_CHAR] == NULL_TERMINATOR)
     {
         minishell->exit_code = EXIT_SUCCESS;

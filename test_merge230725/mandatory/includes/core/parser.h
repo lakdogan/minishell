@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 08:40:53 by almatsch          #+#    #+#             */
-/*   Updated: 2025/08/23 15:08:29 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/08/24 14:34:33 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ typedef struct s_arg_lst
 	struct s_arg_lst	*next;
 }						t_arg_lst;
 
-void				error_msg(t_tokens *tokens, int *pos);
+void error_msg(t_tokens *tokens, int *pos, t_minishell *shell);
 void				error_msg_paren(void);
 int					tok_len(const char *cmd, int *i);
 t_tokens			*lexer(const char *cmd, t_minishell *shell);
@@ -86,4 +86,5 @@ t_arg_lst			*get_args(t_exec *exec, t_tokens *tokens,
 t_infile			*create_infile(t_token_type type, char *filename, t_gc *gc);
 char				*remove_quotes(char *token_value, t_gc *gc);
 char				*reapply_quote(const char *str, char quote, t_gc *gc);
+
 #endif

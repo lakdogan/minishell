@@ -6,60 +6,69 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 07:48:08 by almatsch          #+#    #+#             */
-/*   Updated: 2025/08/23 15:00:47 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/08/24 17:21:17 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../includes/core/minishell.h"
 
 // New helper: Check if a token is a valid assignment (for example "NAME=VALUE")
-static int	is_valid_assignment(const char *s)
+int	is_valid_assignment(const char *s)
 {
-	int	i;
+    int i = 0;
 
-	if (!s || (!(ft_isalpha(s[0]) || s[0] == '_')))
-		return (0);
-	i = 0;
-	while (s[i] && s[i] != '=')
-	{
-		if (!(ft_isalnum(s[i]) || s[i] == '_'))
-			return (0);
-		i++;
-	}
-	if (s[i] != '=')
-		return (0);
-	return (1);
+
+
+    if (!s || !(ft_isalpha(s[i]) || s[i] == '_')) {
+
+        return (0);
+    }
+    i++;
+    while (s[i] && s[i] != '=') {
+        if (!ft_isalnum(s[i]) && s[i] != '_') {
+
+            return (0);
+        }
+        i++;
+    }
+    if (s[i] != '=') {
+
+        return (0);
+    }
+
+    return (1);
 }
 
 // Modified get_tok_type to use is_valid_assignment.
 t_token_type	get_tok_type(char *value)
 {
-	// If token is a valid assignment, return ASSIGNMENT.
-	if (value && is_valid_assignment(value))
-		return (ASSIGNMENT);
-	if (!value)
-		return (WORD);
-	if (ft_strncmp(value, ">>", 2) == 0)
-		return (APPEND);
-	if (ft_strncmp(value, "<<", 2) == 0)
-		return (HEREDOC);
-	if (ft_strncmp(value, "&&", 2) == 0)
-		return (AND_IF);
-	if (ft_strncmp(value, "||", 2) == 0)
-		return (OR);
-	if (ft_strncmp(value, "|", 1) == 0)
-		return (PIPE);
-	if (ft_strncmp(value, ">", 1) == 0)
-		return (OUTFILE);
-	if (ft_strncmp(value, "<", 1) == 0)
-		return (INFILE);
-	if (ft_strncmp(value, "(", 1) == 0)
-		return (L_PAREN);
-	if (ft_strncmp(value, ")", 1) == 0)
-		return (R_PAREN);
-	if (ft_strncmp(value, "&", 1) == 0)
-		return (AND_IF);
-	return (WORD);
+    if (value && is_valid_assignment(value)) {
+
+        return (ASSIGNMENT);
+    }
+    if (!value)
+        return (WORD);
+    if (ft_strncmp(value, ">>", 2) == 0)
+        return (APPEND);
+    if (ft_strncmp(value, "<<", 2) == 0)
+        return (HEREDOC);
+    if (ft_strncmp(value, "&&", 2) == 0)
+        return (AND_IF);
+    if (ft_strncmp(value, "||", 2) == 0)
+        return (OR);
+    if (ft_strncmp(value, "|", 1) == 0)
+        return (PIPE);
+    if (ft_strncmp(value, ">", 1) == 0)
+        return (OUTFILE);
+    if (ft_strncmp(value, "<", 1) == 0)
+        return (INFILE);
+    if (ft_strncmp(value, "(", 1) == 0)
+        return (L_PAREN);
+    if (ft_strncmp(value, ")", 1) == 0)
+        return (R_PAREN);
+    if (ft_strncmp(value, "&", 1) == 0)
+        return (AND_IF);
+    return (WORD);
 }
 
 t_token_state	get_tok_state(char *value, int len)

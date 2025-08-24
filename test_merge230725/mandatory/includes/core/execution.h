@@ -8,7 +8,7 @@
 # define WAIT_BLOCK 0
 # define INVALID_FD -1
 # define CMD_NOT_FOUND 127
-# define PERMISSION_DENIED 127
+# define PERMISSION_DENIED 126
 # define HEREDOCS_PREPARED 1
 # define HEREDOCS_NOT_PREPARED 0
 # define VALIDATION_SUCCESS 1
@@ -247,8 +247,8 @@ char					*expand_variables(const char *str, t_minishell *shell);
 /* 							error dir start 								*/
 /* ------------------------------------------------------------------------- */
 /* 	~	error_utils_bonus.c ~		*/
-void					exit_with_error(t_minishell *shell, const char *prefix,
-							const char *message, int exit_code);
+void	exit_with_error(t_minishell *shell, const char *prefix,
+	const char *subject, const char *message, int exit_code);
 /* ------------------------------------------------------------------------- */
 /* 							error dir end 									*/
 /* ------------------------------------------------------------------------- */

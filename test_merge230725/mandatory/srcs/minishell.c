@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: almatsch <almatsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 09:29:33 by almatsch          #+#    #+#             */
-/*   Updated: 2025/08/24 13:28:45 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/08/24 18:56:51 by almatsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,77 +34,92 @@ t_command_tree	*setup_ast(char *line, t_minishell *shell, int arc, char **arv)
 	return (ast);
 }
 
-// int	main(int argc, char **argv, char **env)
-// {
-// 	t_minishell	shell;
-
-// 	init_minishell(&shell, env);
-// 	while (1)
-// 	{
-// 		setup_parent_signals();
-// 		if (isatty(fileno(stdin)))
-// 		{
-// 			shell.line = readline("minishell$ ");
-// 			if (!shell.line)
-// 			{
-// 				ft_putstr_fd("exit\n", STDOUT_FILENO);
-// 				break ;
-// 			}
-// 			if (shell.line[0] != '\0')
-// 			{
-// 				add_history((const char *)shell.line);
-// 				shell.root = setup_ast(shell.line, &shell, argc, argv);
-// 				if (shell.root)
-// 					execute_tree(shell.root, &shell);
-// 			}
-// 		}
-// 		free(shell.line);
-// 	}
-// 	return (gc_cleanup(shell.gc), shell.exit_code);
-// }
-
-int	main(int argc, char **argv, char **env)
+char	*get_shlvl(const char *lvl, t_gc *gc)
 {
-	t_minishell	shell;
-	char		*gnl_line;
+	int		shlvl;
+	char	*tmp;
+	char	*new_lvl;
 
-	init_minishell(&shell, env);
+	shlvl = ft_atoi(lvl + 6) + 1;
+	if (shlvl == 1)
+		shlvl = 2;
+	tmp = ft_itoa(shlvl);
+	if (!tmp)
+		return (NULL);
+	new_lvl = gc_strjoin(gc, "SHLVL=", tmp);
+	free(tmp);
+	return (new_lvl);
+}
+
+int	increment_shlvl(t_minishell *shell)
+{
+	int		i;
+	char	**env;
+	char	*shlvl;
+
+	env = shell->envp_arr;
+	i = 0;
+	while (env[i])
+	{
+			if (strncmp(env[i], "SHLVL=", 6) == 0)
+			{
+				shlvl = get_shlvl(env[i], shell->gc[GC_LVL]);
+				if (!shlvl)
+					return (0);
+				env[i] = shlvl;
+				return (1);
+			}
+			i++;
+		}
+	return (0);
+}
+
+int	non_interactive_mode(t_minishell *shell, int arc, char **arv)
+{
+	char *line;
+
 	while (1)
 	{
-		setup_parent_signals();
-		if (isatty(fileno(stdin)))
-			shell.input = readline("minishell$ ");
-		else
-		{
-			gnl_line = get_next_line(fileno(stdin));
-			if (gnl_line)
-			{
-				shell.input = ft_strtrim(gnl_line, "\n");
-				free(gnl_line);
-			}
-			else
-				shell.input = NULL;
-		}
-		if (!shell.input)
-		{
-			// ft_putstr_fd("exit\n",
-			// STDOUT_FILENO); // Wie gefordert auskommentiert
+		line = get_next_line(fileno(stdin));
+		if (!line)
 			break ;
-		}
-		if (shell.input[0] != '\0')
-		{
-			add_history((const char *)shell.input);
-			shell.root = setup_ast(shell.input, &shell, argc, argv);
-			if (shell.root == NULL)
-            {
-                gc_cleanup(shell.gc);
-                return(shell.exit_code);
-            }
-            else
-			    execute_tree(shell.root, &shell);
-		}
-		free(shell.input);
+		shell->input = ft_strtrim(line, "\n");
+		free(line);
+		if (!shell->input || shell->input[0] == '\0')
+			shell->input = NULL;
+		shell->root = setup_ast(shell->input, shell, arc, arv);
+		if (!shell->root)
+			return (shell->exit_code);
+		execute_tree(shell->root, shell);
 	}
+	return (shell->exit_code);
+}
+
+int main(int arc, char **arv, char **env)
+{
+	t_minishell	shell;
+
+	init_minishell(&shell, env);
+	if (!increment_shlvl(&shell))
+		return (1);
+	setup_parent_signals();
+	if (isatty(fileno(stdin)))
+	{
+		while(1)
+		{
+			shell.input = readline("minishell$ ");
+			if (!shell.input)
+				break ;
+			if (shell.input[0] != '\0')
+				add_history((const char *)shell.input);
+			shell.root = setup_ast(shell.input, &shell, arc, arv);
+			if (!shell.root)
+			return (shell.exit_code);
+		execute_tree(shell.root, &shell);
+		}
+	}
+	else
+		shell.exit_code = non_interactive_mode(&shell, arc, arv);
 	gc_cleanup(shell.gc);
 	return (shell.exit_code);
 }

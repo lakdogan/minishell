@@ -6,7 +6,7 @@
 /*   By: almatsch <almatsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 23:54:37 by almatsch          #+#    #+#             */
-/*   Updated: 2025/08/05 23:57:24 by almatsch         ###   ########.fr       */
+/*   Updated: 2025/08/24 17:41:04 by almatsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ typedef enum e_gc_type
 	GC_EXPAND,
 	GC_PROC_HERE,
 	GC_PWD,
+	GC_LVL,
 	GC_COUNT
 }			t_gc_type;
 

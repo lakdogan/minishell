@@ -31,6 +31,7 @@ void	setup_child_signals(void)
 	sa.sa_flags = SIG_NO_FLAGS;
 	sigaction(SIGINT, &sa, NULL);
 	sigaction(SIGQUIT, &sa, NULL);
+	sigaction(SIGTSTP, &sa, NULL); // only kills child like bash behaviour HAHAAHAH
 }
 
 /**
@@ -50,8 +51,9 @@ void	signal_handler(int sig)
 	(void)sig;
 	write(STDERR_FILENO, "\n", 1);
 	// write(STDERR_FILENO, msg, 12);
-	rl_on_new_line();
 	rl_replace_line("", 0);
+	rl_on_new_line();
+	rl_redisplay();
 }
 
 /**
@@ -66,10 +68,12 @@ void	setup_parent_signals(void)
 {
 	struct sigaction	sa;
 
+	rl_catch_signals = 0; // for not showings ^C or ^\.
 	sa.sa_handler = signal_handler;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SIG_NO_FLAGS;
 	sigaction(SIGINT, &sa, NULL);
 	sa.sa_handler = SIG_IGN;
 	sigaction(SIGQUIT, &sa, NULL);
+	sigaction(SIGTSTP, &sa, NULL); //for ignoring ctrl z
 }

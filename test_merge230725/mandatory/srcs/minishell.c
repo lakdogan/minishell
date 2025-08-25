@@ -6,7 +6,7 @@
 /*   By: almatsch <almatsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 09:29:33 by almatsch          #+#    #+#             */
-/*   Updated: 2025/08/24 18:56:51 by almatsch         ###   ########.fr       */
+/*   Updated: 2025/08/25 14:21:26 by almatsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,15 +111,15 @@ int main(int arc, char **arv, char **env)
 			if (!shell.input)
 				break ;
 			if (shell.input[0] != '\0')
+			{
 				add_history((const char *)shell.input);
-			shell.root = setup_ast(shell.input, &shell, arc, arv);
-			if (!shell.root)
-			return (shell.exit_code);
-		execute_tree(shell.root, &shell);
+				shell.root = setup_ast(shell.input, &shell, arc, arv);
+				if (shell.root)
+					execute_tree(shell.root, &shell);
+			}
 		}
 	}
 	else
 		shell.exit_code = non_interactive_mode(&shell, arc, arv);
-	gc_cleanup(shell.gc);
-	return (shell.exit_code);
+	return (gc_cleanup(shell.gc), shell.exit_code);
 }

@@ -6,7 +6,7 @@
 /*   By: almatsch <almatsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 08:49:46 by almatsch          #+#    #+#             */
-/*   Updated: 2025/08/05 23:57:50 by almatsch         ###   ########.fr       */
+/*   Updated: 2025/08/25 16:12:33 by almatsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,13 @@
 # include <readline/readline.h>
 # include <signal.h>
 # include <stdbool.h>
+# include <string.h>
 # include <sys/signal.h>
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <sys/stat.h>
 # include <termios.h>
+# include <ctype.h>
 # include "mini.h"
 # include "builtins.h"
 # include "environment.h"

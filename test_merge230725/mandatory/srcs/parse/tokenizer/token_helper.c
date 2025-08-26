@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_helper.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: almatsch <almatsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 06:48:21 by almatsch          #+#    #+#             */
-/*   Updated: 2025/08/24 13:24:32 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/08/25 16:11:23 by almatsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,28 @@ int	is_token_valid(char *value, t_token_state state)
 			token_error(c);
 			return (0);
 		}
+	}
+	return (1);
+}
+
+// New helper: Check if a token is a valid assignment (for example "NAME=VALUE")
+int	is_valid_assignment(const char *s)
+{
+	int i;
+
+	i = 0;
+	if (!s || !(ft_isalpha(s[i]) || s[i] == '_')) {
+		return (0);
+	}
+	i++;
+	while (s[i] && s[i] != '=') {
+		if (!ft_isalnum(s[i]) && s[i] != '_') {
+			return (0);
+		}
+		i++;
+	}
+	if (s[i] != '=') {
+		return (0);
 	}
 	return (1);
 }

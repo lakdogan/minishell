@@ -13,16 +13,16 @@ int count_args(char **argv)
     int count = 0;
     if (!argv)
         return 0;
-    
+
     while (argv[count])
         count++;
-    
+
     return count;
 }
 void preprocess_command(t_exec *exec, t_minishell *shell)
 {
     // Early detection of cd $PWD before any expansion happens
-    if (exec && exec->command && exec->argv && 
+    if (exec && exec->command && exec->argv &&
         ft_strcmp(exec->command, "cd") == STRINGS_EQUAL &&
         exec->argv[COMMAND_ARGS_START])
     {
@@ -30,7 +30,7 @@ void preprocess_command(t_exec *exec, t_minishell *shell)
         if (ft_strcmp(exec->argv[COMMAND_ARGS_START], "$PWD") == STRINGS_EQUAL)
         {
             // Mark this command to skip normal expansion
-            exec->no_expand_flags = gc_malloc(shell->gc[GC_COMMAND], 
+            exec->no_expand_flags = gc_malloc(shell->gc[GC_COMMAND],
                                             sizeof(int) * (count_args(exec->argv) + 1));
             if (exec->no_expand_flags)
                 exec->no_expand_flags[COMMAND_ARGS_START] = 1;
@@ -71,6 +71,8 @@ void	handle_external(t_exec *exec, t_minishell *shell)
 	pid = fork();
 	if (pid == CHILD_PROCESS)
 	{
+		// signlas only will work on a childprocess if it exist
+		setup_child_signals();
 		prepare_command_execution(shell, exec);
 		execute_command(exec, shell);
 	}
@@ -80,7 +82,14 @@ void	handle_external(t_exec *exec, t_minishell *shell)
 		shell->exit_code = EXIT_FAILURE;
 	}
 	else
+	{
+		// for ignoring signals when a child is running
+		signal(SIGINT, SIG_IGN);
+		signal(SIGQUIT, SIG_IGN);
 		wait_for_process(pid, shell);
+		// setting up signals for paren process after child process was killed
+		setup_parent_signals();
+	}
 }
 
 /**

@@ -6,7 +6,7 @@
 /*   By: almatsch <almatsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 09:29:33 by almatsch          #+#    #+#             */
-/*   Updated: 2025/08/25 14:21:26 by almatsch         ###   ########.fr       */
+/*   Updated: 2025/08/26 17:27:50 by almatsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,8 @@ char	*get_shlvl(const char *lvl, t_gc *gc)
 	char	*tmp;
 	char	*new_lvl;
 
-	shlvl = ft_atoi(lvl + 6) + 1;
-	if (shlvl == 1)
-		shlvl = 2;
+	shlvl = ft_atoi(lvl + 6);
+	shlvl++;
 	tmp = ft_itoa(shlvl);
 	if (!tmp)
 		return (NULL);
@@ -67,6 +66,7 @@ int	increment_shlvl(t_minishell *shell)
 				if (!shlvl)
 					return (0);
 				env[i] = shlvl;
+				printf("shlvl after get_shlvl: %s\n", env[i] + 6);
 				return (1);
 			}
 			i++;

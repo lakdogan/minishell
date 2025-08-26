@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_subshell.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: almatsch <almatsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 06:29:26 by almatsch          #+#    #+#             */
-/*   Updated: 2025/08/23 15:08:29 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/08/25 15:50:44 by almatsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 t_command_tree	*parse_sub_or_cmd(t_tokens *tokens, int *pos, t_gc *gc)
 {
-	// Handle assignment tokens first
 	if ((*pos) < tokens->count && tokens->arr[*pos].type == ASSIGNMENT)
 		return (parse_command(tokens, pos, gc));
 	if (tokens->arr[(*pos)].type == L_PAREN)

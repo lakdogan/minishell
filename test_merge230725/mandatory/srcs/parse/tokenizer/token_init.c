@@ -3,72 +3,43 @@
 /*                                                        :::      ::::::::   */
 /*   token_init.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: almatsch <almatsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 07:48:08 by almatsch          #+#    #+#             */
-/*   Updated: 2025/08/24 17:21:17 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/08/26 13:19:23 by almatsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../includes/core/minishell.h"
 
-// New helper: Check if a token is a valid assignment (for example "NAME=VALUE")
-int	is_valid_assignment(const char *s)
-{
-    int i = 0;
-
-
-
-    if (!s || !(ft_isalpha(s[i]) || s[i] == '_')) {
-
-        return (0);
-    }
-    i++;
-    while (s[i] && s[i] != '=') {
-        if (!ft_isalnum(s[i]) && s[i] != '_') {
-
-            return (0);
-        }
-        i++;
-    }
-    if (s[i] != '=') {
-
-        return (0);
-    }
-
-    return (1);
-}
-
 // Modified get_tok_type to use is_valid_assignment.
 t_token_type	get_tok_type(char *value)
 {
-    if (value && is_valid_assignment(value)) {
-
-        return (ASSIGNMENT);
-    }
-    if (!value)
-        return (WORD);
-    if (ft_strncmp(value, ">>", 2) == 0)
-        return (APPEND);
-    if (ft_strncmp(value, "<<", 2) == 0)
-        return (HEREDOC);
-    if (ft_strncmp(value, "&&", 2) == 0)
-        return (AND_IF);
-    if (ft_strncmp(value, "||", 2) == 0)
-        return (OR);
-    if (ft_strncmp(value, "|", 1) == 0)
-        return (PIPE);
-    if (ft_strncmp(value, ">", 1) == 0)
-        return (OUTFILE);
-    if (ft_strncmp(value, "<", 1) == 0)
-        return (INFILE);
-    if (ft_strncmp(value, "(", 1) == 0)
-        return (L_PAREN);
-    if (ft_strncmp(value, ")", 1) == 0)
-        return (R_PAREN);
-    if (ft_strncmp(value, "&", 1) == 0)
-        return (AND_IF);
-    return (WORD);
+	if (value && is_valid_assignment(value))
+		return (ASSIGNMENT);
+	if (!value)
+		return (WORD);
+	if (ft_strncmp(value, ">>", 2) == 0)
+		return (APPEND);
+	if (ft_strncmp(value, "<<", 2) == 0)
+		return (HEREDOC);
+	if (ft_strncmp(value, "&&", 2) == 0)
+		return (AND_IF);
+	if (ft_strncmp(value, "||", 2) == 0)
+		return (OR);
+	if (ft_strncmp(value, "|", 1) == 0)
+		return (PIPE);
+	if (ft_strncmp(value, ">", 1) == 0)
+		return (OUTFILE);
+	if (ft_strncmp(value, "<", 1) == 0)
+		return (INFILE);
+	if (ft_strncmp(value, "(", 1) == 0)
+		return (L_PAREN);
+	if (ft_strncmp(value, ")", 1) == 0)
+		return (R_PAREN);
+	if (ft_strncmp(value, "&", 1) == 0)
+		return (AND_IF);
+	return (WORD);
 }
 
 t_token_state	get_tok_state(char *value, int len)
@@ -98,11 +69,6 @@ t_token	init_token_default(void)
 	new_token.state = GENERAL;
 	return (new_token);
 }
-
-#include "../../../includes/core/minishell.h"
-#include <ctype.h>
-#include <stdio.h>
-#include <string.h>
 
 /*
  * Helper: get_env_var
@@ -336,10 +302,11 @@ static char *process_token_full(const char *input, t_minishell *shell)
 
 void process_token(t_token *token, t_minishell *shell)
 {
-    char *new_value;
-    new_value = process_token_full(token->value, shell);
-    new_value = restore_escaped_dollars(new_value, shell);
-    token->value = new_value;
+	char *new_value;
+
+	new_value = process_token_full(token->value, shell);
+	new_value = restore_escaped_dollars(new_value, shell);
+	token->value = new_value;
 }
 
 t_token	init_token(const char *cmd, int *i, int t_count, t_minishell *shell)

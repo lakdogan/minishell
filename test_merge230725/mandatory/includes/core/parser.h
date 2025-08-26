@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: almatsch <almatsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 08:40:53 by almatsch          #+#    #+#             */
-/*   Updated: 2025/08/24 14:34:33 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/08/25 16:10:37 by almatsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ t_token_state		get_tok_state(char *value, int len);
 int					check_for_paren(const char *cmd, int *i, int len);
 int					check_for_qoutes(const char *cmd, int *i, int *len);
 int					is_token_valid(char *value, t_token_state state);
+int					is_valid_assignment(const char *s);
 int					is_quote_empty(t_tokens *tokens);
 t_command_tree		*start_parser(t_tokens *tokens, t_gc *gc,
 						t_minishell *shell);

@@ -6,7 +6,7 @@
 /*   By: almatsch <almatsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 06:46:52 by almatsch          #+#    #+#             */
-/*   Updated: 2025/08/06 01:39:30 by almatsch         ###   ########.fr       */
+/*   Updated: 2025/08/25 15:56:42 by almatsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ t_token	*resize_array(t_token *tokens, int *cap, t_gc *gc)
 	return (new);
 }
 
-static int	lexer_loop(t_token **tokens, const char *cmd, int *cap, t_minishell *shell)
+static int	lexer_loop(t_token **tokens, const char *cmd, int *cap,
+			t_minishell *shell)
 {
 	int		i;
 	int		t_count;

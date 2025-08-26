@@ -6,7 +6,7 @@
 /*   By: almatsch <almatsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 23:59:03 by almatsch          #+#    #+#             */
-/*   Updated: 2025/08/06 01:39:00 by almatsch         ###   ########.fr       */
+/*   Updated: 2025/08/25 15:48:16 by almatsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ char	*reapply_quote(const char *str, char quote, t_gc *gc)
 // 	return (cleaned);
 // }
 
-char	*remove_quotes (char *value, t_gc *gc)
+char	*remove_quotes(char *value, t_gc *gc)
 {
 	int		len;
 	char	*clean;

@@ -1,0 +1,152 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/04 08:40:53 by almatsch          #+#    #+#             */
+/*   Updated: 2025/09/05 23:27:11 by lakdogan         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+/**
+ * @file parser.h
+ * @brief Provides functions to parse the
+ * token list into an abstract syntax tree (AST),
+ *        detect syntax errors, and construct command nodes for execution.
+ *
+ * TODO:
+ * - Implement parse(t_minishell *mini)
+ *   → Entry point: validate tokens and build AST root (t_command_tree *)
+ *
+ * - Implement syntax_error_check(t_list *tokens)
+ *   → Check for unclosed quotes, misplaced pipes, invalid redirections
+ *
+ * - Implement AST builder functions:
+ *   → build_tree(): convert token list to t_command_tree structure
+ *   → create_exec_node(), create_pipe_node(), create_logic_nodes()
+ *
+ * - Handle operator precedence: ( ), &&, ||, | correctly
+ * - Support multiple commands and pipelines
+ * - Detect and report detailed syntax errors
+ */
+#ifndef PARSER_H
+# define PARSER_H
+# include "minishell.h"
+
+typedef struct s_arg_flags
+{
+	bool				no_expand;
+	bool				was_quoted;
+}						t_arg_flags;
+
+typedef struct s_redir_ctx
+{
+	t_exec				*exec;
+	t_tokens			*tokens;
+	int					*pos;
+	t_gc				*gc;
+}						t_redir_ctx;
+
+typedef struct s_arg_lst
+{
+	char				*arg;
+	bool				no_expand;
+	bool				was_quoted;
+	struct s_arg_lst	*next;
+}						t_arg_lst;
+
+typedef struct s_word_ctx
+{
+	t_tokens			*tokens;
+	int					*pos;
+	t_arg_lst			**args;
+	t_minishell			*shell;
+}						t_word_ctx;
+
+typedef struct s_token_ctx
+{
+	t_tokens			*tokens;
+	int					*pos;
+	t_exec				*exec;
+	t_minishell			*shell;
+}						t_token_ctx;
+
+void					error_msg(t_tokens *tokens, int *pos,
+							t_minishell *shell);
+void					error_msg_paren(void);
+int						tok_len(const char *cmd, int *i);
+t_tokens				*lexer(const char *cmd, t_minishell *shell);
+t_token					init_token(const char *cmd, int *i, const int t_count,
+							t_minishell *shell);
+t_token					*resize_array(t_token *tokens, int *cap, t_gc *gc);
+t_token_type			get_tok_type(char *value);
+t_token_state			get_tok_state(const char *value, int len);
+int						check_for_paren(const char *cmd, int *i, int len);
+int						check_for_qoutes(const char *cmd, int *i, int *len);
+int						is_token_valid(char *value, t_token_state state);
+int						is_quote_empty(t_tokens *tokens);
+t_command_tree			*start_parser(t_tokens *tokens, t_minishell *shell);
+t_command_tree			*parse_sub_or_cmd(t_tokens *tokens, int *pos,
+							t_minishell *shell);
+t_command_tree			*parse_command(t_tokens *tokens, int *pos,
+							t_minishell *shell);
+t_command_tree			*parse_subshell(t_tokens *tokens, int *pos,
+							t_minishell *shell);
+t_command_tree			*parse_pipeline(t_tokens *tokens, int *pos,
+							t_minishell *shell);
+t_command_tree			*parse_logic_ops(t_tokens *tokens, int *pos,
+							t_minishell *shell);
+t_command_tree			*parse_command(t_tokens *tokens, int *pos,
+							t_minishell *shell);
+void					check_expand(t_exec *exec, t_arg_lst *args, t_gc *gc);
+void					arg_to_list(t_arg_lst **head, char *value,
+							t_arg_flags flags, t_minishell *shell);
+char					**lst_to_argv(t_arg_lst *head, t_gc *gc,
+							bool **no_expand_flags, bool **was_quoted_flags);
+int						handle_redir(t_redir_ctx ctx);
+int						is_redir(t_token_type type);
+int						add_outfile(t_exec *exec, t_token_type type,
+							char *filename, t_gc *gc);
+int						add_infile(t_exec *exec, t_token_type type,
+							char *filename, t_gc *gc);
+int						handle_sub_redir(t_command_tree *node, t_tokens *tokens,
+							int *pos, t_gc *gc);
+t_command_tree			*create_exec_node(t_exec *exec, t_arg_lst *args,
+							t_gc *gc);
+t_command_tree			*node_init(t_node_type type, t_gc *gc);
+t_command_tree			*create_new_node(t_node_type type, t_gc *gc);
+t_command_tree			*get_node(t_node_type type, t_command_tree *left,
+							t_command_tree *right, t_gc *gc);
+t_arg_lst				*get_args(t_exec *exec, t_tokens *tokens, int *pos,
+							t_minishell *shell);
+t_infile				*create_infile(t_token_type type, char *filename,
+							t_gc *gc);
+char					*remove_quotes(char *token_value, t_gc *gc);
+char					*reapply_quote(const char *str, char quote, t_gc *gc);
+t_command_tree			*parse_sequence(t_tokens *tokens, int *pos,
+							t_minishell *shell);
+char					**lst_to_argv(t_arg_lst *head, t_gc *gc,
+							bool **no_expand_flags, bool **was_quoted_flags);
+int						process_assignments(t_tokens *tokens, int *pos,
+							t_exec *exec, t_minishell *shell);
+
+int						process_word(t_tokens *tokens, int *pos,
+							t_arg_lst **args, t_minishell *shell);
+
+int						process_command_tokens(t_tokens *tokens, int *pos,
+							t_exec *exec, t_minishell *shell);
+t_arg_lst				*create_arg_node(t_minishell *shell, char *value,
+							bool no_expand, bool was_quoted);
+void					add_node_to_list(t_arg_lst **head, t_arg_lst *new_node);
+int						handle_redirection(t_tokens *tokens, int *pos,
+							t_exec *exec, t_minishell *shell);
+int						handle_heredoc(t_redir_ctx ctx);
+int						process_output_redir(t_redir_ctx ctx,
+							t_token_type type);
+int						process_input_redir(t_redir_ctx ctx, t_token_type type);
+
+t_command_tree			*parse(t_tokens *tokens, t_minishell *minishell);
+
+#endif

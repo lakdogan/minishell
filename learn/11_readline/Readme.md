@@ -1,1 +1,0 @@
-not rl_clear_history

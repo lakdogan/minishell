@@ -1,3 +1,0 @@
-Line A - Second file
-Line B - Important data
-Line C - Second file

@@ -1,0 +1,77 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   token_processor_bonus.c                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/04 18:10:13 by lakdogan          #+#    #+#             */
+/*   Updated: 2025/09/09 00:33:39 by lakdogan         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../inc_bonus/minishell_bonus.h"
+
+// Initializes the result string for token processing.
+static char	*init_token_result(t_minishell *shell)
+{
+	return (gc_strdup(shell->gc[GC_COMMAND], ""));
+}
+
+// Handles single-quoted text in a token.
+static char	*handle_single_quote(const char *input, size_t *i, char *result,
+		t_minishell *shell)
+{
+	char	*quoted_text;
+
+	quoted_text = proc_single(input, i, shell);
+	return (gc_strjoin(shell->gc[GC_COMMAND], result, quoted_text));
+}
+
+// Handles double-quoted text in a token.
+static char	*handle_double_quote(const char *input, size_t *i, char *result,
+		t_minishell *shell)
+{
+	char	*quoted_text;
+
+	quoted_text = proc_double(input, i, shell);
+	return (gc_strjoin(shell->gc[GC_COMMAND], result, quoted_text));
+}
+
+// Handles unquoted text in a token.
+static char	*handle_unquoted_text(const char *input, size_t *i, char *result,
+		t_minishell *shell)
+{
+	char	*unquoted_text;
+
+	unquoted_text = proc_unquoted(input, i, shell);
+	return (gc_strjoin(shell->gc[GC_COMMAND], result, unquoted_text));
+}
+
+// Processes a token fully, handling quotes and expansions.
+char	*process_token_full(t_token *token, t_minishell *shell)
+{
+	size_t		i;
+	char		*result;
+	const char	*input;
+
+	i = 0;
+	input = token->value;
+	result = init_token_result(shell);
+	while (input[i])
+	{
+		if (input[i] == '\'')
+		{
+			result = handle_single_quote(input, &i, result, shell);
+			token->no_expand = 1;
+		}
+		else if (input[i] == '"')
+		{
+			result = handle_double_quote(input, &i, result, shell);
+			token->no_expand = 1;
+		}
+		else
+			result = handle_unquoted_text(input, &i, result, shell);
+	}
+	return (result);
+}

@@ -1,4 +1,0 @@
-Files in current dir: Makefile
-and_results.txt
-bonus
-Current working directory: /Users/lakdogan/Documents/minishell_vog_v2/test_ levent

@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 23:30:15 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/08 23:35:27 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/09 18:37:06 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static char	*extract_env_value(char *content)
 
 	if (!content)
 		return ("");
-	eq = strchr(content, '=');
+	eq = ft_strchr(content, '=');
 	if (eq)
 		return (eq + 1);
 	return (content);

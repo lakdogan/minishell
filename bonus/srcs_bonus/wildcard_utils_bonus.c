@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 20:55:30 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/09 00:36:38 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/10 00:11:38 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,12 +58,9 @@ bool	match_star(const char *pattern, const char *str)
 	return (match_star_recursive(pattern, str));
 }
 
-// Adds the pattern to result if no match was found.
-void	add_pattern_if_no_match(char **result, int *j, int found, char *pattern)
+void	add_pattern_if_no_match(char **result, int *j, char *pattern,
+		t_minishell *shell)
 {
-	if (!found)
-	{
-		result[*j] = strdup(pattern);
-		(*j)++;
-	}
+	result[*j] = gc_strdup(shell->gc[GC_MAIN], pattern);
+	(*j)++;
 }

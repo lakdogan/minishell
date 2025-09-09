@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/06 00:49:02 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/09 00:13:03 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/09 21:31:44 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,22 +34,6 @@ static pid_t	fork_subshell(void)
 	return (pid);
 }
 
-// Handles the child process logic for the subshell.
-static void	child_subshell(t_command_tree *node, t_minishell *minishell,
-		int pipe_fd[2])
-{
-	close(pipe_fd[0]);
-	setenv("IN_MINISHELL_SUBSHELL", "1", 1);
-	if (dup2(pipe_fd[1], STDOUT_FILENO) == -1)
-	{
-		perror("dup2");
-		exit(1);
-	}
-	close(pipe_fd[1]);
-	execute_node_by_type(node->left, minishell);
-	exit(minishell->exit_code);
-}
-
 // Handles the parent process logic for the subshell.
 static void	parent_subshell(pid_t pid, int pipe_fd[2], t_minishell *minishell)
 {
@@ -67,7 +51,7 @@ static void	parent_subshell(pid_t pid, int pipe_fd[2], t_minishell *minishell)
 	}
 	close(pipe_fd[0]);
 	waitpid(pid, &status, 0);
-	unsetenv("IN_MINISHELL_SUBSHELL");
+	minishell->in_subshell = false;
 	if (WIFEXITED(status))
 		minishell->exit_code = WEXITSTATUS(status);
 	else

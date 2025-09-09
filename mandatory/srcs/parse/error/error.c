@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 05:52:21 by almatsch          #+#    #+#             */
-/*   Updated: 2025/09/08 23:51:05 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/09 18:43:40 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,5 +32,5 @@ void	error_msg(t_tokens *tokens, int *pos, t_minishell *shell)
 // Prints a syntax error message for unexpected end of file (parenthesis).
 void	error_msg_paren(void)
 {
-	printf("minishell$ syntax error: unexpected end of file\n");
+	ft_printf("minishell$ syntax error: unexpected end of file\n");
 }

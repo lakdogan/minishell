@@ -6,18 +6,18 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 19:55:02 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/05 18:46:25 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/09 22:10:05 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/core/minishell.h"
 
 /* Handle the case when no argument is provided (cd with no args) */
-static char	*handle_no_arg_case(void)
+static char	*handle_no_arg_case(t_minishell *shell)
 {
 	char	*path;
 
-	path = getenv("HOME");
+	path = find_env_value(shell, "HOME");
 	if (!path)
 	{
 		write(STDERR_FILENO, "cd: HOME not set\n", 18);
@@ -27,11 +27,11 @@ static char	*handle_no_arg_case(void)
 }
 
 /* Handle the tilde case (cd ~) */
-static char	*handle_tilde_case(void)
+static char	*handle_tilde_case(t_minishell *shell)
 {
 	char	*path;
 
-	path = getenv("HOME");
+	path = find_env_value(shell, "HOME");
 	if (!path)
 	{
 		write(STDERR_FILENO, "cd: HOME not set\n", 18);
@@ -51,14 +51,14 @@ static int	is_valid_path(char *path)
 }
 
 /* Determine the target path for cd command based on arguments */
-char	*get_cd_target_path(char **argv)
+char	*get_cd_target_path(char **argv, t_minishell *shell)
 {
 	char	*path;
 
 	if (!argv[COMMAND_ARGS_START])
-		return (handle_no_arg_case());
+		return (handle_no_arg_case(shell));
 	else if (ft_strcmp(argv[COMMAND_ARGS_START], "~") == 0)
-		return (handle_tilde_case());
+		return (handle_tilde_case(shell));
 	else
 	{
 		path = argv[COMMAND_ARGS_START];

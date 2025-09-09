@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 23:33:06 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/05 23:33:28 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/09 22:10:19 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int		ft_pwd(void);
 // unset.c
 int		ft_unset(char **argv, t_minishell *minishell);
 /* ------------------------------------------------------------------------- */
-char	*get_cd_target_path(char **argv);
+char	*get_cd_target_path(char **argv, t_minishell *shell);
 void	update_pwd_variables(t_minishell *minishell, const char *new_pwd,
 			const char *old_pwd);
 int		handle_cd_dash(t_minishell *minishell);

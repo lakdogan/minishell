@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 22:20:29 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/09 00:00:49 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/09 22:11:19 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,13 +82,13 @@ char	*expand_tilde(const char *arg, t_minishell *shell)
 
 	if (arg[0] == '~' && (arg[1] == '\0' || arg[1] == '/'))
 	{
-		home = getenv("HOME");
+		home = find_env_value(shell, "HOME");
 		if (!home)
 			return (gc_strdup(shell->gc[GC_COMMAND], arg));
 		len = ft_strlen(home) + ft_strlen(arg);
 		expanded = gc_malloc(shell->gc[GC_COMMAND], len);
-		strcpy(expanded, home);
-		strcat(expanded, arg + 1);
+		ft_strlcpy(expanded, home, ft_strlen(home) + 1);
+		ft_strlcat(expanded, arg + 1, len);
 		return (expanded);
 	}
 	return (gc_strdup(shell->gc[GC_COMMAND], arg));

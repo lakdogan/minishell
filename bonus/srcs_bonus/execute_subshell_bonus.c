@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/06 00:49:02 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/09 00:29:18 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/09 21:29:28 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,11 @@ static pid_t	fork_subshell(void)
 }
 
 // Handles the child process logic for the subshell.
-static void	child_subshell(t_command_tree *node, t_minishell *minishell,
+static void	child_subshell_b(t_command_tree *node, t_minishell *minishell,
 		int pipe_fd[2])
 {
 	close(pipe_fd[0]);
-	setenv("IN_MINISHELL_SUBSHELL", "1", 1);
+	minishell->in_subshell = true;
 	if (dup2(pipe_fd[1], STDOUT_FILENO) == -1)
 	{
 		perror("dup2");
@@ -67,7 +67,7 @@ static void	parent_subshell(pid_t pid, int pipe_fd[2], t_minishell *minishell)
 	}
 	close(pipe_fd[0]);
 	waitpid(pid, &status, 0);
-	unsetenv("IN_MINISHELL_SUBSHELL");
+	minishell->in_subshell = false;
 	if (WIFEXITED(status))
 		minishell->exit_code = WEXITSTATUS(status);
 	else
@@ -90,7 +90,7 @@ void	execute_subshell(t_command_tree *node, t_minishell *minishell)
 		return ;
 	}
 	if (pid == 0)
-		child_subshell(node, minishell, pipe_fd);
+		child_subshell_b(node, minishell, pipe_fd);
 	else
 		parent_subshell(pid, pipe_fd, minishell);
 }

@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 23:35:37 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/08 22:52:27 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/10 00:31:29 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -433,7 +433,29 @@ void						handle_assignment_command(t_command *cmd,
 								t_minishell *shell);
 void						execute_subshell(t_command_tree *node,
 								t_minishell *minishell);
-char						**expand_wildcards(char **argv,
-								bool *no_expand_flags);
-
+void						setup_input_redirections(t_minishell *shell,
+								t_exec *exec, bool is_pipe);
+void						setup_output_redirections(t_minishell *shell,
+								t_exec *exec);
+void						handle_redirections_and_exit(t_exec *exec,
+								t_minishell *shell);
+void						handle_builtin_and_exit(t_exec *exec,
+								t_minishell *shell);
+void						exec_external_command(t_exec *exec,
+								t_minishell *shell);
+int							ft_execvp(const char *file, char *const argv[],
+								char *const envp[]);
+char						*find_in_path(const char *file, char **envp);
+char						**list_to_envp_array(t_gc *gc, t_list *envp);
+char						*get_path_value(char **envp);
+char						*join_dir_and_file(const char *dir,
+								const char *slash_cmd);
+char						*try_path_dir(const char *dir,
+								const char *slash_cmd);
+char						*search_path_dirs(const char *paths,
+								const char *slash_cmd);
+void						child_subshell(t_command_tree *node,
+								t_minishell *minishell, int pipe_fd[2]);
+void						unset_env_var(const char *key,
+								t_minishell *minishell);
 #endif

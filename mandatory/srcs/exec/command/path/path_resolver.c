@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 21:04:58 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/09 00:11:10 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/09 20:53:35 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static char	*find_path_env(char **envp)
 }
 
 // Searches for the command in the PATH directories.
-static char	*find_in_path(t_minishell *shell, char **paths, char *cmd)
+static char	*find_in_path_pr(t_minishell *shell, char **paths, char *cmd)
 {
 	int		i;
 	char	*path_with_slash;
@@ -95,6 +95,6 @@ char	*get_absolute_path(t_minishell *shell, char *cmd, char **envp)
 	if (!path_env)
 		return (NULL);
 	paths = gc_split(shell->gc[GC_TEMP], path_env, PATH_DELIMITER);
-	result = find_in_path(shell, paths, cmd);
+	result = find_in_path_pr(shell, paths, cmd);
 	return (result);
 }

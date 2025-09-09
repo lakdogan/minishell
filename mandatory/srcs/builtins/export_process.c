@@ -6,22 +6,11 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 19:19:21 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/05 19:21:25 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/10 00:30:22 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/core/minishell.h"
-
-/* Check if option flag is provided and handle it */
-int	handle_export_option(char *arg)
-{
-	write(STDERR_FILENO, "minishell: export: ", 20);
-	write(STDERR_FILENO, arg, ft_strlen(arg));
-	write(STDERR_FILENO, ": invalid option\n", 17);
-	write(STDERR_FILENO,
-		"export: usage: export [-nf] [name[=value] ...] or export -p\n", 61);
-	return (2);
-}
 
 /* Process a key=value export argument */
 int	process_key_value_export(t_minishell *minishell, char *key_no_quotes,
@@ -38,14 +27,23 @@ int	process_key_value_export(t_minishell *minishell, char *key_no_quotes,
 	return (BUILTIN_SUCCESS);
 }
 
-/* Process a key-only export argument */
 int	process_key_only_export(t_minishell *minishell, char *key)
 {
 	t_env	*env;
 
 	env = find_env_var(key, minishell);
 	if (env)
+	{
 		env->is_export = true;
+	}
+	else
+	{
+		set_env_var(key, "", minishell);
+		env = find_env_var(key, minishell);
+		if (env)
+			env->is_export = true;
+	}
+	minishell->envp_arr = rebuild_env_array(minishell);
 	return (BUILTIN_SUCCESS);
 }
 
@@ -58,25 +56,59 @@ int	handle_invalid_identifier(char *arg)
 	return (BUILTIN_FAILURE);
 }
 
-/* Process a single export argument */
+int	process_export_append(t_minishell *minishell, char *key, char *append_value)
+{
+	t_env	*env;
+	char	*new_value;
+	char	*clean_append;
+	char	*old_val;
+
+	env = find_env_var(key, minishell);
+	clean_append = remove_all_quotes(minishell, append_value);
+	if (env && env->content)
+	{
+		old_val = ft_strchr(env->content, '=');
+		if (old_val)
+			old_val++;
+		else
+			old_val = "";
+		new_value = gc_strjoin(minishell->gc[GC_ENV], old_val, clean_append);
+		set_env_var(key, new_value, minishell);
+	}
+	else
+	{
+		set_env_var(key, clean_append, minishell);
+	}
+	env = find_env_var(key, minishell);
+	if (env)
+		env->is_export = true;
+	return (BUILTIN_SUCCESS);
+}
+
 int	process_export_arg(t_minishell *minishell, char *arg)
 {
 	char	*equal;
+	char	*plus;
 	char	*key;
 	char	*key_no_quotes;
 
-	if (arg[0] == '-' && arg[1] && ft_strcmp(arg, "--") != 0)
-		return (handle_export_option(arg));
+	plus = ft_strchr(arg, '+');
 	equal = ft_strchr(arg, '=');
+	if (plus && equal && plus + 1 == equal)
+	{
+		key = gc_substr(minishell->gc[GC_TEMP], arg, 0, plus - arg);
+		key_no_quotes = remove_all_quotes(minishell, key);
+		return (process_export_append(minishell, key_no_quotes, equal + 1));
+	}
 	if (equal)
 		key = gc_substr(minishell->gc[GC_TEMP], arg, 0, equal - arg);
 	else
-		key = arg;
+		key = gc_strdup(minishell->gc[GC_TEMP], arg);
 	key_no_quotes = remove_all_quotes(minishell, key);
-	if (!is_valid_export_key(key_no_quotes))
+	if (!is_valid_export_key(arg))
 		return (handle_invalid_identifier(arg));
 	else if (equal)
 		return (process_key_value_export(minishell, key_no_quotes, equal));
 	else
-		return (process_key_only_export(minishell, key));
+		return (process_key_only_export(minishell, key_no_quotes));
 }

@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 23:53:24 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/09 00:28:27 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/09 21:30:15 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	execute_node_by_type_bonus(t_command_tree *node, t_minishell *minishell)
 		handle_exec(node, minishell);
 	else if (node->type == NODE_PIPE)
 	{
-		if (getenv("IN_MINISHELL_SUBSHELL") != NULL)
+		if (minishell->in_subshell == true)
 			handle_pipe_in_subshell(minishell, node);
 		else
 			handle_pipe(minishell, node);

@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 19:22:52 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/09 00:27:06 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/09 23:08:28 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,29 +29,31 @@ static int	is_valid_identifier(const char *str)
 	return (IDENTIFIER_VALID);
 }
 
-// Removes an environment variable from the list.
-static void	remove_env_var(const char *name, t_minishell *minishell)
+void	unset_env_var(const char *key, t_minishell *minishell)
 {
 	t_list	*prev;
-	t_list	*node;
+	t_list	*curr;
+	t_list	*next;
 	t_env	*env;
 
 	prev = NULL;
-	node = minishell->envp;
-	while (node)
+	curr = minishell->envp;
+	if (!key)
+		return ;
+	while (curr)
 	{
-		env = (t_env *)node->content;
-		if (env && ft_strcmp(env->value, name) == STRINGS_EQUAL)
+		next = curr->next;
+		env = (t_env *)curr->content;
+		if (env && env->value && ft_strcmp(env->value, key) == 0)
 		{
 			if (prev)
-				prev->next = node->next;
+				prev->next = next;
 			else
-				minishell->envp = node->next;
-			unsetenv(name);
-			return ;
+				minishell->envp = next;
+			break ;
 		}
-		prev = node;
-		node = node->next;
+		prev = curr;
+		curr = next;
 	}
 }
 
@@ -76,7 +78,7 @@ int	ft_unset(char **argv, t_minishell *minishell)
 		}
 		else
 		{
-			remove_env_var(argv[i], minishell);
+			unset_env_var(argv[i], minishell);
 		}
 		i++;
 	}

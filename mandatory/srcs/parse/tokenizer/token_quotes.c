@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 23:59:03 by almatsch          #+#    #+#             */
-/*   Updated: 2025/09/08 23:43:19 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/09 18:39:57 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ char	*reapply_quote(const char *str, char quote, t_gc *gc)
 	if (!new_str)
 		return ((char *)str);
 	new_str[0] = quote;
-	memcpy(new_str + 1, str, len);
+	ft_memcpy(new_str + 1, str, len);
 	new_str[len + 1] = quote;
 	new_str[len + 2] = '\0';
 	return (new_str);
@@ -43,7 +43,7 @@ char	*remove_quotes(char *value, t_gc *gc)
 		clean = gc_malloc(gc, len - 1);
 		if (!clean)
 			return (value);
-		memcpy(clean, value + 1, len - 2);
+		ft_memcpy(clean, value + 1, len - 2);
 		clean[len - 2] = '\0';
 		return (clean);
 	}

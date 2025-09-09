@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 23:07:28 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/09 00:04:19 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/09 19:59:49 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	validate_command_tree(t_command_tree *root)
 void	handle_invalid_tree(t_command_tree *root, t_minishell *minishell)
 {
 	if (!root)
-		printf("execute_tree: root is NULL\n");
+		ft_printf("execute_tree: root is NULL\n");
 	minishell->exit_code = EXIT_FAILURE;
 }
 

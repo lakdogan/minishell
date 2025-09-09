@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 07:45:08 by almatsch          #+#    #+#             */
-/*   Updated: 2025/09/08 23:41:18 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/10 00:13:55 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int	tok_len(const char *cmd, int *i)
 	in_single = 0;
 	in_double = 0;
 	len = 0;
-	redirection_len = handle_redirection_out(cmd, i);
+	redirection_len = 0;
 	if (redirection_len > 0)
 		return (redirection_len);
 	while (cmd[(*i) + len])

@@ -1,26 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipe_command_executor.c                            :+:      :+:    :+:   */
+/*   execute_subshell_utils.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/05 21:08:55 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/09 20:55:33 by lakdogan         ###   ########.fr       */
+/*   Created: 2025/09/09 21:08:11 by lakdogan          #+#    #+#             */
+/*   Updated: 2025/09/09 21:34:51 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../../includes/core/minishell.h"
 
-void	execute_command_from_pipe(t_exec *exec, t_minishell *shell)
+void	child_subshell(t_command_tree *node, t_minishell *minishell,
+		int pipe_fd[2])
 {
-	if ((!exec->argv || !exec->argv[0]) && (exec->infiles || exec->outfiles))
-		handle_redirections_and_exit(exec, shell);
-	setup_input_redirections(shell, exec, true);
-	setup_output_redirections(shell, exec);
-	if (exec->redirection_failed)
-		exit(shell->exit_code);
-	if (is_builtin(exec->command))
-		handle_builtin_and_exit(exec, shell);
-	exec_external_command(exec, shell);
+	close(pipe_fd[0]);
+	minishell->in_subshell = true;
+	if (dup2(pipe_fd[1], STDOUT_FILENO) == -1)
+	{
+		perror("dup2");
+		exit(1);
+	}
+	close(pipe_fd[1]);
+	execute_node_by_type(node->left, minishell);
+	exit(minishell->exit_code);
 }

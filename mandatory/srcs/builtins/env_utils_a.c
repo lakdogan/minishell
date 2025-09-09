@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 19:02:53 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/09 00:21:17 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/09 22:50:29 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,15 +45,15 @@ static int	create_new_env_var(const char *name, const char *value,
 	env->value = gc_strdup(minishell->gc[GC_ENV], name);
 	if (!env->value)
 		return (BUILTIN_FAILURE);
-	env->content = NULL;
 	if (value)
-	{
 		full_var = gc_strjoin_3(minishell->gc[GC_ENV], name, EQUALS_SIGN_STR,
 				value);
-		if (!full_var)
-			return (BUILTIN_FAILURE);
-		env->content = full_var;
-	}
+	else
+		full_var = gc_strjoin_3(minishell->gc[GC_ENV], name, EQUALS_SIGN_STR,
+				"");
+	if (!full_var)
+		return (BUILTIN_FAILURE);
+	env->content = full_var;
 	env->is_export = true;
 	gc_lstadd_back(minishell->gc[GC_ENV], &(minishell->envp), env);
 	return (BUILTIN_SUCCESS);

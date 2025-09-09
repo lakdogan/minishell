@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cd_pipe_utils_a.c                                  :+:      :+:    :+:   */
+/*   cd_pipe_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 21:32:27 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/05 21:35:06 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/09 20:15:52 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ static bool	is_command_match(const char *str, const char **cmds, int cmd_count)
 	i = 0;
 	while (i < cmd_count)
 	{
-		len = strlen(cmds[i]);
-		if (strncmp(str, cmds[i], len) == 0 && (str[len] == ' '
+		len = ft_strlen(cmds[i]);
+		if (ft_strncmp(str, cmds[i], len) == 0 && (str[len] == ' '
 				|| str[len] == '\0' || str[len] == '\t'))
 			return (true);
 		i++;

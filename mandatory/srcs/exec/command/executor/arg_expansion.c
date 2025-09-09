@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 19:50:55 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/09 00:18:38 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/09 23:53:35 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,13 +50,17 @@ void	expand_command_args(t_minishell *shell, t_exec *exec)
 void	handle_empty_command(t_exec *exec)
 {
 	int	i;
+	int	max;
 
 	if (!exec->argv || !exec->argv[0])
 		return ;
 	if (!*exec->argv[0] || ft_is_whitespace_str(exec->argv[0]))
 	{
+		max = 0;
+		while (exec->argv[max])
+			max++;
 		i = 0;
-		while (exec->argv[i + 1])
+		while (i + 1 < max)
 		{
 			exec->argv[i] = exec->argv[i + 1];
 			if (exec->no_expand_flags)

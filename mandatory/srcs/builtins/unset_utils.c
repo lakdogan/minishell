@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 19:22:09 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/09 00:26:24 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/09 23:02:13 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,7 @@ static char	**populate_env_array(t_minishell *minishell, char **env_array)
 		env_var = (t_env *)env_node->content;
 		if (env_var->is_export)
 		{
-			env_array[i] = gc_strjoin_3(minishell->gc[GC_ENV], env_var->value,
-					EQUALS_SIGN_STR, env_var->content);
+			env_array[i] = gc_strdup(minishell->gc[GC_ENV], env_var->content);
 			if (!env_array[i])
 				return (NULL);
 			i++;

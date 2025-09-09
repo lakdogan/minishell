@@ -6,7 +6,7 @@
 #    By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/08 22:57:06 by lakdogan          #+#    #+#              #
-#    Updated: 2025/09/08 23:08:14 by lakdogan         ###   ########.fr        #
+#    Updated: 2025/09/10 00:22:53 by lakdogan         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -94,6 +94,7 @@ MINISHELL_MANDATORY_FILES := \
 				$(EXECUTOR_DIR)cmd_node_prep.c \
 				$(EXECUTOR_DIR)builtin_executor.c \
 				$(EXECUTOR_DIR)execute_subshell.c \
+				$(EXECUTOR_DIR)execute_subshell_utils.c \
 				$(PATH_DIR)path_resolver.c \
 				$(PATH_DIR)path_utils.c \
 				$(PIPE_DIR)handle_pipe_utils.c \
@@ -103,9 +104,13 @@ MINISHELL_MANDATORY_FILES := \
 				$(PIPE_DIR)pipe_command_executor.c \
 				$(PIPE_DIR)pipe_process_manager.c \
 				$(PIPE_DIR)pipe_chain_executor.c \
+				$(PIPE_DIR)pipe_path_utils.c \
+				$(PIPE_DIR)pipe_redirections.c \
+				$(PIPE_DIR)pipe_builtin.c \
+				$(PIPE_DIR)pipe_external.c \
+				$(PIPE_DIR)pipe_env.c \
 				$(CMD_UTILS_DIR)command_utils.c \
-				$(CMD_UTILS_DIR)cd_pipe_utils_a.c \
-				$(CMD_UTILS_DIR)cd_pipe_utils_b.c \
+				$(CMD_UTILS_DIR)cd_pipe_utils.c \
 				$(CORE_DIR)execute_tree.c \
 				$(CORE_DIR)env_assignment.c \
 				$(CORE_DIR)heredoc_detection.c \
@@ -197,6 +202,7 @@ MINISHELL_BONUS_FILES := \
 				$(BONUS_SRCS_DIR)token_processor_bonus.c \
 				$(BONUS_SRCS_DIR)pipe_command_executor_bonus.c \
 				$(BONUS_SRCS_DIR)cmd_executor_bonus.c \
+				$(BONUS_SRCS_DIR)execute_with_path.c \
 
 
 MANDATORY_WITHOUT_MAIN 			:= $(filter-out $(SRCS_DIR)minishell.c,$(MINISHELL_MANDATORY_FILES))
@@ -285,8 +291,8 @@ run: all
 	@./$(NAME)
 
 runbonus: bonus
-	@echo "Running $(NAME)...\n"
-	@./$(NAME)
+	@echo "Running $(BONUS_NAME)...\n"
+	@./$(BONUS_NAME)
 
 valgrind: all
 	@echo "Running $(NAME) with valgrind...\n"

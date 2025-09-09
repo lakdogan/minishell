@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 22:21:17 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/09 00:03:28 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/09 18:54:47 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,7 @@ static int	expand_exit_status(char **expanded, t_minishell *shell)
 // Expands the special variable $$ to the current process ID.
 static int	handle_process_id(char **expanded, t_minishell *shell)
 {
-	pid_t	pid;
-
-	pid = getpid();
-	*expanded = gc_itoa(shell->gc[GC_EXPAND], pid);
+	*expanded = gc_itoa(shell->gc[GC_EXPAND], shell->shell_pid);
 	if (*expanded)
 		return (SPECIAL_VAR_LENGTH);
 	return (NO_EXPANSION);

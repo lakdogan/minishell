@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 18:37:16 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/09 00:19:45 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/09 22:08:02 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int	ft_cd(char **argv, t_minishell *minishell)
 		return (handle_cd_dash(minishell));
 	old_pwd = NULL;
 	lookup_env_value("PWD", minishell, &old_pwd);
-	path = get_cd_target_path(argv);
+	path = get_cd_target_path(argv, minishell);
 	if (!path)
 		return (BUILTIN_FAILURE);
 	if (!*path)

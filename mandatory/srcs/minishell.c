@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 22:31:40 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/08 23:31:38 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/09 18:58:20 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ int	main(int argc, char **argv, char **env)
 	t_minishell	shell;
 	int			dir_check;
 
+	shell.shell_pid = 42;
 	dir_check = check_directory_argument(argc, argv);
 	if (dir_check != 0)
 		return (dir_check);

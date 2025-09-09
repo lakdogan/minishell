@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 19:57:06 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/09 00:12:12 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/09 22:05:23 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ static void	try_local_execution(t_exec *exec, t_minishell *minishell)
 	char	local_path[PATH_MAX];
 
 	getcwd(local_path, sizeof(local_path));
-	strcat(local_path, "/");
-	strcat(local_path, exec->command);
+	ft_strlcat(local_path, "/", sizeof(local_path));
+	ft_strlcat(local_path, exec->command, sizeof(local_path));
 	if (access(local_path, F_OK) == 0)
 	{
 		if (access(local_path, X_OK) != 0)
@@ -96,7 +96,7 @@ void	execute_with_path_lookup(t_exec *exec, t_minishell *minishell)
 {
 	char	*path_env;
 
-	path_env = getenv("PATH");
+	path_env = find_env_value(minishell, "PATH");
 	if (!path_env || !*path_env)
 	{
 		try_local_execution(exec, minishell);

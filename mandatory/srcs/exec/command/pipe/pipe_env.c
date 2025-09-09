@@ -1,26 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipe_command_executor.c                            :+:      :+:    :+:   */
+/*   pipe_env.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/05 21:08:55 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/09 20:55:33 by lakdogan         ###   ########.fr       */
+/*   Created: 2025/09/09 20:45:42 by lakdogan          #+#    #+#             */
+/*   Updated: 2025/09/09 20:48:53 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../../includes/core/minishell.h"
 
-void	execute_command_from_pipe(t_exec *exec, t_minishell *shell)
+char	**list_to_envp_array(t_gc *gc, t_list *envp)
 {
-	if ((!exec->argv || !exec->argv[0]) && (exec->infiles || exec->outfiles))
-		handle_redirections_and_exit(exec, shell);
-	setup_input_redirections(shell, exec, true);
-	setup_output_redirections(shell, exec);
-	if (exec->redirection_failed)
-		exit(shell->exit_code);
-	if (is_builtin(exec->command))
-		handle_builtin_and_exit(exec, shell);
-	exec_external_command(exec, shell);
+	int		size;
+	char	**arr;
+	t_list	*node;
+	int		i;
+
+	size = ft_lstsize(envp);
+	arr = gc_malloc(gc, sizeof(char *) * (size + 1));
+	node = envp;
+	i = 0;
+	while (node)
+	{
+		arr[i++] = ((t_env *)node->content)->content;
+		node = node->next;
+	}
+	arr[i] = NULL;
+	return (arr);
 }

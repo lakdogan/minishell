@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 18:36:24 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/08 23:51:37 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/09 21:33:27 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ static void	init_data(t_minishell *shell, char **envp)
 	}
 	else
 		init_environment(shell, envp);
+	shell->in_subshell = false;
 }
 
 // Initializes the minishell instance.

@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 19:10:12 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/09 00:24:14 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/09 21:30:54 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ static int	handle_exit_args(char **argv, t_minishell *minishell)
 // Implementation of the exit builtin.
 int	ft_exit(char **argv, t_minishell *minishell)
 {
-	if (!getenv("IN_MINISHELL_SUBSHELL"))
+	if (minishell->in_subshell == false)
 		write(STDERR_FILENO, "exit\n", 5);
 	return (handle_exit_args(argv, minishell));
 }

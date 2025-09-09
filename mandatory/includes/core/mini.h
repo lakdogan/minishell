@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 23:54:37 by almatsch          #+#    #+#             */
-/*   Updated: 2025/09/05 23:26:58 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/09 21:28:41 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ typedef struct s_minishell
 	int				is_heredoc;
 	bool			source_mode;
 	int				env_flags;
-
+	pid_t			shell_pid;
+	bool			in_subshell;
 }					t_minishell;
 #endif

@@ -6,20 +6,47 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/06 15:51:11 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/09 00:30:22 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/10 00:18:14 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc_bonus/minishell_bonus.h"
 
-// Handles the child process for external commands.
+static void	update_expanded_argv_and_flags(t_exec *exec, char **expanded_argv,
+		t_minishell *shell)
+{
+	int		new_argc;
+	bool	*new_no_expand;
+	bool	*new_quoted;
+	int		i;
+
+	new_argc = 0;
+	while (expanded_argv[new_argc])
+		new_argc++;
+	new_no_expand = gc_malloc(shell->gc[GC_MAIN], sizeof(bool) * (new_argc
+				+ 1));
+	new_quoted = gc_malloc(shell->gc[GC_MAIN], sizeof(bool) * (new_argc + 1));
+	i = 0;
+	while (i < new_argc)
+	{
+		new_no_expand[i] = false;
+		new_quoted[i] = false;
+		i++;
+	}
+	new_no_expand[new_argc] = false;
+	new_quoted[new_argc] = false;
+	exec->argv = expanded_argv;
+	exec->no_expand_flags = new_no_expand;
+	exec->was_quoted_flags = new_quoted;
+}
+
 static void	child_external_process(t_exec *exec, t_minishell *shell)
 {
 	char	**expanded_argv;
 
-	expanded_argv = expand_wildcards(exec->argv, exec->no_expand_flags);
+	expanded_argv = expand_wildcards(exec->argv, exec->no_expand_flags, shell);
 	if (expanded_argv)
-		exec->argv = expanded_argv;
+		update_expanded_argv_and_flags(exec, expanded_argv, shell);
 	setup_child_signals();
 	prepare_command_execution(shell, exec);
 	if (exec->redirection_failed)

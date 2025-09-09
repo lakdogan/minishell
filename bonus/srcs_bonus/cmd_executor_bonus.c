@@ -6,14 +6,14 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 19:56:26 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/09 00:28:05 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/10 00:21:32 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc_bonus/minishell_bonus.h"
 
 /* Handle special dot command */
-static void	handle_dot_command(t_exec *exec)
+void	handle_dot_command(t_exec *exec)
 {
 	if (!exec->argv[1])
 	{
@@ -43,7 +43,7 @@ void	handle_special_cases(t_exec *exec, t_minishell *minishell)
 }
 
 // Checks if the given path is a directory.
-static void	check_if_directory(char *path, t_minishell *minishell)
+void	check_if_directory(char *path, t_minishell *minishell)
 {
 	struct stat		path_stat;
 	t_error_context	err_ctx;
@@ -60,7 +60,7 @@ static void	check_if_directory(char *path, t_minishell *minishell)
 }
 
 // Checks if the path is accessible and executable.
-static void	check_path_accessibility(char *path, t_minishell *minishell)
+void	check_path_accessibility(char *path, t_minishell *minishell)
 {
 	struct stat		path_stat;
 	t_error_context	err_ctx;
@@ -83,24 +83,4 @@ static void	check_path_accessibility(char *path, t_minishell *minishell)
 		err_ctx.exit_code = 126;
 		exit_with_error(err_ctx);
 	}
-}
-
-// Executes a command using the given path.
-void	execute_with_path(char *path, t_exec *exec, t_minishell *minishell)
-{
-	t_error_context	err_ctx;
-	char			**expanded_argv;
-
-	expanded_argv = expand_wildcards(exec->argv, exec->no_expand_flags);
-	if (expanded_argv)
-		exec->argv = expanded_argv;
-	check_if_directory(path, minishell);
-	check_path_accessibility(path, minishell);
-	execve(path, exec->argv, minishell->envp_arr);
-	err_ctx.shell = minishell;
-	err_ctx.prefix = "minishell: ";
-	err_ctx.subject = exec->command;
-	err_ctx.message = ": execve error";
-	err_ctx.exit_code = 127;
-	exit_with_error(err_ctx);
 }

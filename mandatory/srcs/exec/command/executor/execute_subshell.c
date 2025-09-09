@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/06 00:49:02 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/09 21:31:44 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/10 00:53:57 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,10 @@ static void	parent_subshell(pid_t pid, int pipe_fd[2], t_minishell *minishell)
 	waitpid(pid, &status, 0);
 	minishell->in_subshell = false;
 	if (WIFEXITED(status))
+	{
 		minishell->exit_code = WEXITSTATUS(status);
+		minishell->kill_child = true;
+	}
 	else
 		minishell->exit_code = 1;
 }

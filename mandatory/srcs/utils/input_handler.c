@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 22:58:12 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/08 23:32:54 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/10 01:29:42 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,4 +67,6 @@ void	shell_loop(t_minishell *shell, int argc, char **argv)
 		reset_terminal_mode();
 		free(shell->input);
 	}
+	gc_cleanup(shell->gc);
+	exit(shell->exit_code);
 }

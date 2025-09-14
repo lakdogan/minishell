@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_properties.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: almatsch <almatsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 00:36:44 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/14 06:30:08 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/14 19:55:41 by almatsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static char	*extract_quoted_value(t_extract_ctx_internal ctx,
 	if (ctx.quote_mask)
 	{
 		*ctx.quote_mask = gc_malloc(ctx.shell->gc[GC_COMMAND], *substr_len + 1);
-		memset(*ctx.quote_mask, 1, *substr_len);
+		ft_memset(*ctx.quote_mask, 1, *substr_len);
 		(*ctx.quote_mask)[*substr_len] = 0;
 	}
 	return (val);
@@ -53,7 +53,7 @@ static char	*extract_unquoted_value(t_extract_ctx_internal ctx)
 	{
 		*ctx.quote_mask = gc_malloc(ctx.shell->gc[GC_COMMAND], ctx.params.len
 				+ 1);
-		memset(*ctx.quote_mask, 0, ctx.params.len);
+		ft_memset(*ctx.quote_mask, 0, ctx.params.len);
 		(*ctx.quote_mask)[ctx.params.len] = 0;
 	}
 	return (val);

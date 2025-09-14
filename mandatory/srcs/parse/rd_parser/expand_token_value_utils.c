@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_token_value_utils.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: almatsch <almatsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 06:51:47 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/14 06:52:33 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/14 20:02:08 by almatsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	append_expanded_var(t_expand_ctx *ctx, const char *exp)
 	size_t	explen;
 
 	explen = ft_strlen(exp);
-	memcpy(ctx->result + ctx->ri, exp, explen);
+	ft_memcpy(ctx->result + ctx->ri, exp, explen);
 	ctx->ri += explen;
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   arg_processor.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: almatsch <almatsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 23:30:13 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/14 07:08:18 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/14 20:02:49 by almatsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ char	*word_dup(const char *start, int len)
 	word = malloc(len + 1);
 	if (!word)
 		return (NULL);
-	strncpy(word, start, len);
+	ft_strncpy(word, start, len);
 	word[len] = '\0';
 	return (word);
 }

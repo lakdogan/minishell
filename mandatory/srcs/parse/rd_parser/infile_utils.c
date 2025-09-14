@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 22:55:22 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/05 22:55:24 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/15 01:36:11 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,10 @@ t_infile	*create_infile(t_token_type type, char *filename, t_gc *gc)
 		return (NULL);
 	node->name = filename;
 	if (type == HEREDOC)
+	{
 		node->type = INF_HEREDOC;
+		node->delimeter = filename;
+	}
 	else
 		node->type = INF_IN;
 	node->next = NULL;

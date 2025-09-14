@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 22:20:39 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/09 00:01:33 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/14 06:11:27 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,17 @@ bool	should_expand_var(const char *str, int i, char quote_char)
 		&& (is_var_char(str[i + NEXT_CHAR_INDEX]) || str[i
 				+ NEXT_CHAR_INDEX] == QUESTION_MARK || str[i
 				+ NEXT_CHAR_INDEX] == DOLLAR_SIGN));
+}
+
+void	expand_loop(const char *str, t_minishell *shell, char **result)
+{
+	t_expvar_ctx	ctx;
+
+	ctx.str = str;
+	ctx.i = 0;
+	ctx.quote_char = NO_QUOTE;
+	ctx.shell = shell;
+	ctx.result = result;
+	while (ctx.str[ctx.i])
+		expand_loop_iteration(&ctx);
 }

@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 06:32:02 by almatsch          #+#    #+#             */
-/*   Updated: 2025/09/08 23:49:21 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/10 20:03:13 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 int	is_redir(t_token_type type)
 {
 	if (type == APPEND || type == OUTFILE || type == INFILE || type == HEREDOC
-		|| type == T_2GREATER)
+		|| type == T_2GREATER || type == T_GREATER_BAR)
 		return (1);
 	else
 		return (0);

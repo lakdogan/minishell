@@ -6,87 +6,84 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 22:20:59 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/09 00:02:16 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/14 06:13:55 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../includes/core/minishell.h"
 
-// Expands variable at current position.
-static char	*expand_var_at_position(const char *str, int *i, t_minishell *shell)
+bool	is_dollar_without_var(const char *str, int i)
 {
-	char	*expanded;
+	return (str[i] == '$' && (!str[i + 1] || !(ft_isalnum(str[i + 1]) || str[i
+					+ 1] == '_' || str[i + 1] == '?' || str[i + 1] == '$')));
+}
+
+static t_expvar_case	get_expvar_case(const char *str, int i, char quote_char)
+{
+	if (is_bare_question_mark(str, i, quote_char))
+		return (EXPVAR_BARE_QUESTION);
+	if (str[i] == '$' && str[i + 1] == '?')
+		return (EXPVAR_DOLLAR_QUESTION);
+	if (is_dollar_without_var(str, i))
+		return (EXPVAR_DOLLAR_NO_VAR);
+	return (EXPVAR_NONE);
+}
+
+static int	handle_special_cases_expvar(t_expvar_ctx *ctx)
+{
+	t_expvar_case	case_type;
+	char			*exit_str;
+
+	case_type = get_expvar_case(ctx->str, ctx->i, ctx->quote_char);
+	if (case_type == EXPVAR_BARE_QUESTION)
+	{
+		*(ctx->result) = gc_strjoin(ctx->shell->gc[GC_EXPAND], *(ctx->result),
+				"1");
+		return (1);
+	}
+	if (case_type == EXPVAR_DOLLAR_QUESTION)
+	{
+		exit_str = int_to_str(ctx->shell->exit_code, ctx->shell);
+		*(ctx->result) = gc_strjoin(ctx->shell->gc[GC_EXPAND], *(ctx->result),
+				exit_str);
+		return (2);
+	}
+	if (case_type == EXPVAR_DOLLAR_NO_VAR)
+	{
+		*(ctx->result) = append_char(*(ctx->result), '$', ctx->shell);
+		return (1);
+	}
+	return (0);
+}
+
+void	expand_loop_iteration(t_expvar_ctx *ctx)
+{
+	int		old_i;
+	char	*append_str;
 	int		consumed;
 
-	expanded = NULL;
-	consumed = expand_single_var(&str[*i], &expanded, shell);
-	*i += consumed;
-	return (expanded);
-}
-
-// Checks if escape sequence is active.
-static bool	is_active_escape_sequence(const char *str, int i, char quote_char)
-{
-	return (str[i] == BACKSLASH && str[i + NEXT_CHAR_INDEX] != NULL_TERMINATOR
-		&& quote_char != SINGLE_QUOTE);
-}
-
-// Checks if character is escapable.
-static bool	is_escapable_char(char c)
-{
-	return (c == DOUBLE_QUOTE || c == SINGLE_QUOTE || c == BACKSLASH
-		|| c == DOLLAR_SIGN);
-}
-
-// Processes a character for expansion.
-static char	*process_character(const char *str, int *i, char *quote_char,
-		t_minishell *shell)
-{
-	char	new_quote_state;
-
-	if (is_active_escape_sequence(str, *i, *quote_char))
+	consumed = handle_special_cases_expvar(ctx);
+	if (consumed)
 	{
-		if (is_escapable_char(str[*i + NEXT_CHAR_INDEX]))
-		{
-			(*i) += SKIP_BACKSLASH;
-			return (append_char(NULL, str[*i], shell));
-		}
-		else
-			return (append_char(NULL, str[*i], shell));
+		ctx->i += consumed;
+		return ;
 	}
-	new_quote_state = handle_quote(str[*i], *quote_char);
-	if (new_quote_state != *quote_char)
-	{
-		*quote_char = new_quote_state;
-		return (append_char(NULL, str[*i], shell));
-	}
-	else if (should_expand_var(str, *i, *quote_char))
-		return (expand_var_at_position(str, i, shell));
-	else
-		return (append_char(NULL, str[*i], shell));
+	old_i = ctx->i;
+	append_str = process_character(ctx->str, &ctx->i, &ctx->quote_char,
+			ctx->shell);
+	*(ctx->result) = gc_strjoin(ctx->shell->gc[GC_EXPAND], *(ctx->result),
+			append_str);
+	if (ctx->i == old_i)
+		ctx->i++;
 }
 
-// Expands variables with quote awareness.
 char	*expand_variables_with_quotes(const char *str, t_minishell *shell)
 {
 	char	*result;
-	char	*append_str;
-	int		i;
-	char	quote_char;
-	int		old_i;
 
 	if (!str)
 		return (NULL);
 	result = gc_strdup(shell->gc[GC_EXPAND], EMPTY_STRING);
-	i = 0;
-	quote_char = NO_QUOTE;
-	while (str[i])
-	{
-		old_i = i;
-		append_str = process_character(str, &i, &quote_char, shell);
-		result = gc_strjoin(shell->gc[GC_EXPAND], result, append_str);
-		if (i == old_i)
-			i++;
-	}
+	expand_loop(str, shell, &result);
 	return (result);
 }

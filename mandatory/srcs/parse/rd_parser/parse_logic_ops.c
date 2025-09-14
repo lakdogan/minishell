@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 06:28:09 by almatsch          #+#    #+#             */
-/*   Updated: 2025/09/08 23:47:23 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/14 06:42:24 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ t_command_tree	*start_parser(t_tokens *tokens, t_minishell *shell)
 
 	if (!tokens || tokens->count == 0)
 		return (NULL);
+	merge_adjacent_tokens(tokens, shell);
 	pos = 0;
 	ast = parse_logic_ops(tokens, &pos, shell);
 	if (!ast)

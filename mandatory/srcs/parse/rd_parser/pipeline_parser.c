@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 18:30:02 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/08 23:49:58 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/14 06:36:41 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,9 @@ static int	validate_pipeline_start(t_tokens *tokens, int *pos,
 static int	validate_pipe_continuation(t_tokens *tokens, int *pos,
 		t_minishell *shell)
 {
-	if ((*pos) + 1 >= tokens->count || tokens->arr[(*pos) + 1].type == PIPE)
+	if ((*pos) + 1 >= tokens->count)
+		return (1);
+	if (tokens->arr[(*pos) + 1].type == PIPE)
 	{
 		shell->exit_code = 2;
 		return (0);

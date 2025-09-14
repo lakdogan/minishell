@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 23:35:37 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/10 00:31:29 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/14 07:18:13 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define EXECUTION_H
 
 # include "minishell.h"
+# include "token.h"
 # define BUFFER_SIZE_TEE 4096
 # define FORK_ERROR -1
 # define CHILD_PROCESS 0
@@ -167,6 +168,32 @@ typedef struct s_error_context
 	const char				*message;
 	int						exit_code;
 }							t_error_context;
+
+typedef enum e_expvar_case
+{
+	EXPVAR_NONE,
+	EXPVAR_BARE_QUESTION,
+	EXPVAR_DOLLAR_QUESTION,
+	EXPVAR_DOLLAR_NO_VAR
+}							t_expvar_case;
+
+typedef struct s_expvar_ctx
+{
+	const char				*str;
+	int						i;
+	char					quote_char;
+	t_minishell				*shell;
+	char					**result;
+}							t_expvar_ctx;
+
+typedef struct s_extract_ctx
+{
+	t_standard_token_ctx	ctx;
+	int						start;
+	int						len;
+	t_token_state			state;
+	t_minishell				*shell;
+}							t_extract_ctx;
 
 /* ------------------------------------------------------------------------- */
 /* 								exec dir start 								*/
@@ -458,4 +485,23 @@ void						child_subshell(t_command_tree *node,
 								t_minishell *minishell, int pipe_fd[2]);
 void						unset_env_var(const char *key,
 								t_minishell *minishell);
+bool						is_dollar_without_var(const char *str, int i);
+bool						is_bare_question_mark(const char *str, int i,
+								char quote_char);
+char						*process_character(const char *str, int *i,
+								char *quote_char, t_minishell *shell);
+bool						is_escapable_char(char c);
+bool						is_active_escape_sequence(const char *str, int i,
+								char quote_char);
+char						*expand_var_at_position(const char *str, int *i,
+								t_minishell *shell);
+char						*expand_tilde_if_needed(const char *str,
+								t_minishell *shell);
+bool						is_tilde_expansion(const char *str);
+bool						is_variable_reference(const char *str, int i);
+void						process_regular_char(char c, char **result,
+								t_minishell *shell);
+void						expand_loop(const char *str, t_minishell *shell,
+								char **result);
+void						expand_loop_iteration(t_expvar_ctx *ctx);
 #endif

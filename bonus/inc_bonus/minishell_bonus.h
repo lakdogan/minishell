@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 21:09:21 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/10 00:22:10 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/14 07:25:38 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,6 @@ void	check_path_accessibility(char *path, t_minishell *minishell);
 void	check_if_directory(char *path, t_minishell *minishell);
 void	handle_special_cases(t_exec *exec, t_minishell *minishell);
 void	handle_dot_command(t_exec *exec);
+t_token	handle_greater_bar_token(const char *cmd, int *i, int t_count,
+			t_minishell *shell);
 #endif

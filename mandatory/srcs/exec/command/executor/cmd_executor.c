@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 19:56:26 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/09 00:17:39 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/14 06:07:41 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,10 @@ static void	handle_dot_command(t_exec *exec)
 void	handle_special_cases(t_exec *exec, t_minishell *minishell)
 {
 	if (!exec->argv[0] || !*exec->argv[0])
-		exit(0);
+	{
+		ft_putstr_fd("minishell: : command not found\n", STDERR_FILENO);
+		exit(127);
+	}
 	if (exec->command && ft_strcmp(exec->command, ".") == 0)
 		handle_dot_command(exec);
 	if (exec->command && ft_strcmp(exec->command, "..") == 0)

@@ -6,7 +6,7 @@
 #    By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/08 22:57:06 by lakdogan          #+#    #+#              #
-#    Updated: 2025/09/10 00:22:53 by lakdogan         ###   ########.fr        #
+#    Updated: 2025/09/14 07:13:09 by lakdogan         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -121,6 +121,8 @@ MINISHELL_MANDATORY_FILES := \
 				$(ENV_EXP_DIR)exp_var_process.c \
 				$(ENV_EXP_DIR)exp_var_utils.c \
 				$(ENV_EXP_DIR)exp_vars.c \
+				$(ENV_EXP_DIR)exp_var_helpers.c \
+				$(ENV_EXP_DIR)exp_vars_helpers.c \
 				$(ENV_EXP_DIR)exp_find_env_value.c \
 				$(EX_ERROR_DIR)error_utils.c \
 				$(IO_UTILS_DIR)fd_operations.c \
@@ -137,6 +139,10 @@ MINISHELL_MANDATORY_FILES := \
 				$(INIT_DIR)init_minishell.c \
 				$(PARSE_ERROR_DIR)error.c \
 				$(PARSE_RD_PARSER_DIR)parse_logic_ops.c \
+				$(PARSE_RD_PARSER_DIR)merge_tokens.c \
+				$(PARSE_RD_PARSER_DIR)arg_proc_utils.c \
+				$(PARSE_RD_PARSER_DIR)expand_token_value_utils.c \
+				$(PARSE_RD_PARSER_DIR)expand_token_value.c \
 				$(PARSE_RD_PARSER_DIR)parse_sequence.c \
 				$(PARSE_RD_PARSER_DIR)parse_subshell.c \
 				$(PARSE_RD_PARSER_DIR)parser_init.c \
@@ -219,6 +225,7 @@ REPLACED_BY_BONUS := \
     $(SRCS_DIR)parse/tokenizer/token_operators.c \
     $(SRCS_DIR)parse/tokenizer/get_tok_type.c \
     $(SRCS_DIR)parse/tokenizer/token_special_handlers.c \
+    $(SRCS_DIR)parse/tokenizer/token_special_handler.c \
 	$(DISPATCHER_DIR)external_command.c \
 	$(PARSE_TOKENIZER_DIR)token_processor.c \
 	$(PIPE_DIR)pipe_command_executor.c \

@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 18:37:16 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/09 22:08:02 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/14 07:16:52 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,19 +37,30 @@ static int	update_current_directory(t_minishell *minishell)
 	return (BUILTIN_SUCCESS);
 }
 
-/* Main cd command implementation */
-int	ft_cd(char **argv, t_minishell *minishell)
+static int	handle_cd_args(char **argv)
 {
-	int		argc;
-	char	*path;
-	char	*old_pwd;
+	int	argc;
 
 	argc = 0;
 	while (argv[COMMAND_ARGS_START + argc])
 		argc++;
 	if (argv[COMMAND_ARGS_START] && ft_strcmp(argv[COMMAND_ARGS_START],
 			"-") == 0)
-		return (handle_cd_dash(minishell));
+		return (-1);
+	if (argv[COMMAND_ARGS_START] && ft_strcmp(argv[COMMAND_ARGS_START],
+			"--") == 0 && !argv[COMMAND_ARGS_START + 1])
+	{
+		argv[COMMAND_ARGS_START] = NULL;
+		argc = 0;
+	}
+	return (argc);
+}
+
+static int	cd_change_and_update(char **argv, t_minishell *minishell)
+{
+	char	*path;
+	char	*old_pwd;
+
 	old_pwd = NULL;
 	lookup_env_value("PWD", minishell, &old_pwd);
 	path = get_cd_target_path(argv, minishell);
@@ -63,4 +74,14 @@ int	ft_cd(char **argv, t_minishell *minishell)
 	if (change_directory(path) != BUILTIN_SUCCESS)
 		return (BUILTIN_FAILURE);
 	return (update_current_directory(minishell));
+}
+
+int	ft_cd(char **argv, t_minishell *minishell)
+{
+	int	argc;
+
+	argc = handle_cd_args(argv);
+	if (argc == -1)
+		return (handle_cd_dash(minishell));
+	return (cd_change_and_update(argv, minishell));
 }

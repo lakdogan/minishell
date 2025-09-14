@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 22:55:14 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/08 23:46:42 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/14 06:46:32 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ t_command_tree	*parse_command(t_tokens *tokens, int *pos, t_minishell *shell)
 		return (NULL);
 	if (!process_command_tokens(tokens, pos, exec, shell))
 		return (NULL);
-	if (!exec->argv && !had_redir && !exec->assignments)
+	if (!exec->argv && !exec->infiles && !exec->outfiles && !exec->assignments)
 		return (NULL);
 	node = create_command_node(exec, shell);
 	return (node);

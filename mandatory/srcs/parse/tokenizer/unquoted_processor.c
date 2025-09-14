@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 00:08:44 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/08 23:45:11 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/14 06:24:03 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static int	is_quote_char(char c)
 }
 
 // Processes a regular character in unquoted text.
-static void	process_regular_char(const char *input, size_t *i,
+static void	process_regular_char_uq(const char *input, size_t *i,
 		t_minishell *shell, char **res)
 {
 	append_char_unquoted(res, input[*i], shell);
@@ -54,7 +54,7 @@ char	*proc_unquoted(const char *input, size_t *i, t_minishell *shell)
 			process_dollar(input, i, shell, &res);
 			continue ;
 		}
-		process_regular_char(input, i, shell, &res);
+		process_regular_char_uq(input, i, shell, &res);
 	}
 	return (res);
 }

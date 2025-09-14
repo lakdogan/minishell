@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 08:40:53 by almatsch          #+#    #+#             */
-/*   Updated: 2025/09/05 23:27:11 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/14 07:11:40 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,22 @@ typedef struct s_token_ctx
 	t_exec				*exec;
 	t_minishell			*shell;
 }						t_token_ctx;
+
+typedef struct s_merge_ctx
+{
+	t_tokens			*tokens;
+	t_minishell			*shell;
+	int					out;
+	int					in;
+	int					start;
+	size_t				total_len;
+	char				*merged;
+	char				*merged_mask;
+	size_t				pos;
+	size_t				len;
+	int					k;
+	size_t				j;
+}						t_merge_ctx;
 
 void					error_msg(t_tokens *tokens, int *pos,
 							t_minishell *shell);
@@ -148,5 +164,15 @@ int						process_output_redir(t_redir_ctx ctx,
 int						process_input_redir(t_redir_ctx ctx, t_token_type type);
 
 t_command_tree			*parse(t_tokens *tokens, t_minishell *minishell);
-
+void					merge_adjacent_tokens(t_tokens *tokens,
+							t_minishell *shell);
+void					handle_quoted_char(t_expand_ctx *ctx);
+void					append_expanded_var(t_expand_ctx *ctx, const char *exp);
+void					append_char_result(t_expand_ctx *ctx, char c);
+bool					is_expandable_dollar(const t_expand_ctx *ctx);
+bool					is_quoted(const t_expand_ctx *ctx);
+char					*expand_token_value(t_token token, t_minishell *shell);
+char					**ft_split_charset(const char *s, const char *charset);
+char					*word_dup(const char *start, int len);
+char					**ft_split_charset(const char *s, const char *charset);
 #endif

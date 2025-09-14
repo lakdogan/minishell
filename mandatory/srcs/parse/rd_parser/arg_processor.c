@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 23:30:13 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/08 23:46:05 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/14 07:08:18 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,29 +30,49 @@ static int	process_redirection(t_exec *exec, t_tokens *tokens, int *pos,
 	return (1);
 }
 
-// Expands token value for argument.
-static char	*expand_token_value(t_token token, t_minishell *shell)
+// Allocates and copies a word
+char	*word_dup(const char *start, int len)
 {
-	if (token.no_expand)
-		return (expand_variables_with_quotes(token.value, shell));
-	return (expand_variables(token.value, shell));
+	char	*word;
+
+	word = malloc(len + 1);
+	if (!word)
+		return (NULL);
+	strncpy(word, start, len);
+	word[len] = '\0';
+	return (word);
 }
 
-// Processes argument token and adds to list.
 static void	process_arg_token(t_arg_lst **args, t_token token,
 		t_minishell *shell, int *pos)
 {
 	char		*expanded;
 	t_arg_flags	flags;
+	char		**words;
+	int			i;
 
 	expanded = expand_token_value(token, shell);
 	flags.no_expand = token.no_expand;
 	flags.was_quoted = token.was_quoted;
-	arg_to_list(args, expanded, flags, shell);
+	if (!token.was_quoted)
+	{
+		words = ft_split_charset(expanded, " \t\n");
+		i = 0;
+		while (words && words[i])
+		{
+			arg_to_list(args, words[i], flags, shell);
+			i++;
+		}
+		if (words)
+			ft_free_split(words);
+	}
+	else
+	{
+		arg_to_list(args, expanded, flags, shell);
+	}
 	(*pos)++;
 }
 
-// Checks if token is an argument token.
 static int	is_arg_token(t_token_type type)
 {
 	return (type == WORD || type == ASSIGNMENT);

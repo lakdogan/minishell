@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 07:48:08 by almatsch          #+#    #+#             */
-/*   Updated: 2025/09/08 23:40:58 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/14 07:25:29 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ t_token	init_token(const char *cmd, int *i, int t_count, t_minishell *shell)
 	success = process_standard_token(std_ctx, shell);
 	if (!success)
 		return (init_token_default());
-	apply_token_expansion(&token, shell);
+	if (!token.no_expand)
+		apply_token_expansion(&token, shell);
 	return (token);
 }

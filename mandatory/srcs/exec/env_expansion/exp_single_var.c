@@ -6,7 +6,7 @@
 /*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 22:21:17 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/09 18:54:47 by lakdogan         ###   ########.fr       */
+/*   Updated: 2025/09/14 05:54:28 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,14 +59,15 @@ static int	expand_env_variable(const char *start, char **expanded,
 // Expands a single variable (env, ~, $? or $$).
 int	expand_single_var(const char *start, char **expanded, t_minishell *shell)
 {
-	if (start[0] == '~' && (start[1] == '\0' || start[1] == '/'))
+	if (start[0] == '$' && (start[1] == '\0' || !(ft_isalnum(start[1])
+				|| start[1] == '_' || start[1] == '?' || start[1] == '$')))
 	{
-		*expanded = expand_tilde(start, shell);
+		*expanded = gc_strdup(shell->gc[GC_EXPAND], "");
 		return (1);
 	}
 	if (start[NEXT_CHAR_INDEX] == QUESTION_MARK)
 		return (expand_exit_status(expanded, shell));
-	if (start[NEXT_CHAR_INDEX] == DOLLAR_SIGN)
+	if (start[0] == '$' && start[1] == '$' && start[2] == '\0')
 		return (handle_process_id(expanded, shell));
 	return (expand_env_variable(start, expanded, shell));
 }

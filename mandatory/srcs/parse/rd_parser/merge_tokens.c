@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   merge_tokens.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: almatsch <almatsch@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 06:42:01 by lakdogan          #+#    #+#             */
-/*   Updated: 2025/09/14 20:01:35 by almatsch         ###   ########.fr       */
+/*   Updated: 2025/09/14 23:43:42 by lakdogan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@ static void	merge_values_and_masks(t_merge_ctx *ctx)
 		ctx->len = ft_strlen(ctx->tokens->arr[ctx->k].value);
 		ft_strlcat(ctx->merged, ctx->tokens->arr[ctx->k].value, ctx->total_len
 			+ 1);
-		ft_memcpy(ctx->merged_mask + ctx->pos, ctx->tokens->arr[ctx->k].quote_mask,
+		ft_memcpy(
+			ctx->merged_mask + ctx->pos, ctx->tokens->arr[ctx->k].quote_mask,
 			ctx->len);
 		ctx->pos += ctx->len;
 		ctx->k++;

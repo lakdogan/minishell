@@ -6,7 +6,7 @@
 #    By: lakdogan <lakdogan@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/08 22:57:06 by lakdogan          #+#    #+#              #
-#    Updated: 2025/09/14 07:13:09 by lakdogan         ###   ########.fr        #
+#    Updated: 2025/09/15 02:22:31 by lakdogan         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -199,6 +199,7 @@ MINISHELL_BONUS_FILES := \
 				$(BONUS_SRCS_DIR)get_tok_type_bonus.c \
                 $(BONUS_SRCS_DIR)token_operators_bonus.c \
                 $(BONUS_SRCS_DIR)token_special_handlers_bonus.c \
+                $(BONUS_SRCS_DIR)token_special_handler_bonus.c \
 				$(BONUS_SRCS_DIR)token_utilities_bonus.c \
 				$(BONUS_SRCS_DIR)execute_subshell_bonus.c \
 				$(BONUS_SRCS_DIR)pipe_in_subshell_bonus.c \
